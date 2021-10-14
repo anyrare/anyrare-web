@@ -5,8 +5,8 @@
  :dependencies
  [[reagent "1.1.0"]
   [re-frame "1.2.0"]
-  [com.wsscode/tailwind-garden "2021.04.09"]
-  [garden "1.3.10"]
+  [herb "0.10.0"]
+  [rgm/tailwind-hiccup "0.2.0"]
   [binaryage/devtools "1.0.3"]]
 
  :dev-http
