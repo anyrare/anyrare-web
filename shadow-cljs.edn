@@ -1,13 +1,12 @@
 {:nrepl {:port 8777}
 
- 
-
  :source-paths ["src" "test"]
 
  :dependencies
  [[reagent "1.1.0"]
   [re-frame "1.2.0"]
-
+  [com.wsscode/tailwind-garden "2021.04.09"]
+  [garden "1.3.10"]
   [binaryage/devtools "1.0.3"]]
 
  :dev-http
@@ -26,4 +25,4 @@
    :dev
    {:compiler-options
     {:closure-defines
-     { }}}}}}
+     {}}}}}}
