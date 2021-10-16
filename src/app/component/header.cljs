@@ -1,5 +1,6 @@
 (ns app.component.header
   (:require [tailwind-hiccup.core :refer [tw]]
+            [app.component.svg :refer [icon-moon]]
             [app.component.button :refer [button-primary button-outline button-circle]]))
 
 (defn header []
@@ -20,6 +21,6 @@
      (tw [:-mt-3])
      (button-primary "Create" [])
      (button-outline "Sign in" [:ml-2])
-     (button-circle "☾" [:ml-2])
-     (button-circle "EN" [:ml-2])]]
+     (button-circle "EN" [:ml-2])
+     (button-circle [icon-moon 16 12] [:ml-2 :pl-3 :text-center])]]
    ])

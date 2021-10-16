@@ -137,7 +137,7 @@ module.exports = {
           200: '#EB202B4D',
           50: '#EB202B0A'
         },
-        secondary: '#231F20',
+        secondary: '#505050',
         setting: '#FCFCFE',
         grey: {
           DEFAULT: '#FCFCFE',

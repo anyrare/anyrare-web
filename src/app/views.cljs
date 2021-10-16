@@ -5,6 +5,7 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.subs :as subs]
    [app.component.header :refer [header]]
+   [app.component.card :refer [card]]
    [app.events :as events]))
 
 (defn background [color] {:background color :padding "10px 10px 10px 10px" :color "#FFFFFF"})
@@ -29,6 +30,7 @@
           color-transition short-duration
           {:on-click #(js/alert "surprise!")})
       "Tailwind Button"]
+     (card :title "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง" :thumbnail "https://cf.lnwfile.com/2gwbkl.jpg")
      [:span (tw [:mt-4 :font-bold "text-red-500" :text-3xl])
       "this text should be bold red if everything worked"]
      [:h1
