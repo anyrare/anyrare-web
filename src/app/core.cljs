@@ -1,24 +1,26 @@
 (ns app.core
   (:require
-   [reagent.dom :as rdom]
-   [re-frame.core :as re-frame]
+   [reagent.dom :refer [render unmount-component-at-node]]
+   [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
+   [app.router :as router]
    [app.events :as events]
    [app.views :as views]
    [app.config :as config]
    ))
-
 
 (defn dev-setup []
   (when config/debug?
     (println "dev mode")))
 
 (defn ^:dev/after-load mount-root []
-  (re-frame/clear-subscription-cache!)
+  (clear-subscription-cache!)
   (let [root-el (.getElementById js/document "app")]
-    (rdom/unmount-component-at-node root-el)
-    (rdom/render [views/main-panel] root-el)))
+    (unmount-component-at-node root-el)
+    (render [views/main-panel] root-el)))
 
-(defn init []
-  (re-frame/dispatch-sync [::events/initialize-db])
+
+(defn ^:export init []
+  (router/start!)
+  (dispatch-sync [::events/initialize-db])
   (dev-setup)
   (mount-root))

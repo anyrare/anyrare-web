@@ -5,13 +5,13 @@
 
 (defn card [&{:keys [title thumbnail highest-bid]}]
   [:div
-   (tw [:w-64 :border :p-4 :m-4 :rounded-lg])
+   (tw [:w-72 :border :p-4 :m-4 :rounded-lg])
    [:div
     [:img
-     {:src thumbnail :class "rounded-lg object-cover h-64 w-64"}]
+     {:src thumbnail :class "rounded-lg object-cover h-72 w-72"}]
     ]
    [:div 
-    (tw [:font-bold :mt-2])
+    (tw [:font-bold :mt-2 :mb-1])
     title]
    [:div
     (tw [:flex :justify-end])

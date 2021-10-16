@@ -7,6 +7,8 @@
   [re-frame "1.2.0"]
   [herb "0.10.0"]
   [rgm/tailwind-hiccup "0.2.0"]
+  [bidi "2.1.6"]
+  [kibu/pushy "0.3.8"]
   [binaryage/devtools "1.0.3"]]
 
  :dev-http
