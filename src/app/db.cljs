@@ -1,5 +1,6 @@
 (ns app.db)
 
 (def default-db
-  {:name "re-frame"
+  {:active-page :home
+   :name "re-frame"
    :test "Query Jam"})

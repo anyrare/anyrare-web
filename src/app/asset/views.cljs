@@ -1,5 +1,5 @@
 (ns app.asset.views
   (:require [tailwind-hiccup.core :refer [tw]]))
 
-(defn asset-page []
+(defn asset []
   [:div "Asset page"])

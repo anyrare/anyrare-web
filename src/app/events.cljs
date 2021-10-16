@@ -1,14 +1,22 @@
 (ns app.events
   (:require
-   [re-frame.core :as re-frame]
+   [re-frame.core :refer [reg-event-db reg-event-fx]]
    [app.db :as db]))
 
-(re-frame/reg-event-db
+(reg-event-db
  ::initialize-db
  (fn [_ _]
    db/default-db))
 
-(re-frame/reg-event-db
+(reg-event-db
  ::name-change
  (fn [db [_ new-name-value]]
    (assoc db :name new-name-value)))
+
+(reg-event-fx
+ :set-active-page
+ (fn [{:keys [db]} [_ {:keys [page slug]}]]
+   (let [set-page (assoc db :active-page page)]
+     (case page
+       :home {:db set-page}
+       :asset {:db set-page}))))
