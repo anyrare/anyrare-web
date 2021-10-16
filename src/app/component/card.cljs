@@ -1,21 +1,22 @@
 (ns app.component.card
   (:require [tailwind-hiccup.core :refer [tw]]
-            [app.component.svg :refer [icon-love]]
-            [app.component.button :refer [button-circle]]))
+            [app.component.svg :refer [icon-love]]))
 
-(defn card [&{:keys [title thumbnail]}]
+(defn card [&{:keys [title thumbnail highest-bid]}]
   [:div
    (tw [:w-64 :border :p-4 :m-4 :rounded-lg])
+   [:div
     [:img
-     {:src thumbnail :class "rounded-lg"}]
+     {:src thumbnail :class "rounded-lg object-cover h-64 w-64"}]
+    ]
    [:div 
     (tw [:font-bold :mt-2])
     title]
    [:div
     (tw [:flex :justify-end])
-    [:div (tw [:flex-auto :text-sm :justify-items-start])
-    [:span (tw [:text-secondary]) "Higest Bid"]
-    [:span (tw [:ml-1 :text-primary :font-bold]) "1.0391 ARA"]]
+    (if-not (nil? highest-bid) [:div (tw [:flex-auto :text-sm :justify-items-start])
+     [:span (tw [:text-xs :font-bold :text-secondary]) "Higest Bid"]
+     [:span (tw [:ml-1 :text-primary :font-bold]) (str highest-bid " ARA")]])
     [:button
      (tw [:w-12])
      [:div

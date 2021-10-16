@@ -30,7 +30,8 @@
           color-transition short-duration
           {:on-click #(js/alert "surprise!")})
       "Tailwind Button"]
-     (card :title "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง" :thumbnail "https://cf.lnwfile.com/2gwbkl.jpg")
+     (card :title "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง" :thumbnail "https://cf.lnwfile.com/2gwbkl.jpg" :highest-bid 452)
+     (card :title "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง" :thumbnail "https://png.pngtree.com/thumb_back/fh260/background/20200714/pngtree-modern-double-color-futuristic-neon-background-image_351866.jpg" :highest-bid nil)
      [:span (tw [:mt-4 :font-bold "text-red-500" :text-3xl])
       "this text should be bold red if everything worked"]
      [:h1
