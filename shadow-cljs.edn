@@ -19,7 +19,7 @@
    :output-dir "resources/public/js/compiled"
    :asset-path "/js/compiled"
    :modules
-   {:app {:init-fn anyrare-web.core/init}}
+   {:app {:init-fn app.core/init}}
    :devtools
    {:preloads []}
    :dev

@@ -1,6 +1,15 @@
 {
 	"name": "anyrare-web",
 	"version": "0.1.0",
+	"repository": {
+    "type": "git",
+    "url": "https://github.com/anyrare/anyrare-web"
+  },
+  "author": {
+    "name": "Panasun Sunanta",
+    "email": "panasunsunanta@gmail.com"
+  },
+  "license": "MIT",
 	"scripts": {
 		"ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
 		"watch": "make dev && npx shadow-cljs watch app browser-test karma-test",
