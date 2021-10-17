@@ -5,7 +5,11 @@
 
 (def routes
   ["/" {"" :home
-        "asset" :asset}])
+        "asset" :asset
+        "explorer" :explorer
+        "profile" :profile
+        "following" :following
+        "activity" :activity}])
 
 (def history
   (let [dispatch #(dispatch [:set-active-page {:page (:handler %)

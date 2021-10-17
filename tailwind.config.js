@@ -1,15 +1,5 @@
 module.exports = {
   darkMode: 'class',
-  // purge: {
-  //   preserveHtmlElements: false,
-  //   enabled: true,
-  //   content: ['./src/**/*.cljs'],
-  //   extract: {
-  //     md: (content) => {
-  //       return content.match(/[^<>"'`:\s]*/)
-  //     }
-  //   }
-  // },
   theme: {
     fontSize: {
       xxs: [

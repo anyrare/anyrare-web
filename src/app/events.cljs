@@ -19,4 +19,8 @@
    (let [set-page (assoc db :active-page page)]
      (case page
        :home {:db set-page}
-       :asset {:db set-page}))))
+       :asset {:db set-page}
+       :explorer {:db set-page}
+       :profile {:db set-page}
+       :following {:db set-page}
+       :activity {:db set-page}))))
