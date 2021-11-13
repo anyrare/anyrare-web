@@ -1,32 +1,39 @@
 {
 	"name": "anyrare-web",
 	"version": "0.1.0",
+	"license": "UNLICENSED",
+	"private": true,
 	"repository": {
-    "type": "git",
-    "url": "https://github.com/anyrare/anyrare-web"
-  },
-  "author": {
-    "name": "Panasun Sunanta",
-    "email": "panasunsunanta@gmail.com"
-  },
-  "license": "MIT",
+		"type": "git",
+		"url": "https://github.com/anyrare/anyrare-web"
+	},
+	"author": {
+		"name": "Panasun Sunanta",
+		"email": "panasunsunanta@gmail.com"
+	},
 	"scripts": {
 		"ancient": "clojure -Sdeps '{:deps {com.github.liquidz/antq {:mvn/version \"RELEASE\"}}}' -m antq.core",
 		"watch": "make dev && npx shadow-cljs watch app browser-test karma-test",
 		"release": "make prod && npx shadow-cljs release app",
-		"build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html"
+		"build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html",
+		"ci": "npx shadow-cljs compile karma-test && npx karma start --single-run --reporters junit,dots"
 	},
 	"dependencies": {
-    "@fullhuman/postcss-purgecss": "4.0.3",
-    "autoprefixer": "10.3.7",
-    "cssnano": "5.0.8",
-    "postcss": "8.3.9",
-    "postcss-cli": "9.0.1",
-    "tailwindcss": "2.2.15",
+		"@fullhuman/postcss-purgecss": "4.0.3",
+		"autoprefixer": "10.3.7",
+		"cssnano": "5.0.8",
+		"highlight.js": "11.1.0",
+		"postcss": "8.3.9",
+		"postcss-cli": "9.0.1",
 		"react": "17.0.2",
-		"react-dom": "17.0.2"
+		"react-dom": "17.0.2",
+		"tailwindcss": "2.2.15"
 	},
 	"devDependencies": {
+		"karma": "^6.3.8",
+		"karma-chrome-launcher": "^3.1.0",
+		"karma-cljs-test": "^0.1.0",
+		"karma-junit-reporter": "^2.0.1",
 		"shadow-cljs": "2.15.2"
 	}
 }

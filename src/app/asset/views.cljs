@@ -2,12 +2,12 @@
   (:require [tailwind-hiccup.core :refer [tw]]))
 
 (defn asset []
-  [:div (tw [:flex :mt-6 :px-8])
+  [:div (tw [:flex :px-2 :flex-wrap])
    [:div (tw [:flex-auto :flex])
     [:div (tw [:mx-auto])
      [:img
       {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover"}]]]
-   [:div (tw [:pl-8 "w-1/4" "lg:w-1/2" "xl:1/5" "2xl:1/6"])
+   [:div (tw [:mt-4 :w-full "lg:w-1/2" "xl:1/5" "2xl:1/6"])
     [:div [:h1 (tw [:text-3xl :font-bold]) "พระนางพญาเนื้อดำ พิมพ์เข่าโค้ง"]]
     [:div
      [:span
@@ -43,14 +43,14 @@
      [:span (tw [:pr-6 :text-secondary]) "History"]
      [:hr (tw [:mt-2])]]
     [:div (tw [:mt-4])
-      [:div (tw [:text-sm :font-bold :text-secondary]) "Custodian"]
+     [:div (tw [:text-sm :font-bold :text-secondary]) "Custodian"]
+     [:div
+      (tw [:flex :mt-2])
+      [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12 h-12"}]
       [:div
-       (tw [:flex :mt-2])
-       [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12 h-12"}]
-       [:div
-        (tw [:flex :flex-col])
-        [:div (tw [:font-bold :ml-3 :flex-0]) "GPraCustodian"]
-        [:div (tw [:font-bold :ml-3 :text-sm :text-secondary :flex]) "Bangkok, TH"]]]]
+       (tw [:flex :flex-col])
+       [:div (tw [:font-bold :ml-3 :flex-0]) "GPraCustodian"]
+       [:div (tw [:font-bold :ml-3 :text-sm :text-secondary :flex]) "Bangkok, TH"]]]]
     [:div (tw [:mt-4 :text-sm])
      [:div (tw [:font-bold :text-secondary]) "Custodian Fees"]
      [:div
@@ -66,15 +66,14 @@
      [:div (tw [:flex])
       [:div (tw ["w-1/2"])
        [:div
-       (tw [:flex :mt-2])
-       [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12"}]
-       [:span (tw [:font-bold :ml-3 :mt-2]) "JKBin"]]
-       ]
+        (tw [:flex :mt-2])
+        [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12"}]
+        [:span (tw [:font-bold :ml-3 :mt-2]) "JKBin"]]]
       [:div (tw ["w-1/2" :text-sm])
        "Audited Date: 10/3/2020 1:37PM"]]]
     [:div
      [:div (tw [:mt-4 :text-sm :text-secondary :font-bold]) "Auditor Report"]
-     [:div (tw [:mt-2]) "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง มีรอยบิ่นขอบบนซ้าย มีจุดตัด ปีพ.ศ.2490 รุ่นเมตตามหานิยม จัดสร้างที่วัดนางพญา จังหวัดพิษณุโลก จำนวน 20,000 องค์ ด้านหลังพิมพ์อักขระพิเศษ มีรอยนูนด้านซ้ายล่าง"]]
+     [:div (tw [:mt-2]) "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง มีรอยบิ่นขอบบนซ้าย มีจุดตัด ปีพ.ศ.2490 รุ่นเมตตามหานิยม จัดสร้างที่วัดนางพญา จังหวัดพิษณุโลก จำนวน 20,000องค์ ด้านหลังพิมพ์อักขระพิเศษ มีรอยนูนด้านซ้ายล่าง"]]
     [:div
      (tw [:mt-4])
      [:hr]]]])
