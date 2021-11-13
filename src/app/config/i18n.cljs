@@ -1,7 +1,7 @@
 (ns app.config.i18n)
 
 (def dicts
-  [:founder
+  {:founder
    {:th "ผู้ค้นพบสินทรัพย์"
     :en "Founder"}
    :owner
@@ -123,7 +123,10 @@
     :en "Second"}
    :loading
    {:th "กำลังโหลด"
-    :en "Loading"}])
+    :en "Loading"}})
 
 (defn get-lang []
-  (or (.getItem (.-localStorage js/window) "lang") "th"))
+  (-> (or (.getItem (.-localStorage js/window) "lang") "th")
+      (keyword)))
+
+(defn i18n [key] ((dicts key) (get-lang)))
