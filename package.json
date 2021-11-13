@@ -1,6 +1,6 @@
 {
 	"name": "anyrare-web",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"license": "UNLICENSED",
 	"private": true,
 	"repository": {
@@ -16,7 +16,10 @@
 		"watch": "make dev && npx shadow-cljs watch app browser-test karma-test",
 		"release": "make prod && npx shadow-cljs release app",
 		"build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-		"ci": "npx shadow-cljs compile karma-test && npx karma start --single-run --reporters junit,dots"
+		"ci": "npx shadow-cljs compile karma-test && npx karma start --single-run --reporters junit,dots",
+		"version:major": "yarn version --major",
+		"version:minor": "yarn version --minor",
+		"version:patch": "yarn version --patch"
 	},
 	"dependencies": {
 		"@fullhuman/postcss-purgecss": "4.0.3",
