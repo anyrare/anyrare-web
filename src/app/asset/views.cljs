@@ -15,7 +15,7 @@
       (tw [:text-secondary :text-sm :font-kanit :font-medium])
       (i18n :highest-bid)]
      [:span
-      (tw [:text-primary :text-sm :font-bold :ml-2])
+      (tw [:text-sm :font-bold :ml-1 :text-transparent :bg-clip-text :bg-gradient-to-br :from-red-400 :to-purple-800])
       "1.0391 ARA"]]
     [:div
      (tw [:mt-2])
