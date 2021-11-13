@@ -1,5 +1,6 @@
 (ns app.asset.views
-  (:require [tailwind-hiccup.core :refer [tw]]))
+  (:require [tailwind-hiccup.core :refer [tw]]
+            [app.config.i18n :refer [i18n]]))
 
 (defn asset []
   [:div (tw [:flex :px-2 :flex-wrap])
@@ -8,11 +9,11 @@
      [:img
       {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover"}]]]
    [:div (tw [:mt-4 :w-full "lg:w-1/2" "xl:1/5" "2xl:1/6"])
-    [:div [:h1 (tw [:text-3xl :font-bold]) "พระนางพญาเนื้อดำ พิมพ์เข่าโค้ง"]]
+    [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) "พระนางพญาเนื้อดำ พิมพ์เข่าโค้ง"]]
     [:div
      [:span
-      (tw [:text-secondary :text-sm :font-bold])
-      "Higest bid"]
+      (tw [:text-secondary :text-sm :font-mono])
+      (i18n :highest-bid)]
      [:span
       (tw [:text-primary :text-sm :font-bold :ml-2])
       "1.0391 ARA"]]
