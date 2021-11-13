@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+
+@font-face {
+  font-family: 'Kanit', sans-serif;
+  src: url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap');
+}
+
+@tailwind utilities;
