@@ -12,7 +12,7 @@
     [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) "พระนางพญาเนื้อดำ พิมพ์เข่าโค้ง"]]
     [:div
      [:span
-      (tw [:text-secondary :text-sm :font-mono])
+      (tw [:text-secondary :text-sm :font-kanit :font-medium])
       (i18n :highest-bid)]
      [:span
       (tw [:text-primary :text-sm :font-bold :ml-2])
