@@ -3,12 +3,8 @@
 (def asset-db
   {:address "0x9930bbbacff0329022"
    :status "LIVE_AUCTION"
-   :title
-   {:th "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปีพ.ศ. 2515"
-    :en "Close Eye Amulet LF. Pan Wat Kreu Wan 1972"}
-   :description
-   {:th "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธ<br>หลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี<br>- พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อ<br>ผงลงรักปิดทอง จ.ชลบุรี<br>- ผสมผงเก่าอิทธิเจ \"หลวงพ่อแก้ว วัดเครือวัลย์\""
-    :en "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"}
+   :title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปีพ.ศ. 2515"
+   :description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธ<br>หลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี<br>- พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อ<br>ผงลงรักปิดทอง จ.ชลบุรี<br>- ผสมผงเก่าอิทธิเจ \"หลวงพ่อแก้ว วัดเครือวัลย์\""
    :attachments
    [{:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24631469&date=2021-10-26"}
     {:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24631469&date=2021-10-26"}
@@ -25,9 +21,7 @@
     :address "0x13942305bbbc0329423aaaa"}
    :auditor
    {:name "GPraAuditor"
-    :full-name
-    {:th "บริษัท การันตีพระ จำกัด"
-     :en "GARUNTEE PRA CO., LTD."}
+    :full-name "บริษัท การันตีพระ จำกัด"
     :thumbnail "https://lh3.googleusercontent.com/proxy/BL69WMBB3PHl7ZuRMgJLO1army-fAY0Kd648xKKs1rYQSrXyKG5apM5G3dPjlyPwHxbc91QFJ8xcp74AZUALnw"
     :address "0x1349baaaa0392032bcf99099"
     :auditor-report
@@ -37,9 +31,7 @@
     :audit-address "0x93023ca39202223455"}
    :custodian
    {:name "GPraCustodian"
-    :full-name
-    {:th "บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"
-     :en "GARUNTEE PRA CUSTODIAN CO., LTD."}
+    :full-name "บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"
     :thumbnail "https://lh3.googleusercontent.com/proxy/6rtejUaqyw_SaypbJ6mm42zl5QPm7IKdiMb5dgzt8usITRXW-WrrASJVZQ8KYRsVpI0aH7LtUtKEZYmFXQq68IeNXRHOh-2nIXQMlA"
     :address "0x9930cafb9320239caff03666"
     :fee 25000
