@@ -12,5 +12,7 @@
 /node_modules/
 
 # shadow-cljs cache, port files
-/.shadow-cljs/
-/.calva/
+.shadow-cljs
+.calva
+.lsp
+.clj-kondo
