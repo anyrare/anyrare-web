@@ -2,8 +2,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     fontFamily: {
-      thonburi: ['Kanit', 'Arial', 'sans-serif'],
-      roboto: ['Roboto', 'Arial', 'sans-serif']
+      kanit: ['Kanit'],
     },
     fontSize: {
       xxs: [

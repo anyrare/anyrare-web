@@ -1,12 +1,15 @@
 (ns app.events
   (:require
    [re-frame.core :refer [reg-event-db reg-event-fx]]
+   [app.asset.db :as asset]
    [app.db :as db]))
 
 (reg-event-db
  ::initialize-db
- (fn [_ _]
-   db/default-db))
+ (fn [db _]
+   (-> db
+       (assoc :default db/default-db)
+       (assoc :asset asset/asset-db))))
 
 (reg-event-db
  ::name-change
