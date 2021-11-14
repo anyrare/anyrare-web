@@ -3,8 +3,6 @@
    [re-frame.core :refer [reg-sub]]))
 
 (reg-sub
- ::title
+ ::asset
  (fn [db]
-   (-> db
-       (:asset)
-       (:title))))
+   (-> db (:asset))))

@@ -7,14 +7,14 @@
    [app.config.i18n :refer [i18n]]))
 
 (defn asset []
-  (let [title (subscribe [::subs/title])]
+  (let [asset (subscribe [::subs/asset])]
     [:div (tw [:flex :px-2 :flex-wrap])
      [:div (tw [:flex-auto :flex])
       [:div (tw [:mx-auto])
        [:img
         {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover"}]]]
      [:div (tw [:mt-4 :w-full "lg:w-1/2" "xl:1/5" "2xl:1/6"])
-      [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) @title]]
+      [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) (get-in @asset [:title :th])]]
       [:div
        [:span
         (tw [:text-secondary :text-sm :font-kanit :font-medium])
