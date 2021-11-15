@@ -29,12 +29,14 @@
    [:div {:id "image-slider" :class "splide"}
     [:div {:class "splide__track"}
      [:ul {:class "splide__list"}
-      [:li {:class "splide__slide"}
+      [:li {:class "splide__slide "}
        [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
       [:li {:class "splide__slide"}
-       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
+       [:img {:src "https://www.vuescript.com/wp-content/uploads/2019/09/Vue.js-Card-Carousel-For-Web.png"}]]
       [:li {:class "splide__slide"}
-       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]]]]])
+       [:img {:src "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREMxb-miDguY0jOpy1kYUPDlTR6sjWFVRWF-ucdBnyBpKPrSRS3C67nFnI5A-TOtBS2pY&usqp=CAU"}]]
+      [:li {:class "splide__slide"}
+       [:img {:src "https://mediatemple.net/blog/wp-content/uploads/2016/10/chris-coyier-css-tricks-carousel_1665x705.png"}]]]]]])
 
 ;; (defn asset []
 ;;   [Carousel

@@ -7,5 +7,5 @@
 (reg-event-db
  ::add-slider
  (fn []
-   (-> (.mount (Splide. ".splide") )
-       (as-> x (.log js/console x)))))
+   (-> (.mount (Splide. ".splide"))
+       (as-> _ nil))))
