@@ -5,6 +5,7 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
+   ["@splidejs/splide" :as Splide]
    [app.config.i18n :refer [i18n]]))
 
 
@@ -23,25 +24,35 @@
   [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
 
 (defn asset []
-  [:div {:id "slider" :class "swipe mt-16"}
-   [:div {:class "swipe-wrap"}
-    [:div "1"]
-    [:div "2"]
-    [:div "3"]
-    [:div "4"]]]
-  )
+  [:div
+   [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]
+   [:div {:id "image-slider" :class "splide"}
+    [:div {:class "splide__track"}
+     [:ul {:class "splide__list"}
+      [:li {:class "splide__slide"}
+       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
+      [:li {:class "splide__slide"}
+       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
+      [:li {:class "splide__slide"}
+       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]]]]])
+
+;; (defn asset []
+;;   [Carousel
+;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide1"}]
+;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide2"}]
+;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide3"}]])
 
 ;; (defn asset []
 ;;   (let [asset (subscribe [::subs/asset])]
 ;;     [:div (tw [:flex :px-2 :flex-wrap])
 ;;      [:div (tw [:flex :flex-auto])
 ;;       [:div (tw [:mx-auto :lg:max-w-lg :xl:max-full])
-;;        [:div {:id "slider" :class "swipe w-full"}]
-;;         [:div {:class ["swipe-wrap w-full"]}]
+;;        [:div {:id "slider" :class "swipe w-full"}
+;;         [:div {:class ["swipe-wrap w-full"]}
 ;;          [:div {:class "swiper-slide w-64 bg-red-700"} "Slide 1"]
 ;;          [:div {:class "swiper-slide w-64 bg-yellow-700"} "Slide 2"]
-;;          [:div {:class "swiper-slide w-64 bg-green-700"} "Slide 3"]]
-;;        [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]]
+;;          [:div {:class "swiper-slide w-64 bg-green-700"} "Slide 3"]]]
+;;        [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]]]
 ;;      [:div (tw [:mt-4 :w-full :lg:max-w-md :xl:max-w-lg])
 ;;       [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) (get-in @asset [:title :th])]]
 ;;       [:div

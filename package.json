@@ -23,9 +23,11 @@
 	},
 	"dependencies": {
 		"@fullhuman/postcss-purgecss": "4.0.3",
+		"@splidejs/splide": "^3.3.1",
 		"autoprefixer": "10.3.7",
 		"cssnano": "5.0.8",
 		"highlight.js": "11.1.0",
+		"nuka-carousel": "^4.8.2",
 		"postcss": "8.3.9",
 		"postcss-cli": "9.0.1",
 		"react": "17.0.2",
