@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @layer base {
+@layer base {
   @font-face {
     font-family: 'Kanit';
     font-weight: 300;
@@ -23,4 +23,19 @@
     font-display: swap;
     src: url('https://fonts.googleapis.com/css2?family=Kanit:wght@500&display=swap');
   }
-} */
+
+  .swipe {
+    overflow: hidden;
+    visibility: hidden;
+    position: relative;
+  }
+  .swipe-wrap {
+    overflow: hidden;
+    position: relative;
+  }
+  .swipe-wrap > div {
+    float: left;
+    width: 100%;
+    position: relative;
+  }
+}
