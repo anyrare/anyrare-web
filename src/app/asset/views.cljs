@@ -10,10 +10,10 @@
   (let [asset (subscribe [::subs/asset])]
     [:div (tw [:flex :px-2 :flex-wrap])
      [:div (tw [:flex-auto :flex])
-      [:div (tw [:mx-auto])
+      [:div (tw [:mx-auto :md:max-w-lg :lg:max-w-xl])
        [:img
         {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover"}]]]
-     [:div (tw [:mt-4 :w-full "lg:w-1/2" "xl:1/5" "2xl:1/6"])
+     [:div (tw [:mt-4 :md:max-w-sm :lg:max-w-md :xl:max-w-lg])
       [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) (get-in @asset [:title :th])]]
       [:div
        [:span

@@ -97,6 +97,14 @@ module.exports = {
         }
       ]
     },
+    maxWidth: {
+      sm: '24rem',
+      md: '28rem',
+      lg: '32rem',
+      xl: '36rem',
+      '2xl': '42rem',
+      '3xl': '48rem',
+    },
     extend: {
       dropShadow: {
         'text-contrast': `drop-shadow(0 0px 3px rgba(255, 255, 255, 0.07))
