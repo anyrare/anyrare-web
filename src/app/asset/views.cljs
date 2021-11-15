@@ -4,15 +4,24 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
+   ["swiper" :default Swiper]
    [app.config.i18n :refer [i18n]]))
+
+(def swiper (.log js/console "Swiper" (Swiper. ".mySwiper")))
 
 (defn asset []
   (let [asset (subscribe [::subs/asset])]
     [:div (tw [:flex :px-2 :flex-wrap])
      [:div (tw [:flex :flex-auto])
       [:div (tw [:mx-auto :lg:max-w-lg :xl:max-full])
-        [:img
-         {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover h-full"}]]]
+       [:div  {:class "w-full h-full mySwiper"}
+        [:div
+         [:div "Slide1"]
+         [:div "Slide2"]
+         [:div "Slide3"]
+         ]]
+       [:img
+        {:src "https://cf.lnwfile.com/2gwbkl.jpg" :class "rounded-lg object-cover h-full"}]]]
      [:div (tw [:mt-4 :w-full :lg:max-w-md :xl:max-w-lg])
       [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) (get-in @asset [:title :th])]]
       [:div
