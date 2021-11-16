@@ -61,18 +61,19 @@
     (avartar-with-username "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg" "lisaBP")]])
 
 (defn tabs-menu []
-  [:div (tw [:grid :grid-flow-col :auto-cols-max :overflow-x-hidden :relative :mt-4 :horizontal-scrollbar])
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "เสนอราคา"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "รายละเอียด"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-   [:div (tw [:mr-6 :last:mr-0 :text-center]) "เครื่องมือ"]])
+  [:div (tw [:horizontal-scrollbar :overflow-x-hidden :relative])
+   [:div (tw [:grid :grid-flow-col :auto-cols-max :my-4 :border-b])
+    [:div (tw [:mr-6 :last:mr-0 :text-center :border-b-2 :border-red-700]) "เสนอราคา"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "รายละเอียด"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+    [:div (tw [:mr-6 :last:mr-0 :text-center]) "เครื่องมือ"]]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
