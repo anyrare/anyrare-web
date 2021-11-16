@@ -134,6 +134,10 @@ module.exports = {
         '3/4': '75%',
         65: '17rem'
       },
+      screens: {
+        '3xl': '1920px',
+        '4xl': '2048px'
+      },
       backgroundImage: () => ({
         'gradient-figma': 'linear-gradient(42.33deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 42.79%.35%)'
       }),

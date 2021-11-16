@@ -8,11 +8,14 @@
    [app.config.i18n :refer [i18n]]))
 
 (defn layout [carousel panel]
-  [:div (tw [:grid :grid-cols-12 :gap-x-2])
-   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8 :lg:col-end-9 :xl:col-end-10 :2xl:col-end-11])
+  [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
+   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8
+              :lg:col-end-8 :2xl:col-end-10 :4xl:col-end-11])
     [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
      carousel]]
-   [:div (tw [:col-start-1 :col-end-13 :md:col-start-8 :lg:col-start-9 :xl:col-start-10 :2xl:col-start-11])
+   ;; ]]
+   [:div (tw [:col-start-1 :col-end-13 :md:col-start-8 :lg:col-start-8
+              :2xl:col-start-10 :4xl:col-start-11])
     panel]])
 
 (defn image-carousel [images]
@@ -20,18 +23,49 @@
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
      (for [image images]
-       [:li {:class "splide__slide lg:rounded-lg"}
+       [:li {:class "splide__slide 2xl:rounded-xl"}
         [:img {:src image}]])]]])
 
 (defn title [text]
   [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
 
+(defn subtitle [price]
+  [:div 
+   [:span (tw [:font-kanit :font-medium]) "ราคาสูงสุด"]
+   [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text 
+               :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1]) 
+    (str price "ARA")]
+   [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]]
+  )
+
 (defn description [text showFull]
-  [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
+  [:p (tw [:py-2]) 
+   (if (true? showFull) text (subs text 0 (min (count text) 100)))])
+
+(defn avatar [src]
+  [:img
+   {:class "rounded-full object-cover w-12 h-12"
+    :src src}])
+
+(defn founder-owner [founder owner]
+  [:div (tw [:grid :grid-cols-2 :gap-x-2])
+   [:div 
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
+    [:div (tw [:flex :mt-2]) 
+     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+     [:div (tw [:font-medium :ml-2 :mt-2]) "JennieJam"]]]
+   [:div 
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
+    [:div (tw [:flex :mt-2]) 
+     (avatar "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg")
+     [:div (tw [:font-medium :ml-2 :mt-2]) "lisaBP"]]]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
    (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
+   (subtitle 12.334)
+   (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
+   (founder-owner nil nil)
    ])
 
 
