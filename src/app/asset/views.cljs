@@ -77,24 +77,60 @@
    [:div (tw [:flex])
     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
     [:div (tw [:flex :flex-col :pb-4])
-     [:div (tw [:ml-2 :mt])
+     [:div (tw [:ml-2])
       [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
       [:span (tw [:text-secondary :ml-1]) "โดย"]
       [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
       [:span (tw [:text-secondary :ml-1]) "(143)"]]
-     [:div (tw [:ml-2 :mt])
+     [:div (tw [:ml-2])
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
       [:span (tw [:text-primary :text-sm :ml-1]) "ถึงราคาขั้นต่ำแล้ว"]]]]
    [:div (tw [:flex])
     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
     [:div (tw [:flex :flex-col :pb-4])
-     [:div (tw [:ml-2 :mt])
+     [:div (tw [:ml-2])
       [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
       [:span (tw [:text-secondary :ml-1]) "โดย"]
       [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
       [:span (tw [:text-secondary :ml-1]) "(143)"]]
-     [:div (tw [:ml-2 :mt])
+     [:div (tw [:ml-2])
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
+
+(defn panel-details []
+  [:div
+   [:div (tw [:mb-2])
+    [:span (tw [:text-secondary :font-kanit :font-medium]) "รหัสสินทรัพย์"]
+    [:span (tw [:font-kanit :font-medium :ml-1]) "0x7a66ba329234"]]
+   [:div (tw [:grid :grid-cols-2 :mb-4])
+    [:div 
+     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ตรวจสอบ"]
+     (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraAuditor")]
+    [:div 
+     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้รักษาสินทรัพย์"]
+     (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraCustodian")]]
+   [:div (tw [:mb-4])
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
+    [:p "พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี"]
+    [:p "วันที่ตรวจสอบ: 12 ก.ย. 63"]
+    [:p "บัตรรับรองพระ:"
+     [:span (tw [:text-primary :font-medium :ml-1])
+      "0x06323234234bbbb"]]]
+   [:div (tw [:mb-4])
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "การเก็บรักษาสินทรัพย์"]
+    [:p "ผู้รักษาสินทรัพย์: บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"]
+    [:p "วันที่เริ่มต้นเก็บรักษา: 12 กันยายน 2563"]
+    [:p "สัญญาการเก็บรักษาสินทรัพย์:"
+     [:span (tw [:text-primary :font-medium :ml-1])
+      "0x06323234234bbbb"]]]
+   [:div (tw [:mb-4])
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-1]) "ค่าสิทธิ"]
+    [:table (tw [:table-fixed :w-full :border-collapse :border])
+     [:tr
+      [:td (tw ["w-1/2" :border :pl-4 :py-1]) "ผู้ค้นพบสินทรัพย์"]
+      [:td (tw ["w-1/2" :border :pl-4 :py-1]) "10%"]]
+     [:tr
+      [:td (tw [:border :pl-4 :py-1]) "ผู้รักษาสินทรัพย์"]
+      [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -103,7 +139,7 @@
    (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
    (founder-owner nil nil)
    (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] @(subscribe [::subs/tab-active-index]))
-   (panel-bid)])
+   (panel-details)])
 
 (defn asset []
   (layout
