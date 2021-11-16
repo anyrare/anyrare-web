@@ -60,20 +60,13 @@
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
     (avartar-with-username "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg" "lisaBP")]])
 
-(defn tabs-menu []
+(defn tabs-menu [menus active-index]
   [:div (tw [:horizontal-scrollbar :overflow-x-hidden :relative])
    [:div (tw [:grid :grid-flow-col :auto-cols-max :my-4 :border-b])
-    [:div (tw [:mr-6 :last:mr-0 :text-center :border-b-2 :border-red-700]) "เสนอราคา"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "รายละเอียด"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
-    [:div (tw [:mr-6 :last:mr-0 :text-center]) "เครื่องมือ"]]])
+    (for [index (range (count menus))]
+      [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
+                      (if (= index active-index) [:border-b-2 :border-red-700 :text-black] [:text-secondary]))) 
+       (get menus index)])]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -81,7 +74,7 @@
    (subtitle 12.334)
    (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
    (founder-owner nil nil)
-   (tabs-menu)])
+   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] 0)])
 
 (defn asset []
   (layout
