@@ -8,10 +8,9 @@
    ["@splidejs/splide" :as Splide]
    [app.config.i18n :refer [i18n]]))
 
-
 (defn image-carousel [images]
   (for [image images]
-    [:div 
+    [:div
      [:img {:src image}]]))
 
 ;; (def swipe (Swipe. (.getElementById js/document "slider")))
@@ -19,6 +18,7 @@
 
 
 ;; (set! (.. js/window -mySwipe) swipe)
+
 
 (defn description [text showFull]
   [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
