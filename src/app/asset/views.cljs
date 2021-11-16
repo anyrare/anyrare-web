@@ -66,10 +66,35 @@
    [:div (tw [:grid :grid-flow-col :auto-cols-max :my-4 :border-b])
     (for [index (range (count menus))]
       [:div {:on-click #(dispatch [:set-active-tab index])
+             :class "cursor-pointer select-none"
              :key index}
        [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
                       (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
                     (get menus index)]])]])
+
+(defn panel-bid []
+  [:div 
+   [:div (tw [:flex])
+    (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+    [:div (tw [:flex :flex-col :pb-4])
+     [:div (tw [:ml-2 :mt])
+      [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
+      [:span (tw [:text-secondary :ml-1]) "โดย"]
+      [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
+      [:span (tw [:text-secondary :ml-1]) "(143)"]]
+     [:div (tw [:ml-2 :mt])
+      [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
+      [:span (tw [:text-primary :text-sm :ml-1]) "ถึงราคาขั้นต่ำแล้ว"]]]]
+   [:div (tw [:flex])
+    (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+    [:div (tw [:flex :flex-col :pb-4])
+     [:div (tw [:ml-2 :mt])
+      [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
+      [:span (tw [:text-secondary :ml-1]) "โดย"]
+      [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
+      [:span (tw [:text-secondary :ml-1]) "(143)"]]
+     [:div (tw [:ml-2 :mt])
+      [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -77,7 +102,8 @@
    (subtitle 12.334)
    (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
    (founder-owner nil nil)
-   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] @(subscribe [::subs/tab-active-index]))])
+   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] @(subscribe [::subs/tab-active-index]))
+   (panel-bid)])
 
 (defn asset []
   (layout
