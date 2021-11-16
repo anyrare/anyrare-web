@@ -9,33 +9,23 @@
    [app.config.i18n :refer [i18n]]))
 
 (defn image-carousel [images]
-  (for [image images]
-    [:div
-     [:img {:src image}]]))
-
-;; (def swipe (Swipe. (.getElementById js/document "slider")))
-
-
-
-;; (set! (.. js/window -mySwipe) swipe)
-
+  [:div {:id "image-slider" :class "splide"}
+   [:div {:class "splide__track"}
+    [:ul {:class "splide__list"}
+     (for [image images]
+       [:li {:class "splide__slide"}
+        [:img {:src image}]])]]])
 
 (defn description [text showFull]
   [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
 
 (defn asset []
   [:div
-   [:div {:id "image-slider" :class "splide"}
-    [:div {:class "splide__track"}
-     [:ul {:class "splide__list"}
-      [:li {:class "splide__slide "}
-       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"}]]]]]])
+   (image-carousel
+    ["http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])])
 
 ;; (defn asset []
 ;;   [Carousel
