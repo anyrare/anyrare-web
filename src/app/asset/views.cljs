@@ -30,16 +30,15 @@
   [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
 
 (defn subtitle [price]
-  [:div 
+  [:div
    [:span (tw [:font-kanit :font-medium]) "ราคาสูงสุด"]
-   [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text 
-               :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1]) 
+   [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text
+               :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1])
     (str price "ARA")]
-   [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]]
-  )
+   [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]])
 
 (defn description [text showFull]
-  [:p (tw [:py-2]) 
+  [:p (tw [:py-2])
    (if (true? showFull) text (subs text 0 (min (count text) 100)))])
 
 (defn avatar [src]
@@ -47,18 +46,33 @@
    {:class "rounded-full object-cover w-12 h-12"
     :src src}])
 
+(defn avartar-with-username [src username]
+  [:div (tw [:flex])
+   (avatar src)
+   [:div (tw [:font-medium :ml-2 :mt-2]) username]])
+
 (defn founder-owner [founder owner]
-  [:div (tw [:grid :grid-cols-2 :gap-x-2])
-   [:div 
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
-    [:div (tw [:flex :mt-2]) 
-     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
-     [:div (tw [:font-medium :ml-2 :mt-2]) "JennieJam"]]]
-   [:div 
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
-    [:div (tw [:flex :mt-2]) 
-     (avatar "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg")
-     [:div (tw [:font-medium :ml-2 :mt-2]) "lisaBP"]]]])
+  [:div (tw [:grid :grid-cols-2 :gap-x-2 :mt-2])
+   [:div
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
+    (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "JammyJam")]
+   [:div
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
+    (avartar-with-username "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg" "lisaBP")]])
+
+(defn tabs-menu []
+  [:div (tw [:grid :grid-flow-col :auto-cols-max :overflow-x-hidden :relative :mt-4 :horizontal-scrollbar])
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "เสนอราคา"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "รายละเอียด"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "ประวัติ"]
+   [:div (tw [:mr-6 :last:mr-0 :text-center]) "เครื่องมือ"]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -66,7 +80,7 @@
    (subtitle 12.334)
    (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
    (founder-owner nil nil)
-   ])
+   (tabs-menu)])
 
 (defn asset []
   (layout

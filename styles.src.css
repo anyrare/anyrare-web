@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500&display=swap');
 @import "@splidejs/splide/dist/css/splide.min.css";
+@import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 @tailwind base;
 @tailwind components;
