@@ -7,6 +7,14 @@
    [app.asset.events :as events]
    [app.config.i18n :refer [i18n]]))
 
+(defn layout [carousel panel]
+  [:div (tw [:grid :grid-cols-12 :gap-x-2])
+   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8 :lg:col-end-9 :xl:col-end-10 :2xl:col-end-11])
+    [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
+     carousel]]
+   [:div (tw [:col-start-1 :col-end-13 :md:col-start-8 :lg:col-start-9 :xl:col-start-10 :2xl:col-start-11])
+    panel]])
+
 (defn image-carousel [images]
   [:div {:id "image-slider" :class "splide"}
    [:div {:class "splide__track"}
@@ -15,28 +23,28 @@
        [:li {:class "splide__slide lg:rounded-lg"}
         [:img {:src image}]])]]])
 
+(defn title [text]
+  [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
+
 (defn description [text showFull]
   [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
 
-(defn layout [carousel panel]
-  [:div (tw [:grid :grid-cols-12 :gap-x-4])
-   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8 :lg:col-end-9 :xl:col-end-10 :2xl:col-end-11])
-    [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
-     carousel]]
-   [:div (tw [])
-    panel]])
+(defn panel []
+  [:div (tw [:px-2 :mt-4 :md:mt-0])
+   (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
+   ])
 
 
    
 
 (defn asset []
-  (layout 
+  (layout
    (image-carousel
     ["http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"
      "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"
      "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"
      "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])
-   [:div "ABC"]))
+   (panel)))
 
 ;; (defn asset []
 ;;   (let [asset (subscribe [::subs/asset])]

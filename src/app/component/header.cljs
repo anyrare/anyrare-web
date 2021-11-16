@@ -6,7 +6,7 @@
 
 (defn header []
   [:div
-   (tw [:flex :h-14 :p-4 :shadow :w-full :justify-end :bg-white :fixed :z-50])
+   (tw [:flex :h-14 :p-4 :w-full :justify-end :bg-white :fixed :z-50])
    [:div
     (tw [:flex-auto :justify-items-start])
     [:span (tw [:font-bold :text-xl])
