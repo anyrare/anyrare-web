@@ -23,6 +23,7 @@
 	},
 	"dependencies": {
 		"@fullhuman/postcss-purgecss": "4.0.3",
+		"@splidejs/splide": "3.3.1",
 		"autoprefixer": "10.3.7",
 		"cssnano": "5.0.8",
 		"highlight.js": "11.1.0",
@@ -33,10 +34,10 @@
 		"tailwindcss": "2.2.15"
 	},
 	"devDependencies": {
-		"karma": "^6.3.8",
-		"karma-chrome-launcher": "^3.1.0",
-		"karma-cljs-test": "^0.1.0",
-		"karma-junit-reporter": "^2.0.1",
+		"karma": "6.3.8",
+		"karma-chrome-launcher": "3.1.0",
+		"karma-cljs-test": "0.1.0",
+		"karma-junit-reporter": "2.0.1",
 		"shadow-cljs": "2.15.2"
 	}
 }
