@@ -5,44 +5,77 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
-   ["@splidejs/splide" :as Splide]
    [app.config.i18n :refer [i18n]]))
 
+(defn layout [carousel panel]
+  [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
+   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8
+              :lg:col-end-8 :2xl:col-end-10 :4xl:col-end-11])
+    [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
+     carousel]]
+   ;; ]]
+   [:div (tw [:col-start-1 :col-end-13 :md:col-start-8 :lg:col-start-8
+              :2xl:col-start-10 :4xl:col-start-11])
+    panel]])
 
 (defn image-carousel [images]
-  (for [image images]
-    [:div 
-     [:img {:src image}]]))
+  [:div {:id "image-slider" :class "splide"}
+   [:div {:class "splide__track"}
+    [:ul {:class "splide__list"}
+     (for [image images]
+       [:li {:class "splide__slide 2xl:rounded-xl"}
+        [:img {:src image}]])]]])
 
-;; (def swipe (Swipe. (.getElementById js/document "slider")))
+(defn title [text]
+  [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
 
-
-
-;; (set! (.. js/window -mySwipe) swipe)
+(defn subtitle [price]
+  [:div 
+   [:span (tw [:font-kanit :font-medium]) "ราคาสูงสุด"]
+   [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text 
+               :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1]) 
+    (str price "ARA")]
+   [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]]
+  )
 
 (defn description [text showFull]
-  [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
+  [:p (tw [:py-2]) 
+   (if (true? showFull) text (subs text 0 (min (count text) 100)))])
+
+(defn avatar [src]
+  [:img
+   {:class "rounded-full object-cover w-12 h-12"
+    :src src}])
+
+(defn founder-owner [founder owner]
+  [:div (tw [:grid :grid-cols-2 :gap-x-2])
+   [:div 
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
+    [:div (tw [:flex :mt-2]) 
+     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+     [:div (tw [:font-medium :ml-2 :mt-2]) "JennieJam"]]]
+   [:div 
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "ผู้ค้นพบสินทรัพย์"]
+    [:div (tw [:flex :mt-2]) 
+     (avatar "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg")
+     [:div (tw [:font-medium :ml-2 :mt-2]) "lisaBP"]]]])
+
+(defn panel []
+  [:div (tw [:px-2 :mt-4 :md:mt-0])
+   (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
+   (subtitle 12.334)
+   (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
+   (founder-owner nil nil)
+   ])
 
 (defn asset []
-  [:div
-   [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]
-   [:div {:id "image-slider" :class "splide"}
-    [:div {:class "splide__track"}
-     [:ul {:class "splide__list"}
-      [:li {:class "splide__slide "}
-       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "https://www.vuescript.com/wp-content/uploads/2019/09/Vue.js-Card-Carousel-For-Web.png"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREMxb-miDguY0jOpy1kYUPDlTR6sjWFVRWF-ucdBnyBpKPrSRS3C67nFnI5A-TOtBS2pY&usqp=CAU"}]]
-      [:li {:class "splide__slide"}
-       [:img {:src "https://mediatemple.net/blog/wp-content/uploads/2016/10/chris-coyier-css-tricks-carousel_1665x705.png"}]]]]]])
-
-;; (defn asset []
-;;   [Carousel
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide1"}]
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide2"}]
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide3"}]])
+  (layout
+   (image-carousel
+    ["http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"
+     "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])
+   (panel)))
 
 ;; (defn asset []
 ;;   (let [asset (subscribe [::subs/asset])]

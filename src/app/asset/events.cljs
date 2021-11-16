@@ -5,7 +5,7 @@
    [app.asset.db :as db]))
 
 (reg-event-db
- ::add-slider
+ :initialze-view
  (fn []
-   (-> (.mount (Splide. ".splide"))
+   (-> (.mount (Splide. "#image-slider" (js-obj "cover" true "heightRatio" 1.0)))
        (as-> _ nil))))
