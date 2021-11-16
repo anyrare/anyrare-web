@@ -7,11 +7,5 @@
 (reg-event-db
  :initialze-view
  (fn []
-   (-> (.mount (Splide. ".splide"))
-       (as-> _ nil))))
-
-(reg-event-db
- ::add-slider
- (fn []
-   (-> (.mount (Splide. ".splide"))
+   (-> (.mount (Splide. ".splide" (js-obj "cover" true "heightRatio" 1.0)))
        (as-> _ nil))))

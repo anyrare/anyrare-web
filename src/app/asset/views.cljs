@@ -29,13 +29,13 @@
     [:div {:class "splide__track"}
      [:ul {:class "splide__list"}
       [:li {:class "splide__slide "}
-       [:img {:src "https://image.shutterstock.com/image-photo/closeup-three-square-instant-photo-260nw-364181222.jpg"}]]
+       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"}]]
       [:li {:class "splide__slide"}
-       [:img {:src "https://www.vuescript.com/wp-content/uploads/2019/09/Vue.js-Card-Carousel-For-Web.png"}]]
+       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"}]]
       [:li {:class "splide__slide"}
-       [:img {:src "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREMxb-miDguY0jOpy1kYUPDlTR6sjWFVRWF-ucdBnyBpKPrSRS3C67nFnI5A-TOtBS2pY&usqp=CAU"}]]
+       [:img {:src "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"}]]
       [:li {:class "splide__slide"}
-       [:img {:src "https://mediatemple.net/blog/wp-content/uploads/2016/10/chris-coyier-css-tricks-carousel_1665x705.png"}]]]]]])
+       [:img {:src "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"}]]]]]])
 
 ;; (defn asset []
 ;;   [Carousel
