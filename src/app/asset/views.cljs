@@ -5,7 +5,6 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
-   ["@splidejs/splide" :as Splide]
    [app.config.i18n :refer [i18n]]))
 
 (defn image-carousel [images]
@@ -13,25 +12,31 @@
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
      (for [image images]
-       [:li {:class "splide__slide"}
+       [:li {:class "splide__slide lg:rounded-lg"}
         [:img {:src image}]])]]])
 
 (defn description [text showFull]
   [:div (if (true? showFull) text (subs text 0 (min (count text) 100)))])
 
+(defn layout [carousel panel]
+  [:div (tw [:grid :grid-cols-12 :gap-x-4])
+   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8 :lg:col-end-9 :xl:col-end-10 :2xl:col-end-11])
+    [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
+     carousel]]
+   [:div (tw [])
+    panel]])
+
+
+   
+
 (defn asset []
-  [:div
+  (layout 
    (image-carousel
     ["http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"
      "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"
      "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"
-     "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])])
-
-;; (defn asset []
-;;   [Carousel
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide1"}]
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide2"}]
-;;    [:img {:src "https://via.placeholder.com/400/ffffff/c0392b/&text=slide3"}]])
+     "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])
+   [:div "ABC"]))
 
 ;; (defn asset []
 ;;   (let [asset (subscribe [::subs/asset])]
