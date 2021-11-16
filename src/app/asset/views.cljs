@@ -22,9 +22,10 @@
   [:div {:id "image-slider" :class "splide"}
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
-     (for [image images]
-       [:li {:class "splide__slide 2xl:rounded-xl"}
-        [:img {:src image}]])]]])
+     (for [index (range (count images))]
+       [:li {:class "splide__slide 2xl:rounded-xl"
+             :key index}
+        [:img {:src (get images index)}]])]]])
 
 (defn title [text]
   [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
@@ -64,9 +65,11 @@
   [:div (tw [:horizontal-scrollbar :overflow-x-hidden :relative])
    [:div (tw [:grid :grid-flow-col :auto-cols-max :my-4 :border-b])
     (for [index (range (count menus))]
-      [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
-                      (if (= index active-index) [:border-b-2 :border-red-700 :text-black] [:text-secondary]))) 
-       (get menus index)])]])
+      [:div {:on-click #(dispatch [:set-active-tab index])
+             :key index}
+       [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
+                      (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
+                    (get menus index)]])]])
 
 (defn panel []
   [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -74,7 +77,7 @@
    (subtitle 12.334)
    (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
    (founder-owner nil nil)
-   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] 0)])
+   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] @(subscribe [::subs/tab-active-index]))])
 
 (defn asset []
   (layout

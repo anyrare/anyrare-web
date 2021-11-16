@@ -11,3 +11,8 @@
    (-> (.mount (Splide. "#image-slider" (js-obj "cover" true "heightRatio" 1.0)))
        (as-> _ (PerfectScrollbar. ".horizontal-scrollbar"))
        (as-> _ nil))))
+
+(reg-event-db
+ :set-active-tab
+ (fn [db [_ active-tab]]
+   (assoc-in db [:asset :tab-active-index] active-tab)))
