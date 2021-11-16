@@ -68,9 +68,6 @@
    (founder-owner nil nil)
    ])
 
-
-   
-
 (defn asset []
   (layout
    (image-carousel
