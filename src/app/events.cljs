@@ -22,7 +22,8 @@
    (let [set-page (assoc db :active-page page)]
      (case page
        :home {:db set-page}
-       :asset {:db set-page}
+       :asset {:db set-page
+               :dispatch [:initialze-view]}
        :explorer {:db set-page}
        :profile {:db set-page}
        :following {:db set-page}

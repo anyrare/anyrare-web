@@ -25,7 +25,6 @@
 
 (defn asset []
   [:div
-   [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]
    [:div {:id "image-slider" :class "splide"}
     [:div {:class "splide__track"}
      [:ul {:class "splide__list"}
