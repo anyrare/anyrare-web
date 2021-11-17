@@ -208,7 +208,7 @@
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
      (panel-display active-index)
      (offer-bar-auction)
-     (popup)
+    ;;  (popup)
      ]))
 
 (defn asset []

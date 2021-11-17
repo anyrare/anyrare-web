@@ -153,7 +153,7 @@ module.exports = {
         primary: {
           DEFAULT: '#3B5B66',
           400: '#D0EBE9',
-          300: '#D0EBE9',
+          300: '#DCEBE9',
           200: '#D0EBE9',
           50: '#D0EBE9'
         },
