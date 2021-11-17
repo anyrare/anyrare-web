@@ -167,16 +167,30 @@
      (button-primary "เสนอราคา" [:w-full])]])
 
 (defn popup []
-  [:div (tw [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-80]) 
+  [:div (tw [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-90]) 
    [:div (tw [:fixed :bottom-0 :left-0 :w-screen :bg-white :pt-4 :rounded-t-xl :p-4])
     [:h2 (tw [:font-kanit :font-medium :text-xl]) "เสนอราคา"]
     [:div (tw [:mt-2])
      [:span (tw [:text-secondary]) "คุณกำลังเสนอราคารายการประมูล"]
      [:span (tw [:font-bold :ml-1]) "พระปิดตาหลวงพ่อปานวัดเครือวัลย์"]]
     [:div (tw [:font-kanit :text-sm :text-secondary :font-medium :mt-4]) "ราคาที่ต้องการเสนอ"]
-    ]
-   ]
-  )
+    [:input {:type "number" :class "border-b w-full mt-2 font-kanit font-medium p-1"}]
+    [:div (tw [:text-xs :text-secondary :mt-2]) "ราคาขั้นต่ำ 12.9584 ARA"]
+    [:table (tw [:table-fixed :w-full :text-sm :mt-2])
+     [:tr
+      [:td (tw ["w-2/3" :text-secondary]) "ยอดเงินในกระเป๋าสตางค์ของคุณ"]
+      [:td (tw [:text-right :font-kanit :font-medium]) "459.236 ARA"]]
+     [:tr
+      [:td (tw ["w-2/3" :text-secondary]) "ค่าธรรมเนียม"]
+      [:td (tw [:text-right :font-kanit :font-medium]) "0.329456 ARA"]]
+     [:tr
+      [:td (tw ["w-2/3" :text-secondary]) "ยอดชำระ"]
+      [:td (tw [:text-right :font-kanit :font-medium]) "13.329456 ARA"]]
+     [:tr
+      [:td (tw ["w-2/3" :text-secondary]) ""]
+      [:td (tw [:text-right :font-kanit :text-secondary :text-xs]) "~36,203.35 บาท"]]]
+    [:div (tw [:mt-2])
+     (button-primary "ยืนยันการเสนอราคา" [:w-full])]]])
 
 (defn panel []
   (let [active-index @(subscribe [::subs/tab-active-index])]
