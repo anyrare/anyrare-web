@@ -42,7 +42,7 @@
     :contract-address "0x3484820bcaf3234234"}
    :liked 256
    :auction
-   {:highest-price 12023569402343
+   {:highest-price 1202356940234334252
     :highest-price-denominator 100000000000000000
     :start-date 169304392
     :end-date 1702932302

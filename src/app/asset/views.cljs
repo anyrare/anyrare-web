@@ -7,7 +7,8 @@
    [app.asset.events :as events]
    [app.component.button :refer [button-primary button-outline]]
    [app.config.i18n :refer [i18n]]
-   [app.component.svg :refer [menu-burger]]))
+   [app.component.svg :refer [menu-burger]]
+   [app.lib.format :refer [format-money]]))
 
 (defn layout [carousel panel]
   [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
@@ -37,7 +38,7 @@
    [:span (tw [:font-kanit :font-medium]) "ราคาสูงสุด"]
    [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text
                :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1])
-    (str price "ARA")]
+    (str price " ARA")]
    [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]])
 
 (defn description [text showFull]
@@ -75,7 +76,7 @@
         (get menus index)]])]])
 
 (defn panel-bid [founder custodian]
-  [:div (tw [:pb-48 :md:pb-32])
+  [:div (tw [:pb-32 :md:pb-32])
    [:div (tw [:flex])
     (avatar (founder :thumbnail))
     [:div (tw [:flex :flex-col :pb-4])
@@ -98,32 +99,32 @@
      [:div (tw [:ml-2])
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
 
-(defn panel-details [asset]
-  [:div (tw [:pb-48 :md:pb-32])
+(defn panel-details [address auditor custodian]
+  [:div (tw [:pb-32 :md:pb-32])
    [:div (tw [:mb-2])
     [:span (tw [:text-secondary :font-kanit :font-medium :text-sm]) "รหัสสินทรัพย์"]
-    [:span (tw [:font-kanit :font-medium :ml-1]) (asset :address)]]
+    [:span (tw [:font-kanit :font-medium :ml-1]) address]]
    [:div (tw [:grid :grid-cols-2 :mb-4])
     [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ตรวจสอบ"]
-     (avartar-with-username (get-in asset [:auditor :thumbnail]) (get-in asset [:auditor :name]))]
+     (avartar-with-username (auditor :thumbnail) (auditor :name))]
     [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้รักษาสินทรัพย์"]
-     (avartar-with-username (get-in asset [:custodian :thumbnail]) (get-in asset [:custodian :name]))]]
+     (avartar-with-username (custodian :thumbnail) (custodian :name))]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
-    [:p "พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี"]
+    [:p (get-in auditor [:auditor-report :th])]
     [:p "วันที่ตรวจสอบ: 12 ก.ย. 63"]
     [:p "บัตรรับรองพระ:"
      [:span (tw [:text-primary :font-medium :ml-1])
-      (get-in asset [:auditor :audit-address])]]]
+      (auditor :audit-address)]]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "การเก็บรักษาสินทรัพย์"]
-    [:p "ผู้รักษาสินทรัพย์: บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"]
+    [:p (str "ผู้รักษาสินทรัพย์: " (custodian :full-name))]
     [:p "วันที่เริ่มต้นเก็บรักษา: 12 กันยายน 2563"]
     [:p "สัญญาการเก็บรักษาสินทรัพย์:"
      [:span (tw [:text-primary :font-medium :ml-1])
-      "0x06323234234bbbb"]]]
+      (custodian :contract-address)]]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-1]) "ค่าสิทธิ"]
     [:table (tw [:table-fixed :w-full :border-collapse :border])
@@ -135,7 +136,7 @@
       [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]])
 
 (defn panel-tools []
-  [:div (tw [:pb-48 :md:pb-32])
+  [:div (tw [:pb-32 :md:pb-32])
    [:div (tw [:mb-2]) (button-outline "จัดประมูล" [:w-full])]
    [:div (tw [:mb-2]) (button-outline "ตั้งราคาขาย" [:w-full])]
    [:div (tw [:mb-2]) (button-outline "สร้างชุดสะสม" [:w-full])]
@@ -145,21 +146,24 @@
 (defn panel-display [active-index asset]
   (case active-index
     0 (panel-bid (asset :founder) (asset :custodian))
-    1 (panel-details asset)
+    1 (panel-details (asset :address) (asset :auditor) (asset :custodian))
     3 (panel-tools)
-    (panel-details asset)))
+    (panel-details (asset :address) (asset :auditor) (asset :custodian))))
 
-(defn offer-bar-auction []
+(defn offer-bar-auction [auction]
   [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
              :border-t-2 :mt-36 :offer-bar])
    [:div (tw [:grid :grid-cols-2 :text-center])
     [:div (tw [:border-r])
      [:div (tw [:font-kanit :font-medium :text-xs])
       [:span (tw [:text-secondary]) "ผู้ให้ราคาสูงสุด"]
-      [:span (tw [:ml-1]) "panasun (143)"]]
+      [:span (tw [:ml-1]) (str (get-in auction [:highest-bid :name]) " (" (get-in auction [:highest-bid :total-bid]) ")")]]
      [:div (tw [:font-kanit])
       [:span (tw [:font-medium :text-lg :text-transparent :bg-clip-text
-                  :bg-gradient-to-br :from-red-400 :to-purple-800]) "12.0235 ARA"]]]
+                  :bg-gradient-to-br :from-red-400 :to-purple-800]) 
+       (str (format-money 
+                (/ (auction :highest-price) 
+                   (auction :highest-price-denominator)))) " ARA"]]]
     [:div
      [:div (tw [:font-kanit :font-medium :text-xs])
       [:span (tw [:text-secondary]) "เหลือเวลาประมูล"]]
@@ -204,12 +208,14 @@
         active-index @(subscribe [::subs/tab-active-index])]
     [:div (tw [:px-2 :mt-4 :md:mt-0])
      (title (asset :title))
-     (subtitle 12.334)
+     (subtitle (format-money 
+                (/ (get-in asset [:auction :highest-price]) 
+                   (get-in asset [:auction :highest-price-denominator]))))
      (description (asset :description) true)
      (founder-owner (asset :founder) (asset :owner))
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
      (panel-display active-index asset)
-     (offer-bar-auction)
+     (offer-bar-auction (asset :auction))
     ;;  (popup)
      ]))
 

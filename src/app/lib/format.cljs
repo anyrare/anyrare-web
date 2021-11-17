@@ -9,4 +9,4 @@
 
 (defn format-money
   [num]
-  (.format (NumberFormat. Format/DECIMAL) (gstring/format "%.2f" num)))
+  (.format (NumberFormat. Format/DECIMAL) (gstring/format "%.4f" num)))
