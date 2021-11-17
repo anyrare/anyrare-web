@@ -74,7 +74,7 @@
         (get menus index)]])]])
 
 (defn panel-bid []
-  [:div
+  [:div (tw [:pb-48 :md:pb-32])
    [:div (tw [:flex])
     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
     [:div (tw [:flex :flex-col :pb-4])
@@ -98,7 +98,7 @@
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
 
 (defn panel-details []
-  [:div
+  [:div (tw [:pb-48 :md:pb-32])
    [:div (tw [:mb-2])
     [:span (tw [:text-secondary :font-kanit :font-medium :text-sm]) "รหัสสินทรัพย์"]
     [:span (tw [:font-kanit :font-medium :ml-1]) "0x7a66ba329234"]]
@@ -134,7 +134,7 @@
       [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]])
 
 (defn panel-tools []
-  [:div
+  [:div (tw [:pb-48 :md:pb-32])
    [:div (tw [:mb-2]) (button-outline "จัดประมูล" [:w-full])]
    [:div (tw [:mb-2]) (button-outline "ตั้งราคาขาย" [:w-full])]
    [:div (tw [:mb-2]) (button-outline "สร้างชุดสะสม" [:w-full])]
@@ -151,9 +151,9 @@
 (defn offer-bar-auction []
   [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
              :border-t-2 :mt-36])
-   [:div (tw [:grid :grid-cols-1 :md:grid-cols-2 :gap-x-4 :gap-y-2 :text-center :md:text-left])
+   [:div (tw [:grid :grid-cols-1 :md:grid-cols-2 :gap-x-4 :text-center :md:text-left])
     [:div
-     [:div (tw [:font-kanit :font-medium])
+     [:div (tw [:font-kanit :font-medium :text-sm])
       [:span (tw [:text-secondary]) "ผู้ให้ราคาสูงสุด"]
       [:span (tw [:ml-2]) "panasun (143)"]]
      [:div (tw [:font-kanit]) 
