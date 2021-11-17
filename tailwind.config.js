@@ -151,11 +151,11 @@ module.exports = {
       },
       colors: {
         primary: {
-          DEFAULT: '#57838D',
-          400: '#EB202B',
-          300: '#EB202B99',
-          200: '#EB202B4D',
-          50: '#EB202B0A'
+          DEFAULT: '#3B5B66',
+          400: '#D0EBE9',
+          300: '#D0EBE9',
+          200: '#D0EBE9',
+          50: '#D0EBE9'
         },
         secondary: '#505050',
         setting: '#FCFCFE',

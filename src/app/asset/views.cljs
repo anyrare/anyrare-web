@@ -150,7 +150,7 @@
 
 (defn offer-bar-auction []
   [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
-             :border-t-2 :mt-36])
+             :border-t-2 :mt-36 :offer-bar])
    [:div (tw [:grid :grid-cols-1 :md:grid-cols-2 :gap-x-4 :text-center :md:text-left])
     [:div
      [:div (tw [:font-kanit :font-medium :text-sm])
@@ -166,6 +166,18 @@
    [:div (tw [:mt-2])
      (button-primary "เสนอราคา" [:w-full])]])
 
+(defn popup []
+  [:div (tw [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-80]) 
+   [:div (tw [:fixed :bottom-0 :left-0 :w-screen :bg-white :pt-4 :rounded-t-xl :p-4])
+    [:h2 (tw [:font-kanit :font-medium :text-xl]) "เสนอราคา"]
+    [:div (tw [:mt-2])
+     [:span (tw [:text-secondary]) "คุณกำลังเสนอราคารายการประมูล"]
+     [:span (tw [:font-bold :ml-1]) "พระปิดตาหลวงพ่อปานวัดเครือวัลย์"]]
+    [:div (tw [:font-kanit :text-sm :text-secondary :font-medium :mt-4]) "ราคาที่ต้องการเสนอ"]
+    ]
+   ]
+  )
+
 (defn panel []
   (let [active-index @(subscribe [::subs/tab-active-index])]
     [:div (tw [:px-2 :mt-4 :md:mt-0])
@@ -175,7 +187,8 @@
      (founder-owner nil nil)
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
      (panel-display active-index)
-     (offer-bar-auction)]))
+     (offer-bar-auction)
+     (popup)]))
 
 (defn asset []
   (layout

@@ -3,7 +3,7 @@
 
 (defn button-primary [text class]
   [:button
-   (tw [:bg-primary :px-6 :py-2 :rounded-full :text-white :font-bold] class)
+   (tw [:bg-primary :hover:bg-primary-200 :active:bg-primary-300 :px-6 :py-2 :rounded-full :text-white :font-medium :font-kanit] class)
    text])
 
 (defn button-outline [text class]
