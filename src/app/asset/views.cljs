@@ -20,14 +20,14 @@
               :2xl:col-start-10 :4xl:col-start-11])
     panel]])
 
-(defn image-carousel [images]
+(defn image-carousel [attachments]
   [:div {:id "image-slider" :class "splide"}
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
-     (for [index (range (count images))]
+     (for [index (range (count attachments))]
        [:li {:class "splide__slide 2xl:rounded-xl"
              :key index}
-        [:img {:src (get images index)}]])]]])
+        [:img {:src ((get attachments index) :url)}]])]]])
 
 (defn title [text]
   [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
@@ -58,10 +58,10 @@
   [:div (tw [:grid :grid-cols-2 :gap-x-2 :mt-2])
    [:div
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
-    (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "JammyJam")]
+    (avartar-with-username (founder :thumbnail) (founder :name))]
    [:div
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
-    (avartar-with-username "https://s.isanook.com/wo/0/rp/r/w728/ya0xa0m1w0/aHR0cHM6Ly9zLmlzYW5vb2suY29tL3dvLzAvdWQvMjcvMTM1NTY5L2wxLmpwZw==.jpg" "lisaBP")]])
+    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "เจ้าของปัจจุบัน"]
+    (avartar-with-username (owner :thumbnail) (owner :name))]])
 
 (defn tabs-menu [menus active-index]
   [:div (tw [:horizontal-scrollbar :overflow-x-hidden :relative])
@@ -74,10 +74,10 @@
                        (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
         (get menus index)]])]])
 
-(defn panel-bid []
+(defn panel-bid [founder custodian]
   [:div (tw [:pb-48 :md:pb-32])
    [:div (tw [:flex])
-    (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+    (avatar (founder :thumbnail))
     [:div (tw [:flex :flex-col :pb-4])
      [:div (tw [:ml-2])
       [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
@@ -88,7 +88,7 @@
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
       [:span (tw [:text-primary :text-sm :ml-1]) "ถึงราคาขั้นต่ำแล้ว"]]]]
    [:div (tw [:flex])
-    (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
+    (avatar (custodian :thumbnail))
     [:div (tw [:flex :flex-col :pb-4])
      [:div (tw [:ml-2])
       [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
@@ -98,25 +98,25 @@
      [:div (tw [:ml-2])
       [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
 
-(defn panel-details []
+(defn panel-details [asset]
   [:div (tw [:pb-48 :md:pb-32])
    [:div (tw [:mb-2])
     [:span (tw [:text-secondary :font-kanit :font-medium :text-sm]) "รหัสสินทรัพย์"]
-    [:span (tw [:font-kanit :font-medium :ml-1]) "0x7a66ba329234"]]
+    [:span (tw [:font-kanit :font-medium :ml-1]) (asset :address)]]
    [:div (tw [:grid :grid-cols-2 :mb-4])
     [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ตรวจสอบ"]
-     (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraAuditor")]
+     (avartar-with-username (get-in asset [:auditor :thumbnail]) (get-in asset [:auditor :name]))]
     [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้รักษาสินทรัพย์"]
-     (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraCustodian")]]
+     (avartar-with-username (get-in asset [:custodian :thumbnail]) (get-in asset [:custodian :name]))]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
     [:p "พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี"]
     [:p "วันที่ตรวจสอบ: 12 ก.ย. 63"]
     [:p "บัตรรับรองพระ:"
      [:span (tw [:text-primary :font-medium :ml-1])
-      "0x06323234234bbbb"]]]
+      (get-in asset [:auditor :audit-address])]]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "การเก็บรักษาสินทรัพย์"]
     [:p "ผู้รักษาสินทรัพย์: บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"]
@@ -142,12 +142,12 @@
    [:div (tw [:mb-2]) (button-outline "ถอนสินทรัพย์" [:w-full])]
    [:div (tw [:mb-2]) (button-outline "ปิดการขาย" [:w-full])]])
 
-(defn panel-display [active-index]
+(defn panel-display [active-index asset]
   (case active-index
-    0 (panel-bid)
-    1 (panel-details)
+    0 (panel-bid (asset :founder) (asset :custodian))
+    1 (panel-details asset)
     3 (panel-tools)
-    (panel-details)))
+    (panel-details asset)))
 
 (defn offer-bar-auction []
   [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
@@ -200,26 +200,24 @@
     [:div (tw [:flex-auto])]]])
 
 (defn panel []
-  (let [active-index @(subscribe [::subs/tab-active-index])]
+  (let [asset @(subscribe [::subs/asset])
+        active-index @(subscribe [::subs/tab-active-index])]
     [:div (tw [:px-2 :mt-4 :md:mt-0])
-     (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
+     (title (asset :title))
      (subtitle 12.334)
-     (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
-     (founder-owner nil nil)
+     (description (asset :description) true)
+     (founder-owner (asset :founder) (asset :owner))
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
-     (panel-display active-index)
+     (panel-display active-index asset)
      (offer-bar-auction)
     ;;  (popup)
      ]))
 
 (defn asset []
+  (let [asset @(subscribe [::subs/asset])]
   (layout
-   (image-carousel
-    ["http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"
-     "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"
-     "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"
-     "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"])
-   (panel)))
+   (image-carousel (asset :attachments))
+   (panel))))
 
 ;; (defn asset []
 ;;   (let [asset (subscribe [::subs/asset])]
