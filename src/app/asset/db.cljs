@@ -55,7 +55,7 @@
       :address "0x93240234acccc"
       :thumbnail "https://www.brighttv.co.th/wp-content/uploads/2021/07/89f81a8c5ca14803a73345e8397c21b7.jpeg"
       :total-bid 143
-      :bid-price 1203393234
+      :bid-price 1203234234243423393234
       :bid-price-denominator 100000000000000000
       :date 16049234
       :meet-minimum-price true}
@@ -63,7 +63,7 @@
       :address "0x234234234"
       :thumbnail "https://i.pinimg.com/originals/53/25/cd/5325cdb4f50eb759589aa9d7d25de4df.jpg"
       :total-bid 23
-      :bid-price 12343633
+      :bid-price 13425243422342343633
       :bid-price-denominator 100000000000000000
       :date 16043234
       :meet-minimum-price true}]}

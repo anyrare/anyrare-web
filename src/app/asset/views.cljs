@@ -75,29 +75,22 @@
                        (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
         (get menus index)]])]])
 
-(defn panel-bid [founder custodian]
+(defn panel-bid [histories]
   [:div (tw [:pb-32 :md:pb-32])
-   [:div (tw [:flex])
-    (avatar (founder :thumbnail))
-    [:div (tw [:flex :flex-col :pb-4])
-     [:div (tw [:ml-2])
-      [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
-      [:span (tw [:text-secondary :ml-1]) "โดย"]
-      [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
-      [:span (tw [:text-secondary :ml-1]) "(143)"]]
-     [:div (tw [:ml-2])
-      [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
-      [:span (tw [:text-primary :text-sm :ml-1]) "ถึงราคาขั้นต่ำแล้ว"]]]]
-   [:div (tw [:flex])
-    (avatar (custodian :thumbnail))
-    [:div (tw [:flex :flex-col :pb-4])
-     [:div (tw [:ml-2])
-      [:span (tw [:font-kanit :font-medium]) "12.0235 ARA"]
-      [:span (tw [:text-secondary :ml-1]) "โดย"]
-      [:span (tw [:font-kanit :font-medium :ml-1]) "panasun"]
-      [:span (tw [:text-secondary :ml-1]) "(143)"]]
-     [:div (tw [:ml-2])
-      [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]]]]])
+   (for [index (range (count histories))]
+     (let [data (get histories index)]
+       [:div (tw [:flex])
+        (avatar ((get histories index) :thumbnail))
+        [:div (tw [:flex :flex-col :pb-4])
+         [:div (tw [:ml-2])
+          [:span (tw [:font-kanit :font-medium]) 
+           (format-money (/ (data :bid-price) (data :bid-price-denominator))) " ARA"]
+          [:span (tw [:text-secondary :ml-1]) "โดย"]
+          [:span (tw [:font-kanit :font-medium :ml-1]) (data :name)]
+          [:span (tw [:text-secondary :ml-1]) (str "(" (data :total-bid) ")")]]
+         [:div (tw [:ml-2])
+          [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
+          [:span (tw [:text-primary :text-sm :ml-1]) (if (= 0 index) "ถึงราคาขั้นต่ำแล้ว" "")]]]]))])
 
 (defn panel-details [address auditor custodian]
   [:div (tw [:pb-32 :md:pb-32])
@@ -145,7 +138,7 @@
 
 (defn panel-display [active-index asset]
   (case active-index
-    0 (panel-bid (asset :founder) (asset :custodian))
+    0 (panel-bid (get-in asset [:auction :histories]))
     1 (panel-details (asset :address) (asset :auditor) (asset :custodian))
     3 (panel-tools)
     (panel-details (asset :address) (asset :auditor) (asset :custodian))))
