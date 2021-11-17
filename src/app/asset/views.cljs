@@ -5,6 +5,7 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
+   [app.component.button :refer [button-outline]]
    [app.config.i18n :refer [i18n]]))
 
 (defn layout [carousel panel]
@@ -69,11 +70,11 @@
              :class "cursor-pointer select-none"
              :key index}
        [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
-                      (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
-                    (get menus index)]])]])
+                       (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
+        (get menus index)]])]])
 
 (defn panel-bid []
-  [:div 
+  [:div
    [:div (tw [:flex])
     (avatar "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg")
     [:div (tw [:flex :flex-col :pb-4])
@@ -99,13 +100,13 @@
 (defn panel-details []
   [:div
    [:div (tw [:mb-2])
-    [:span (tw [:text-secondary :font-kanit :font-medium]) "รหัสสินทรัพย์"]
+    [:span (tw [:text-secondary :font-kanit :font-medium :text-sm]) "รหัสสินทรัพย์"]
     [:span (tw [:font-kanit :font-medium :ml-1]) "0x7a66ba329234"]]
    [:div (tw [:grid :grid-cols-2 :mb-4])
-    [:div 
+    [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ตรวจสอบ"]
      (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraAuditor")]
-    [:div 
+    [:div
      [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้รักษาสินทรัพย์"]
      (avartar-with-username "https://www.thebangkokinsight.com/wp-content/uploads/2020/02/batch_1-102.jpg" "GPraCustodian")]]
    [:div (tw [:mb-4])
@@ -132,14 +133,29 @@
       [:td (tw [:border :pl-4 :py-1]) "ผู้รักษาสินทรัพย์"]
       [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]])
 
+(defn panel-tools []
+  [:div
+   [:div (tw [:mb-2]) (button-outline "จัดประมูล" [:w-full])]
+   [:div (tw [:mb-2]) (button-outline "ตั้งราคาขาย" [:w-full])]
+   [:div (tw [:mb-2]) (button-outline "สร้างชุดสะสม" [:w-full])]
+   [:div (tw [:mb-2]) (button-outline "ถอนสินทรัพย์" [:w-full])]
+   [:div (tw [:mb-2]) (button-outline "ปิดการขาย" [:w-full])]])
+
+(defn panel-display [active-index]
+  (case active-index
+    0 (panel-bid)
+    1 (panel-details)
+    3 (panel-tools)))
+
 (defn panel []
-  [:div (tw [:px-2 :mt-4 :md:mt-0])
-   (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
-   (subtitle 12.334)
-   (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
-   (founder-owner nil nil)
-   (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] @(subscribe [::subs/tab-active-index]))
-   (panel-details)])
+  (let [active-index @(subscribe [::subs/tab-active-index])]
+    [:div (tw [:px-2 :mt-4 :md:mt-0])
+     (title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปี พ.ศ.2515")
+     (subtitle 12.334)
+     (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
+     (founder-owner nil nil)
+     (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
+     (panel-display active-index)]))
 
 (defn asset []
   (layout
