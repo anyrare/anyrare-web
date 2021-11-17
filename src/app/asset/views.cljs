@@ -6,7 +6,8 @@
    [app.asset.subs :as subs]
    [app.asset.events :as events]
    [app.component.button :refer [button-primary button-outline]]
-   [app.config.i18n :refer [i18n]]))
+   [app.config.i18n :refer [i18n]]
+   [app.component.svg :refer [menu-burger]]))
 
 (defn layout [carousel panel]
   [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
@@ -156,7 +157,7 @@
      [:div (tw [:font-kanit :font-medium :text-xs])
       [:span (tw [:text-secondary]) "ผู้ให้ราคาสูงสุด"]
       [:span (tw [:ml-1]) "panasun (143)"]]
-     [:div (tw [:font-kanit]) 
+     [:div (tw [:font-kanit])
       [:span (tw [:font-medium :text-lg :text-transparent :bg-clip-text
                   :bg-gradient-to-br :from-red-400 :to-purple-800]) "12.0235 ARA"]]]
     [:div
@@ -164,15 +165,15 @@
       [:span (tw [:text-secondary]) "เหลือเวลาประมูล"]]
      [:div (tw [:font-kanit :font-medium :text-sm :mt-1]) "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]]
    [:div (tw [:mt-2])
-     (button-primary "เสนอราคา" [:w-full :shadow-md])]])
+    (button-primary "เสนอราคา" [:w-full :shadow-md])]])
 
 (defn popup []
   [:div (tw [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-95])
-   [:div (tw [:fixed :right-0]) 
+   [:div (tw [:fixed :right-0])
     [:button (tw [:h-10 :w-10 :bg-gray-800 :text-white :rounded-full :m-2]) "X"]]
    [:div (tw [:flex :fixed :bottom-0 :w-screen :mx-auto :md:justify-center :md:h-screen :md:items-center])
     [:div (tw [:flex-auto])]
-    [:div (tw [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12" 
+    [:div (tw [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
                :bg-white :pt-4 :rounded-t-xl :md:rounded-xl :p-4])
      [:h2 (tw [:font-kanit :font-medium :text-xl]) "เสนอราคา"]
      [:div (tw [:mt-2])

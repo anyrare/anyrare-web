@@ -25,5 +25,5 @@
   (let [active-page @(subscribe [:active-page])]
     [:div
      [header]
-     [:div (tw [:pt-16])]
+     [:div (tw [:pt-12])]
      [pages active-page]]))

@@ -152,10 +152,15 @@ module.exports = {
       colors: {
         primary: {
           DEFAULT: '#3B5B66',
-          400: '#D0EBE9',
-          300: '#DCEBE9',
-          200: '#D0EBE9',
-          50: '#D0EBE9'
+          900: '#0B1C30',
+          800: '#12283B',
+          700: '#1D3849',
+          600: '#2B4957',
+          500: '#3B5B66',
+          400: '#6F99A3',
+          300: '#9CCBD1',
+          200: '#C7EDEF',
+          100: '#E2F7F6'
         },
         secondary: '#505050',
         setting: '#FCFCFE',
@@ -201,9 +206,6 @@ module.exports = {
           300: '#F43F55',
           200: '#FDA4AF',
           50: '#FFF1F2'
-        },
-        facebook: {
-          DEFAULT: '#395185'
         }
       }
     }
