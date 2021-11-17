@@ -5,7 +5,7 @@
    [tailwind-hiccup.core :refer [tw]]
    [app.asset.subs :as subs]
    [app.asset.events :as events]
-   [app.component.button :refer [button-outline]]
+   [app.component.button :refer [button-primary button-outline]]
    [app.config.i18n :refer [i18n]]))
 
 (defn layout [carousel panel]
@@ -145,7 +145,26 @@
   (case active-index
     0 (panel-bid)
     1 (panel-details)
-    3 (panel-tools)))
+    3 (panel-tools)
+    (panel-details)))
+
+(defn offer-bar-auction []
+  [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
+             :border-t-2 :mt-36])
+   [:div (tw [:grid :grid-cols-1 :md:grid-cols-2 :gap-x-4 :gap-y-2 :text-center :md:text-left])
+    [:div
+     [:div (tw [:font-kanit :font-medium])
+      [:span (tw [:text-secondary]) "ผู้ให้ราคาสูงสุด"]
+      [:span (tw [:ml-2]) "panasun (143)"]]
+     [:div (tw [:font-kanit]) 
+      [:span (tw [:font-medium :text-lg :text-transparent :bg-clip-text
+                  :bg-gradient-to-br :from-red-400 :to-purple-800]) "12.0235 ARA"]]]
+    [:div
+     [:div (tw [:font-kanit :font-medium :text-sm])
+      [:span (tw [:text-secondary]) "เหลือเวลาประมูล"]]
+     [:div (tw [:font-kanit :font-medium]) "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]]
+   [:div (tw [:mt-2])
+     (button-primary "เสนอราคา" [:w-full])]])
 
 (defn panel []
   (let [active-index @(subscribe [::subs/tab-active-index])]
@@ -155,7 +174,8 @@
      (description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ หลวงพ่อแก้ว วัดเครือวัลย์" true)
      (founder-owner nil nil)
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
-     (panel-display active-index)]))
+     (panel-display active-index)
+     (offer-bar-auction)]))
 
 (defn asset []
   (layout
