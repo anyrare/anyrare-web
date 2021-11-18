@@ -27,6 +27,7 @@
 		"autoprefixer": "10.3.7",
 		"cssnano": "5.0.8",
 		"highlight.js": "11.1.0",
+		"moment": "^2.29.1",
 		"perfect-scrollbar": "^1.5.3",
 		"postcss": "8.3.9",
 		"postcss-cli": "9.0.1",

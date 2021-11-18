@@ -8,7 +8,7 @@
    [app.component.button :refer [button-primary button-outline]]
    [app.config.i18n :refer [i18n]]
    [app.component.svg :refer [menu-burger]]
-   [app.lib.format :refer [format-money unix-time-to-local-string]]))
+   [app.lib.format :refer [format-money unix-timestamp-to-local-date]]))
 
 (defn layout [carousel panel]
   [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
@@ -107,8 +107,7 @@
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
     [:p (get-in auditor [:auditor-report :th])]
-    [:p "วันที่ตรวจสอบ: 12 ก.ย. 63"]
-    [:p (unix-time-to-local-string 134)]
+    [:p (str "วันที่ตรวจสอบ: " (unix-timestamp-to-local-date 1637215328))]
     [:p "บัตรรับรองพระ:"
      [:span (tw [:text-primary :font-medium :ml-1])
       (auditor :audit-address)]]]
@@ -122,12 +121,13 @@
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-1]) "ค่าสิทธิ"]
     [:table (tw [:table-fixed :w-full :border-collapse :border])
-     [:tr
-      [:td (tw ["w-1/2" :border :pl-4 :py-1]) "ผู้ค้นพบสินทรัพย์"]
-      [:td (tw ["w-1/2" :border :pl-4 :py-1]) "10%"]]
-     [:tr
-      [:td (tw [:border :pl-4 :py-1]) "ผู้รักษาสินทรัพย์"]
-      [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]])
+     [:tbody
+      [:tr
+       [:td (tw ["w-1/2" :border :pl-4 :py-1]) "ผู้ค้นพบสินทรัพย์"]
+       [:td (tw ["w-1/2" :border :pl-4 :py-1]) "10%"]]
+      [:tr
+       [:td (tw [:border :pl-4 :py-1]) "ผู้รักษาสินทรัพย์"]
+       [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]]])
 
 (defn panel-tools []
   [:div (tw [:pb-32 :md:pb-32])
