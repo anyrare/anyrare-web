@@ -8,5 +8,9 @@
    (goog.i18n.NumberFormat Format)))
 
 (defn format-money
-  [num]
-  (.format (NumberFormat. Format/DECIMAL) (gstring/format "%.4f" num)))
+  [num digit]
+  (.format (NumberFormat. Format/DECIMAL) (gstring/format (str "%." digit "f") num)))
+
+(defn unix-time-to-local-string
+  [unix-time]
+  (str 3485736776))

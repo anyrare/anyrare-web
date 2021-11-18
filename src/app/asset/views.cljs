@@ -8,7 +8,7 @@
    [app.component.button :refer [button-primary button-outline]]
    [app.config.i18n :refer [i18n]]
    [app.component.svg :refer [menu-burger]]
-   [app.lib.format :refer [format-money]]))
+   [app.lib.format :refer [format-money unix-time-to-local-string]]))
 
 (defn layout [carousel panel]
   [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
@@ -79,12 +79,12 @@
   [:div (tw [:pb-32 :md:pb-32])
    (for [index (range (count histories))]
      (let [data (get histories index)]
-       [:div (tw [:flex])
+       [:div {:class "flex" :key index}
         (avatar ((get histories index) :thumbnail))
         [:div (tw [:flex :flex-col :pb-4])
          [:div (tw [:ml-2])
-          [:span (tw [:font-kanit :font-medium]) 
-           (format-money (/ (data :bid-price) (data :bid-price-denominator))) " ARA"]
+          [:span (tw [:font-kanit :font-medium])
+           (format-money (/ (data :bid-price) (data :bid-price-denominator)) 4) " ARA"]
           [:span (tw [:text-secondary :ml-1]) "โดย"]
           [:span (tw [:font-kanit :font-medium :ml-1]) (data :name)]
           [:span (tw [:text-secondary :ml-1]) (str "(" (data :total-bid) ")")]]
@@ -108,6 +108,7 @@
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
     [:p (get-in auditor [:auditor-report :th])]
     [:p "วันที่ตรวจสอบ: 12 ก.ย. 63"]
+    [:p (unix-time-to-local-string 134)]
     [:p "บัตรรับรองพระ:"
      [:span (tw [:text-primary :font-medium :ml-1])
       (auditor :audit-address)]]]
@@ -153,10 +154,11 @@
       [:span (tw [:ml-1]) (str (get-in auction [:highest-bid :name]) " (" (get-in auction [:highest-bid :total-bid]) ")")]]
      [:div (tw [:font-kanit])
       [:span (tw [:font-medium :text-lg :text-transparent :bg-clip-text
-                  :bg-gradient-to-br :from-red-400 :to-purple-800]) 
-       (str (format-money 
-                (/ (auction :highest-price) 
-                   (auction :highest-price-denominator)))) " ARA"]]]
+                  :bg-gradient-to-br :from-red-400 :to-purple-800])
+       (str (format-money
+             (/ (auction :highest-price)
+                (auction :highest-price-denominator))
+             4)) " ARA"]]]
     [:div
      [:div (tw [:font-kanit :font-medium :text-xs])
       [:span (tw [:text-secondary]) "เหลือเวลาประมูล"]]
@@ -201,9 +203,10 @@
         active-index @(subscribe [::subs/tab-active-index])]
     [:div (tw [:px-2 :mt-4 :md:mt-0])
      (title (asset :title))
-     (subtitle (format-money 
-                (/ (get-in asset [:auction :highest-price]) 
-                   (get-in asset [:auction :highest-price-denominator]))))
+     (subtitle (format-money
+                (/ (get-in asset [:auction :highest-price])
+                   (get-in asset [:auction :highest-price-denominator]))
+                2))
      (description (asset :description) true)
      (founder-owner (asset :founder) (asset :owner))
      (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
@@ -214,88 +217,6 @@
 
 (defn asset []
   (let [asset @(subscribe [::subs/asset])]
-  (layout
-   (image-carousel (asset :attachments))
-   (panel))))
-
-;; (defn asset []
-;;   (let [asset (subscribe [::subs/asset])]
-;;     [:div (tw [:flex :px-2 :flex-wrap])
-;;      [:div (tw [:flex :flex-auto])
-;;       [:div (tw [:mx-auto :lg:max-w-lg :xl:max-full])
-;;        [:div {:id "slider" :class "swipe w-full"}
-;;         [:div {:class ["swipe-wrap w-full"]}
-;;          [:div {:class "swiper-slide w-64 bg-red-700"} "Slide 1"]
-;;          [:div {:class "swiper-slide w-64 bg-yellow-700"} "Slide 2"]
-;;          [:div {:class "swiper-slide w-64 bg-green-700"} "Slide 3"]]]
-;;        [:button {:class [:bg-primary] :on-click #(dispatch [::events/add-slider])} "Add slider"]]]
-;;      [:div (tw [:mt-4 :w-full :lg:max-w-md :xl:max-w-lg])
-;;       [:div [:h1 (tw [:text-3xl :font-kanit :font-medium]) (get-in @asset [:title :th])]]
-;;       [:div
-;;        [:span
-;;         (tw [:text-secondary :text-sm :font-kanit :font-medium])
-;;         (i18n :highest-bid)]
-;;        [:span
-;;         (tw [:text-sm :font-bold :ml-1 :text-transparent :bg-clip-text :bg-gradient-to-br :from-red-400 :to-purple-800])
-;;         "1.0391 ARA"]]
-;;       [:div
-;;        (tw [:mt-2])
-;;        (description "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง กรุวัดนางพญา พิษณุโลกผ่านพิธีกรรมปลุกเสกจากเกจิอาจารย์ชื่อดัง สุดยอดพุทธคุณที่ควรหามาบูชารุ่นนี้หายากมาก เหมาะกับการสะสมในคอลเลกชั่น..." false)]
-;;       [:div
-;;        (tw [:mt-8 :flex])
-;;        [:div (tw ["w-1/2"])
-;;         [:div (tw [:text-sm :font-bold])
-;;          [:span (tw [:font-bold]) "Founder "]
-;;          [:span (tw [:text-secondary]) " 10% royalties"]]
-;;         [:div
-;;          (tw [:flex :mt-2])
-;;          [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12"}]
-;;          [:span (tw [:font-bold :ml-3 :mt-2]) "BinBangkruai"]]]
-;;        [:div (tw ["w-1/2"])
-;;         [:div (tw [:text-sm :font-bold])
-;;          [:span "Founder"]]
-;;         [:div
-;;          (tw [:flex :mt-2])
-;;          [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12"}]
-;;          [:span (tw [:font-bold :ml-3 :mt-2]) "JKBin"]]]]
-;;       [:div
-;;        (tw [:mt-8 :font-bold])
-;;        [:span (tw [:pr-6]) "Details"]
-;;        [:span (tw [:pr-6 :text-secondary]) "Bids"]
-;;        [:span (tw [:pr-6 :text-secondary]) "History"]
-;;        [:hr (tw [:mt-2])]]
-;;       [:div (tw [:mt-4])
-;;        [:div (tw [:text-sm :font-bold :text-secondary]) "Custodian"]
-;;        [:div
-;;         (tw [:flex :mt-2])
-;;         [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12 h-12"}]
-;;         [:div
-;;          (tw [:flex :flex-col])
-;;          [:div (tw [:font-bold :ml-3 :flex-0]) "GPraCustodian"]
-;;          [:div (tw [:font-bold :ml-3 :text-sm :text-secondary :flex]) "Bangkok, TH"]]]]
-;;       [:div (tw [:mt-4 :text-sm])
-;;        [:div (tw [:font-bold :text-secondary]) "Custodian Fees"]
-;;        [:div
-;;         (tw [:mt-2])
-;;         [:p "Storage Fee: 0.102 ARA / Year"]
-;;         [:p "Due Date: 10/9/2022 2:25 PM"]]
-;;        [:div
-;;         (tw [:mt-2])
-;;         [:p "Insurance Coverage: 1.200 ARA"]
-;;         [:p "Expired Date: 10/9/2022 2:25 PM"]]]
-;;       [:div
-;;        [:div (tw [:mt-4 :text-sm :text-secondary :font-bold]) "Auditor"]
-;;        [:div (tw [:flex])
-;;         [:div (tw ["w-1/2"])
-;;          [:div
-;;           (tw [:flex :mt-2])
-;;           [:img {:src "https://cdn.iconscout.com/icon/free/png-256/avatar-373-456325.png" :class "w-12"}]
-;;           [:span (tw [:font-bold :ml-3 :mt-2]) "JKBin"]]]
-;;         [:div (tw ["w-1/2" :text-sm])
-;;          "Audited Date: 10/3/2020 1:37PM"]]]
-;;       [:div
-;;        [:div (tw [:mt-4 :text-sm :text-secondary :font-bold]) "Auditor Report"]
-;;        [:div (tw [:mt-2]) "พระนางพญา เนื้อดำ พิมพ์เข่าโค้ง มีรอยบิ่นขอบบนซ้าย มีจุดตัด ปีพ.ศ.2490 รุ่นเมตตามหานิยม จัดสร้างที่วัดนางพญา จังหวัดพิษณุโลก จำนวน 20,000องค์ ด้านหลังพิมพ์อักขระพิเศษ มีรอยนูนด้านซ้ายล่าง"]]
-;;       [:div
-;;        (tw [:mt-4])
-;;        [:hr]]]]))
+    (layout
+     (image-carousel (asset :attachments))
+     (panel))))
