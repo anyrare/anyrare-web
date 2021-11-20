@@ -2,13 +2,15 @@
 
 (def asset-db
   {:address "0x9930bbbacff0329022"
+   :tab-active-index 0
    :status "LIVE_AUCTION"
    :title "พระปิดตาหลวงพ่อปานวัดเครือวัลย์ ปีพ.ศ. 2515"
-   :description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธ<br>หลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี<br>- พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อ<br>ผงลงรักปิดทอง จ.ชลบุรี<br>- ผสมผงเก่าอิทธิเจ \"หลวงพ่อแก้ว วัดเครือวัลย์\""
+   :description "+บัตรพระแท้+พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธ หลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี ผสมผงเก่าอิทธิเจ \"หลวงพ่อแก้ว วัดเครือวัลย์\""
    :attachments
-   [{:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24631469&date=2021-10-26"}
-    {:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24631469&date=2021-10-26"}
-    {:type "IMAGE" :url "http://g-pra.com/Auctions3/get_auc3_img.php?id=16381841"}]
+   [{:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=front&id=24721270&date=2021-11-14"}
+    {:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=back&id=24721270&date=2021-11-14"}
+    {:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"}
+    {:type "IMAGE" :url "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"}]
    :founder
    {:name "panasun"
     :thumbnail "https://i.pinimg.com/originals/d3/8a/dd/d38addafcff4bee00bd99530ebc9efc5.jpg"
@@ -16,31 +18,31 @@
     :fee 10000
     :fee-denominator 100000}
    :owner
-   {:name "panasun"
-    :thumbnail "https://i.pinimg.com/originals/d3/8a/dd/d38addafcff4bee00bd99530ebc9efc5.jpg"
+   {:name "lisaBP"
+    :thumbnail "data:image/jpeg;base64,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"
     :address "0x13942305bbbc0329423aaaa"}
    :auditor
    {:name "GPraAuditor"
     :full-name "บริษัท การันตีพระ จำกัด"
-    :thumbnail "https://lh3.googleusercontent.com/proxy/BL69WMBB3PHl7ZuRMgJLO1army-fAY0Kd648xKKs1rYQSrXyKG5apM5G3dPjlyPwHxbc91QFJ8xcp74AZUALnw"
+    :thumbnail "http://www2.g-pra.com/information/showimage_front.php?table=data&No=1211"
     :address "0x1349baaaa0392032bcf99099"
     :auditor-report
     {:th "พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี"
      :en "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam feugiat nec odio ac facilisis. In malesuada, quam in maximus auctor, neque lacus cursus lorem, et tempor diam ante at dolor. Morbi nec erat sed massa imperdiet blandit"}
-    :audit-date 169303922
+    :audit-date 1537215643
     :audit-address "0x93023ca39202223455"}
    :custodian
    {:name "GPraCustodian"
     :full-name "บริษัท การันตีพระ รักษาสินทรัพย์ จำกัด"
-    :thumbnail "https://lh3.googleusercontent.com/proxy/6rtejUaqyw_SaypbJ6mm42zl5QPm7IKdiMb5dgzt8usITRXW-WrrASJVZQ8KYRsVpI0aH7LtUtKEZYmFXQq68IeNXRHOh-2nIXQMlA"
+    :thumbnail "http://www2.g-pra.com/information/showimage_back.php?table=data&No=1211"
     :address "0x9930cafb9320239caff03666"
     :fee 25000
     :fee-denominator 100000
-    :contract-date 169303922
+    :contract-date 1437215643
     :contract-address "0x3484820bcaf3234234"}
    :liked 256
    :auction
-   {:highest-price 12023569402343
+   {:highest-price 1202356940234334252
     :highest-price-denominator 100000000000000000
     :start-date 169304392
     :end-date 1702932302
@@ -53,7 +55,7 @@
       :address "0x93240234acccc"
       :thumbnail "https://www.brighttv.co.th/wp-content/uploads/2021/07/89f81a8c5ca14803a73345e8397c21b7.jpeg"
       :total-bid 143
-      :bid-price 1203393234
+      :bid-price 1203234234243423393234
       :bid-price-denominator 100000000000000000
       :date 16049234
       :meet-minimum-price true}
@@ -61,7 +63,7 @@
       :address "0x234234234"
       :thumbnail "https://i.pinimg.com/originals/53/25/cd/5325cdb4f50eb759589aa9d7d25de4df.jpg"
       :total-bid 23
-      :bid-price 12343633
+      :bid-price 13425243422342343633
       :bid-price-denominator 100000000000000000
       :date 16043234
       :meet-minimum-price true}]}

@@ -6,3 +6,8 @@
  ::asset
  (fn [db]
    (-> db (:asset))))
+
+(reg-sub
+ ::tab-active-index
+ (fn [db]
+   (get-in db [:asset :tab-active-index])))

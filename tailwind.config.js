@@ -151,11 +151,16 @@ module.exports = {
       },
       colors: {
         primary: {
-          DEFAULT: '#57838D',
-          400: '#EB202B',
-          300: '#EB202B99',
-          200: '#EB202B4D',
-          50: '#EB202B0A'
+          DEFAULT: '#3B5B66',
+          900: '#0B1C30',
+          800: '#12283B',
+          700: '#1D3849',
+          600: '#2B4957',
+          500: '#3B5B66',
+          400: '#6F99A3',
+          300: '#9CCBD1',
+          200: '#C7EDEF',
+          100: '#E2F7F6'
         },
         secondary: '#505050',
         setting: '#FCFCFE',
@@ -201,9 +206,6 @@ module.exports = {
           300: '#F43F55',
           200: '#FDA4AF',
           50: '#FFF1F2'
-        },
-        facebook: {
-          DEFAULT: '#395185'
         }
       }
     }

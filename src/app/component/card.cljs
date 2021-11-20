@@ -18,7 +18,7 @@
     (if-not (nil? highest-bid) 
       [:div (tw [:flex-auto :text-sm :justify-items-start])
        [:span (tw [:text-xs :font-bold :text-secondary]) "Higest Bid"]
-       [:span (tw [:ml-1 :text-primary :font-bold]) (str (format-money highest-bid) " ARA")]]
+       [:span (tw [:ml-1 :text-primary :font-bold]) (str (format-money highest-bid 2) " ARA")]]
       nil)
     [:button
      (tw [:w-12])
