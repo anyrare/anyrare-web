@@ -29,7 +29,7 @@
     :auditor-report
     {:th "พระปิดตาหลวงพ่อปาน วัดเครือวัลย์ พิมพ์พุทโธหลังเรียบ เนื้อผงลงรักปิดทอง จ.ชลบุรี"
      :en "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam feugiat nec odio ac facilisis. In malesuada, quam in maximus auctor, neque lacus cursus lorem, et tempor diam ante at dolor. Morbi nec erat sed massa imperdiet blandit"}
-    :audit-date 169303922
+    :audit-date 1537215643
     :audit-address "0x93023ca39202223455"}
    :custodian
    {:name "GPraCustodian"
@@ -38,7 +38,7 @@
     :address "0x9930cafb9320239caff03666"
     :fee 25000
     :fee-denominator 100000
-    :contract-date 169303922
+    :contract-date 1437215643
     :contract-address "0x3484820bcaf3234234"}
    :liked 256
    :auction

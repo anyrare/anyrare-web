@@ -107,14 +107,14 @@
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
     [:p (get-in auditor [:auditor-report :th])]
-    [:p (str "วันที่ตรวจสอบ: " (unix-timestamp-to-local-date 1637215328))]
+    [:p (str "วันที่ตรวจสอบ: " (unix-timestamp-to-local-date (auditor :audit-date)))]
     [:p "บัตรรับรองพระ:"
      [:span (tw [:text-primary :font-medium :ml-1])
       (auditor :audit-address)]]]
    [:div (tw [:mb-4])
     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "การเก็บรักษาสินทรัพย์"]
     [:p (str "ผู้รักษาสินทรัพย์: " (custodian :full-name))]
-    [:p "วันที่เริ่มต้นเก็บรักษา: 12 กันยายน 2563"]
+    [:p (str "วันที่เริ่มต้นเก็บรักษา: " (unix-timestamp-to-local-date (custodian :contract-date)))]
     [:p "สัญญาการเก็บรักษาสินทรัพย์:"
      [:span (tw [:text-primary :font-medium :ml-1])
       (custodian :contract-address)]]]
