@@ -25,9 +25,15 @@
    :current-highest-bid
    {:th "ราคาสูงสุดขณะนี้"
     :en "Current highest bid"}
+   :total-bid
+   {:th "จำนวนการเสนอราคา"
+    :en "Total bid"}
    :auction-ends-in
    {:th "เหลือเวลาประมูล"
     :en "Auction ends in"}
+   :auction-closed
+   {:th "ปิดประมูล"
+    :en "Closed"}
    :place-a-bid
    {:th "เสนอราคา"
     :en "Place a bid"}

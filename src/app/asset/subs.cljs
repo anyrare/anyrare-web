@@ -19,7 +19,7 @@
    (get-in db [:asset-page :attachments])))
 
 (reg-sub
- ::asset-auction-higest-price
+ ::asset-auction-highest-price
  (fn [db _]
    (let [highest-price (get-in db [:asset-page :auction :highest-price])
          highest-price-denominator (get-in db [:asset-page :auction :highest-price-denominator])]
