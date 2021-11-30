@@ -1,6 +1,6 @@
 (ns app.asset.views
   (:require
-   [reagent.dom :refer [render]]
+   [reagent.core :as reagent]
    [re-frame.core :refer [subscribe dispatch dispatch-sync]]
    [app.asset.events :as events]
    [app.asset.subs :as subs]
@@ -24,7 +24,7 @@
    [:p {:class [:my-2]}
     [:span {:class [:text-sm :text-base :mr-1]} (str (i18n :highest-bid) ":")]
     [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
-                    :bg-gradient-to-br :from-red-400 :to-purple-800]} 
+                    :bg-gradient-to-br :from-red-400 :to-purple-800]}
      (str (auction-info :highest-price) " " (i18n :ARA))]]
    [:p
     [:span {:class [:text-base :text-sm :mr-1]} (str (i18n :auction-ends-in) ":")]
@@ -48,73 +48,96 @@
         [:img {:src ((get attachments index) :url)}]])]]])
 
 (defn detail-panel [i18n asset-detail]
-  [:div
-   [:p {:class [:font-kanit :text-lg :mt-8 :mb-2 :font-kanit :font-medium]} (i18n :details)]
-   [:p {:class [:text-base :mt-2]} (asset-detail :description)]
-   [:p {:class [:py-2]}
-    [:span {:class [:text-base :mr-1]} (str (i18n :asset-id) ":")]
-    [:span {:class [:font-kanit :font-medium]} (asset-detail :address)]]
-   [:div {:class [:flex :mt-2]}
-    [:div {:class ["w-1/2"]}
-     [:p {:class [:text-base :text-sm :mb-2 :font-kanit]} (i18n :founder)]
-     [avatar-with-username 
-      (get-in asset-detail [:founder :thumbnail])
-      (get-in asset-detail [:founder :name])
-      (get-in asset-detail [:founder :address])]]
-    [:div {:class ["w-1/2"]}
-     [:p {:class [:text-base :text-sm :mb-2 :font-kanit]} (i18n :owner)]
-     [avatar-with-username 
-      (get-in asset-detail [:owner :thumbnail])
-      (get-in asset-detail [:owner :name])
-      (get-in asset-detail [:owner :address])]]]])
+  (let [toggle (reagent/atom true)]
+    (fn []
+      [:div
+       [:div {:class [:font-kanit :text-lg :mt-8 :mb-2 :font-kanit :font-medium]
+              :on-click #(swap! toggle not)} (i18n :details)]
+       [:hr]
+       (when @toggle
+         [:div
+          [:p {:class [:text-base :mt-2]} (asset-detail :description)]
+          [:p {:class [:py-2]}
+           [:span {:class [:text-base :mr-1]} (str (i18n :asset-id) ":")]
+           [:span {:class [:font-kanit :font-medium]} (asset-detail :address)]]
+          [:div {:class [:flex :mt-2]}
+           [:div {:class ["w-1/2"]}
+            [:p {:class [:text-base :text-sm :mb-2 :font-kanit]} (i18n :founder)]
+            [avatar-with-username
+             (get-in asset-detail [:founder :thumbnail])
+             (get-in asset-detail [:founder :name])
+             (get-in asset-detail [:founder :address])]]
+           [:div {:class ["w-1/2"]}
+            [:p {:class [:text-base :text-sm :mb-2 :font-kanit]} (i18n :owner)]
+            [avatar-with-username
+             (get-in asset-detail [:owner :thumbnail])
+             (get-in asset-detail [:owner :name])
+             (get-in asset-detail [:owner :address])]]]])])))
+
 
 (defn auditor-panel [i18n asset-auditor]
-  [:div {:class [:mt-8]}
-   [:p {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]} (i18n :audit-title)]
-   [:div
-    [:div {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :auditor)]
-    [avatar-with-username
-     (get-in asset-auditor [:auditor :thumbnail])
-     (get-in asset-auditor [:auditor :name])
-     (get-in asset-auditor [:auditor :address])]]
-   [:p {:class [:text-base :mt-2]}
-    (get-in asset-auditor [:auditor :auditor-report :th])]
-   [:p {:class [:text-base]}
-    (str (i18n :audit-date :font-kanit) ": "
-         (unix-timestamp-to-local-datetime (get-in asset-auditor [:auditor :audit-date])))]
-   [:p {:class [:text-base]}
-    (str (i18n :audit-certificate) ": ")
-    [:span {:class [:font-kanit :font-medium]} (get-in asset-auditor [:auditor :audit-address])]]])
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-4]}
+       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
+              :on-click #(swap! toggle not)} (i18n :audit-title)]
+       [:hr]
+       (when @toggle
+         [:div
+          [:div {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :auditor)]
+          [avatar-with-username
+           (get-in asset-auditor [:auditor :thumbnail])
+           (get-in asset-auditor [:auditor :name])
+           (get-in asset-auditor [:auditor :address])]
+          [:p {:class [:text-base :mt-2]}
+           (get-in asset-auditor [:auditor :auditor-report :th])]
+          [:p {:class [:text-base]}
+           (str (i18n :audit-date :font-kanit) ": "
+                (unix-timestamp-to-local-datetime (get-in asset-auditor [:auditor :audit-date])))]
+          [:p {:class [:text-base]}
+           (str (i18n :audit-certificate) ": ")
+           [:span {:class [:font-kanit :font-medium]} (get-in asset-auditor [:auditor :audit-address])]]])])))
 
 (defn custodian-panel [i18n asset-custodian]
-  [:div {:class [:mt-8]}
-   [:p {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]} (i18n :custodian-title)]
-   [:div
-    [:p {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :custodian)]
-    [avatar-with-username
-     (get-in asset-custodian [:custodian :thumbnail])
-     (get-in asset-custodian [:custodian :name])
-     (get-in asset-custodian [:custodian :address])]]
-   [:p {:class [:text-base :mt-2]}
-    (get-in asset-custodian [:custodian :custodian-report :th])]
-   [:p {:class [:text-base]}
-    (str (i18n :custodian-date) ": "
-         (unix-timestamp-to-local-datetime (get-in asset-custodian [:custodian :contract-date])))]
-   [:p {:class [:text-base]}
-    (str (i18n :custodian-contract) ": ")
-    [:span {:class [:font-kanit :font-medium]} (get-in asset-custodian [:custodian :contract-address])]]])
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-4]}
+       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
+              :on-click #(swap! toggle not)} (i18n :custodian-title)]
+       [:hr]
+       (when @toggle
+         [:div
+          [:p {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :custodian)]
+          [avatar-with-username
+           (get-in asset-custodian [:custodian :thumbnail])
+           (get-in asset-custodian [:custodian :name])
+           (get-in asset-custodian [:custodian :address])]
+          [:p {:class [:text-base :mt-2]}
+           (get-in asset-custodian [:custodian :custodian-report :th])]
+          [:p {:class [:text-base]}
+           (str (i18n :custodian-date) ": "
+                (unix-timestamp-to-local-datetime (get-in asset-custodian [:custodian :contract-date])))]
+          [:p {:class [:text-base]}
+           (str (i18n :custodian-contract) ": ")
+           [:span {:class [:font-kanit :font-medium]} (get-in asset-custodian [:custodian :contract-address])]]])])))
 
 (defn royalty-panel [i18n asset-royalty]
-  [:div {:class [:mt-8]}
-   [:p {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]} (i18n :royalty-fee)]
-   [:table {:class [:table-fixed :w-full :border-collapse :border]}
-    [:tbody
-     [:tr
-      [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :founder)]
-      [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :founder-fee)]]
-     [:tr
-      [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
-      [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-4]}
+       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
+              :on-click #(swap! toggle not)} (i18n :royalty-fee)]
+       [:hr]
+       (when @toggle
+         [:div
+          [:table {:class [:table-fixed :w-full :border-collapse :border :mt-2]}
+           [:tbody
+            [:tr
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :founder)]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :founder-fee)]]
+            [:tr
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])])))
 
 
 (defn asset []
