@@ -7,7 +7,9 @@
   [:h1 {:class [:text-2xl :font-kanit :text-black]} text])
 
 (defn subtitle-panel [auction-price]
-  [:div auction-price])
+  [:div {:class [:mb-4]}
+   [:span {:class [:text-2xl :font-kanit :font-medium]} (str auction-price " ARA")]
+   [:div {:class [:text-sm]} "ราคาประมูลสูงสุดขณะนี้"]])
 
 (defn description-panel [text]
   [:p {:class [:text-black-700]} text])

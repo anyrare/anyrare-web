@@ -16,6 +16,6 @@
 (reg-sub
  ::asset-auction-higest-price
  (fn [db _]
-   (let [higest-price (get-in db [:asset-page :auction :higest-price])
-         higest-price-denominator (get-in db [:asset-page :auction :highest-price-denominator])]
-     (format-money (/ higest-price higest-price-denominator) 4))))
+   (let [highest-price (get-in db [:asset-page :auction :highest-price])
+         highest-price-denominator (get-in db [:asset-page :auction :highest-price-denominator])]
+     (format-money (/ highest-price highest-price-denominator) 4))))

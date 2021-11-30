@@ -1,7 +1,7 @@
 (ns app.config.i18n
   (:require [app.lib.localstorage :refer [get-lang]]))
 
-(def dicts
+(defn dicts []
   {:founder
    {:th "ผู้ค้นพบสินทรัพย์"
     :en "Founder"}
@@ -126,5 +126,6 @@
    {:th "กำลังโหลด"
     :en "Loading"
    }})
-    
-(defn i18n [key] ((dicts key) (-> (get-lang) (keyword))))
+
+(defn get-dicts-by-lang [lang] 
+  (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))

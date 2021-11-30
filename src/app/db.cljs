@@ -11,8 +11,8 @@
     {:type "IMAGE" :url "http://g-pra.com/Auctions1/get_auc1_img.php?data=third&id=24721270&date=2021-11-14"}
     {:type "IMAGE" :url "http://g-pra.com/Auctions3/get_auc3_img.php?id=16443819"}]
    :auction
-   {:highest-price 1234
-    :highest-price-denominator 987
+   {:highest-price 1202356940234334252
+    :highest-price-denominator 100000000000000000
     :start-date 169304392
     :end-date 1702932302}})
 
