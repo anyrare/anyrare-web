@@ -7,7 +7,7 @@
    [app.subs :as app-subs]))
 
 (defn title-panel [text]
-  [:h1 {:class [:text-2xl :font-kanit :text-black]} text])
+  [:h1 {:class [:text-2xl :font-kanit :text-black :mt-2]} text])
 
 (defn subtitle-panel [i18n auction-price]
   [:div {:class [:mb-4]}
