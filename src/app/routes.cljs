@@ -1,18 +1,15 @@
-(ns app.router
+(ns app.routes
   (:require [bidi.bidi :as bidi]
             [pushy.core :as pushy]
-            [re-frame.core :refer [dispatch]]))
+            [re-frame.core :refer [dispatch]]
+            [app.events :as events]))
 
 (def routes
   ["/" {"" :home
-        "asset" :asset
-        "explorer" :explorer
-        "profile" :profile
-        "following" :following
-        "activity" :activity}])
+        "asset" :asset}])
 
 (def history
-  (let [dispatch #(dispatch [:set-active-page {:page (:handler %)
+  (let [dispatch #(dispatch [::events/set-active-page {:page (:handler %)
                                                :slug (get-in % [:route-params :slug])}])
         match #(bidi/match-route routes %)]
   (pushy/pushy dispatch match)))
