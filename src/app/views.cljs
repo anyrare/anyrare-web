@@ -18,5 +18,4 @@
   (let [active-page @(subscribe [::subs/active-page])]
     [:div
      [header]
-     [:div active-page]
      [pages active-page]]))

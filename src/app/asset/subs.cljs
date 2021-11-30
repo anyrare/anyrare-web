@@ -14,6 +14,11 @@
    (get-in db [:asset-page :description])))
 
 (reg-sub
+ ::asset-attachments
+ (fn [db _]
+   (get-in db [:asset-page :attachments])))
+
+(reg-sub
  ::asset-auction-higest-price
  (fn [db _]
    (let [highest-price (get-in db [:asset-page :auction :highest-price])
