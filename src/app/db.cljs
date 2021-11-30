@@ -1,4 +1,4 @@
 (ns app.db)
 
-(def default-db
+(def app-db
   {:name "re-frame"})

@@ -8,7 +8,7 @@
 (re-frame/reg-event-db
  ::initialize-db
  (fn-traced [_ _]
-   db/default-db))
+   db/app-db))
 
 (re-frame/reg-event-fx
   ::navigate
