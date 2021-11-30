@@ -17,3 +17,7 @@
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
   (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "ll")))
+
+(defn unix-timestamp-to-local-datetime
+  [unix-timestamp]
+  (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "lll")))

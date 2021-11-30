@@ -88,9 +88,27 @@
    :asset-id 
    {:th "รหัสสินทรัพย์"
     :en "Asset Id"}
+   :audit-title
+   {:th "การตรวจสอบสินทรัพย์"
+    :en "Audit"}
    :audit-details 
    {:th "รายละเอียดการตรวจสอบ"
     :en "Audit details"}
+   :audit-date
+   {:th "วันที่ตรวจสอบ"
+    :en "Audit date"}
+   :audit-certificate
+   {:th "เอกสารการตรวจสอบ"
+    :en "Certificate"}
+   :custodian-title
+   {:th "การเก็บรักษาสินทรัพย์"
+    :en "Custodian details"}
+   :custodian-date
+   {:th "วันที่เริ่มต้นเก็บรักษา"
+    :en "Contract date"}
+   :custodian-contract
+   {:th "สัญญาการเก็บรักษา"
+    :en "Contract document"}
    :royalty-fee 
    {:th "ค่าสิทธิ"
     :en "Royalty fee"}

@@ -9,9 +9,32 @@
    (get-in db [:asset-page :title])))
 
 (reg-sub
- ::asset-description
+ ::asset-detail
  (fn [db _]
-   (get-in db [:asset-page :description])))
+   {:description (get-in db [:asset-page :description])
+    :address (get-in db [:asset-page :address])
+    :owner (get-in db [:asset-page :owner])
+    :founder (get-in db [:asset-page :founder])}))
+
+(reg-sub
+ ::asset-auditor
+ (fn [db _]
+   {:auditor (get-in db [:asset-page :auditor])}))
+
+(reg-sub
+ ::asset-custodian
+ (fn [db _]
+   {:custodian (get-in db [:asset-page :custodian])}))
+
+(reg-sub
+ ::asset-royalty
+ (fn [db _]
+   {:founder-fee (format-money
+                  (/ (get-in db [:asset-page :founder :fee])
+                     (get-in db [:asset-page :founder :fee-denominator])) 4)
+    :custodian-fee (format-money
+                    (/ (get-in db [:asset-page :custodian :fee])
+                       (get-in db [:asset-page :custodian :fee-denominator])) 4)}))
 
 (reg-sub
  ::asset-attachments
@@ -24,3 +47,15 @@
    (let [highest-price (get-in db [:asset-page :auction :highest-price])
          highest-price-denominator (get-in db [:asset-page :auction :highest-price-denominator])]
      (format-money (/ highest-price highest-price-denominator) 4))))
+
+(reg-sub
+ ::asset-auction-info
+ (fn [db _]
+   (let [auction (get-in db [:asset-page :auction])
+         highest-price (auction :highest-price)
+         highest-price-denominator (auction :highest-price-denominator)]
+     {:highest-price (format-money (/ highest-price highest-price-denominator) 4)
+      :total-bid (auction :total-bid)
+      :start-date (auction :start-date)
+      :end-date (auction :end-date)
+      :highest-bidder (auction :highest-bidder)})))
