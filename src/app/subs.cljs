@@ -6,3 +6,8 @@
  ::active-page
  (fn [db _]
    (:active-page db)))
+
+(reg-sub
+ ::i18n
+ (fn [db _]
+   (:i18n db)))

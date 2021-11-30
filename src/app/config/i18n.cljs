@@ -22,6 +22,9 @@
    :highest-bid-by
    {:th "ผู้ให้ราคาสูงสุด"
     :en "Higest bid by"}
+   :current-highest-bid
+   {:th "ราคาสูงสุดขณะนี้"
+    :en "Current highest bid"}
    :auction-ends-in
    {:th "เหลือเวลาประมูล"
     :en "Auction ends in"}
@@ -126,8 +129,10 @@
     :en "Second"}
    :loading
    {:th "กำลังโหลด"
-    :en "Loading"
-   }})
+    :en "Loading"}
+   :ARA
+   {:th "ARA"
+    :en "ARA"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
