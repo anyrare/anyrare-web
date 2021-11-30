@@ -78,7 +78,7 @@
 (defn auditor-panel [i18n asset-auditor]
   (let [toggle (reagent/atom false)]
     (fn []
-      [:div {:class [:mt-4]}
+      [:div {:class [:mt-2]}
        [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
               :on-click #(swap! toggle not)} (i18n :audit-title)]
        [:hr]
@@ -101,7 +101,7 @@
 (defn custodian-panel [i18n asset-custodian]
   (let [toggle (reagent/atom false)]
     (fn []
-      [:div {:class [:mt-4]}
+      [:div {:class [:mt-2]}
        [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
               :on-click #(swap! toggle not)} (i18n :custodian-title)]
        [:hr]
@@ -124,7 +124,7 @@
 (defn royalty-panel [i18n asset-royalty]
   (let [toggle (reagent/atom false)]
     (fn []
-      [:div {:class [:mt-4]}
+      [:div {:class [:mt-2]}
        [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
               :on-click #(swap! toggle not)} (i18n :royalty-fee)]
        [:hr]
