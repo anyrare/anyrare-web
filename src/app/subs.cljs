@@ -1,18 +1,13 @@
 (ns app.subs
   (:require
-   [re-frame.core :refer [reg-sub]]))
+   [re-frame.core :as re-frame]))
 
-(reg-sub
- :active-page
- (fn [db _]
-   (:active-page db)))
-
-(reg-sub
+(re-frame/reg-sub
  ::name
  (fn [db]
    (:name db)))
 
-(reg-sub
- ::test
- (fn [db]
-   (:test db)))
+(re-frame/reg-sub
+ ::active-panel
+ (fn [db _]
+   (:active-panel db)))

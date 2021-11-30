@@ -1,29 +1,43 @@
 (ns app.views
   (:require
-   [re-frame.core :refer [subscribe]]
-   [tailwind-hiccup.core :refer [tw]]
-   [app.component.header :refer [header]]
-   [app.home.views :refer [home]]
-   [app.asset.views :refer [asset]]
-   [app.explorer.views :refer [explorer]]
-   [app.profile.views :refer [profile]]
-   [app.following.views :refer [following]]
-   [app.activity.views :refer [activity]]))
+   [re-frame.core :as re-frame]
+   [app.styles :as styles]
+   [app.events :as events]
+   [app.routes :as routes]
+   [app.subs :as subs]
+   ))
 
-(defn pages [page-name]
-  (case page-name
-    :home [home]
-    :asset [asset]
-    :explorer [explorer]
-    :profile [profile]
-    :following [following]
-    :activity [activity]
-    [home]))
 
-(defn main-app
-  []
-  (let [active-page @(subscribe [:active-page])]
+;; home
+
+(defn home-panel []
+  (let [name (re-frame/subscribe [::subs/name])]
     [:div
-     [header]
-     [:div (tw [:pt-12])]
-     [pages active-page]]))
+     [:h1
+      {:class (styles/level1)}
+      (str "Hello from " @name ". This is the Home Page.")]
+
+     [:div
+      [:a {:on-click #(re-frame/dispatch [::events/navigate :about])}
+       "go to About Page"]]
+     ]))
+
+(defmethod routes/panels :home-panel [] [home-panel])
+
+;; about
+
+(defn about-panel []
+  [:div
+   [:h1 "This is the About Page."]
+
+   [:div
+    [:a {:on-click #(re-frame/dispatch [::events/navigate :home])}
+     "go to Home Page"]]])
+
+(defmethod routes/panels :about-panel [] [about-panel])
+
+;; main
+
+(defn main-panel []
+  (let [active-panel (re-frame/subscribe [::subs/active-panel])]
+    (routes/panels @active-panel)))

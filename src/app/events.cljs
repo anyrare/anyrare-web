@@ -1,30 +1,21 @@
 (ns app.events
   (:require
-   [re-frame.core :refer [reg-event-db reg-event-fx]]
-   [app.asset.db :as asset]
-   [app.db :as db]))
+   [re-frame.core :as re-frame]
+   [app.db :as db]
+   [day8.re-frame.tracing :refer-macros [fn-traced]]
+   ))
 
-(reg-event-db
+(re-frame/reg-event-db
  ::initialize-db
- (fn [db _]
-   (-> db
-       (assoc :default db/default-db)
-       (assoc :asset asset/asset-db))))
+ (fn-traced [_ _]
+   db/default-db))
 
-(reg-event-db
- ::name-change
- (fn [db [_ new-name-value]]
-   (assoc db :name new-name-value)))
+(re-frame/reg-event-fx
+  ::navigate
+  (fn-traced [_ [_ handler]]
+   {:navigate handler}))
 
-(reg-event-fx
- :set-active-page
- (fn [{:keys [db]} [_ {:keys [page slug]}]]
-   (let [set-page (assoc db :active-page page)]
-     (case page
-       :home {:db set-page}
-       :asset {:db set-page
-               :dispatch [:initialze-view]}
-       :explorer {:db set-page}
-       :profile {:db set-page}
-       :following {:db set-page}
-       :activity {:db set-page}))))
+(re-frame/reg-event-fx
+ ::set-active-panel
+ (fn-traced [{:keys [db]} [_ active-panel]]
+   {:db (assoc db :active-panel active-panel)}))
