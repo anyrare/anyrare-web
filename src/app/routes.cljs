@@ -2,42 +2,20 @@
   (:require
    [bidi.bidi :as bidi]
    [pushy.core :as pushy]
-   [re-frame.core :as re-frame]
-   [app.events :as events]))
-
-(defmulti panels identity)
-(defmethod panels :default [] [:div "No panel found for this route."])
+   [re-frame.core :refer [dispatch]]))
 
 (def routes
-  (atom
-    ["/" {""      :home
-          "about" :about}]))
+  ["/" {"" :home
+        "asset" :asset}])
 
-(defn parse
-  [url]
-  (bidi/match-route @routes url))
+(def history
+  (let [dispatch #(dispatch [:set-active-page {:page (:handler %)
+                                               :slug (get-in % [:route-params :slug])}])
+        match #(bidi/match-route routes %)]
+  (pushy/pushy dispatch match)))
 
-(defn url-for
-  [& args]
-  (apply bidi/path-for (into [@routes] args)))
+(defn start! [] (pushy/start! history))
 
-(defn dispatch
-  [route]
-  (let [panel (keyword (str (name (:handler route)) "-panel"))]
-    (re-frame/dispatch [::events/set-active-panel panel])))
+(def url-for (partial bidi/path-for routes))
 
-(defonce history
-  (pushy/pushy dispatch parse))
-
-(defn navigate!
-  [handler]
-  (pushy/set-token! history (url-for handler)))
-
-(defn start!
-  []
-  (pushy/start! history))
-
-(re-frame/reg-fx
-  :navigate
-  (fn [handler]
-    (navigate! handler)))
+(defn set-token! [token] (pushy/set-token! history token))

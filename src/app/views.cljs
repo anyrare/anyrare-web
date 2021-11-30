@@ -1,43 +1,18 @@
 (ns app.views
   (:require
-   [re-frame.core :as re-frame]
-   [app.styles :as styles]
-   [app.events :as events]
-   [app.routes :as routes]
-   [app.subs :as subs]
-   ))
+   [re-frame.core :refer [subscribe]]
+   [app.component.header :refer [header]]
+   [app.home.views :refer [home]]
+   [app.asset.views :refer [asset]]))
 
+(defn pages [page-name]
+  (case page-name
+    :home [home]
+    :asset [asset]
+    [home]))
 
-;; home
-
-(defn home-panel []
-  (let [name (re-frame/subscribe [::subs/name])]
+(defn main-app []
+  (let [active-page @(subscribe [::active-page])]
     [:div
-     [:h1
-      {:class (styles/level1)}
-      (str "Hello from " @name ". This is the Home Page.")]
-
-     [:div
-      [:a {:on-click #(re-frame/dispatch [::events/navigate :about])}
-       "go to About Page"]]
-     ]))
-
-(defmethod routes/panels :home-panel [] [home-panel])
-
-;; about
-
-(defn about-panel []
-  [:div
-   [:h1 "This is the About Page."]
-
-   [:div
-    [:a {:on-click #(re-frame/dispatch [::events/navigate :home])}
-     "go to Home Page"]]])
-
-(defmethod routes/panels :about-panel [] [about-panel])
-
-;; main
-
-(defn main-panel []
-  (let [active-panel (re-frame/subscribe [::subs/active-panel])]
-    (routes/panels @active-panel)))
+     [header]
+     [pages active-page]]))

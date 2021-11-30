@@ -1,0 +1,17 @@
+module.exports = (ctx) => ({
+  plugins: [
+    require("autoprefixer"),
+    require("tailwindcss")("tailwind.config.js"),
+    require('postcss-import'),
+    require('postcss-url')({ url: 'copy', useHash: true }),
+    ctx.env === "production" ? require("cssnano")({ preset: "default" }) : null,
+    ctx.env === "production"
+      ? require("@fullhuman/postcss-purgecss")({
+          content: ["resources/**/*.html", "resources/**/*.js"],
+          // https://tailwindcss.com/docs/controlling-file-size#setting-up-purgecss
+          // without this we miss keeping eg. `w-1/2`
+          defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
+        })
+      : null,
+  ],
+});

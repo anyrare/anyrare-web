@@ -1,4 +1,5 @@
 (ns app.db)
 
 (def app-db
-  {:name "re-frame"})
+  {:active-page :home
+   :name "re-frame"})
