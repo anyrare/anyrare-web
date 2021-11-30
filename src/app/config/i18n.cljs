@@ -1,5 +1,7 @@
 (ns app.config.i18n
-  (:require [app.lib.localstorage :refer [get-lang]]))
+  (:require
+   [re-frame.core :refer [reg-event-db]]
+   [app.lib.localstorage :refer [get-lang]]))
 
 (defn dicts []
   {:founder

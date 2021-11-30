@@ -2,6 +2,7 @@
   (:require
    [re-frame.core :refer [reg-event-db reg-event-fx]]
    [app.db :refer [app-db]]
+   [app.config.i18n :refer [get-dicts-by-lang]]
    [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 (reg-event-db
@@ -15,3 +16,8 @@
      (case page
        :home {:db set-page}
        :asset {:db set-page}))))
+
+(reg-event-db
+ ::set-i18n
+ (fn-traced [db [_ lang]]
+            (assoc db :i18n (get-dicts-by-lang lang))))

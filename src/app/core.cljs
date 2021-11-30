@@ -17,8 +17,10 @@
   (let [root-el (.getElementById js/document "app")]
     (unmount-component-at-node root-el)
     (render [views/main-app] root-el)))
+
 (defn ^:export init []
   (routes/start!)
   (dispatch-sync [::events/initialize-db])
+  (dispatch-sync [::events/set-i18n :th])
   (dev-setup)
   (mount-root))
