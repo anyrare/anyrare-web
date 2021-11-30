@@ -4,6 +4,7 @@
    [app.component.header :refer [header]]
    [app.home.views :refer [home]]
    [app.asset.views :refer [asset]]
+   [app.styles :as styles]
    [app.subs :as subs]))
 
 (defn pages [page-name]

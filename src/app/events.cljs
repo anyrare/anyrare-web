@@ -10,9 +10,8 @@
 
 (reg-event-fx
  ::set-active-page
- (fn-traced [{:keys [db]} [_ {:keys [page slug]}]]
+ (fn-traced [{:keys [db]} [_ {:keys [page]}]]
    (let [set-page (assoc db :active-page page)]
      (case page
        :home {:db set-page}
-       :asset {:db set-page
-               :dispatch [:initialze-view]}))))
+       :asset {:db set-page}))))

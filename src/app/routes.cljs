@@ -9,8 +9,7 @@
         "asset" :asset}])
 
 (def history
-  (let [dispatch #(dispatch [::events/set-active-page {:page (:handler %)
-                                               :slug (get-in % [:route-params :slug])}])
+  (let [dispatch #(dispatch [::events/set-active-page {:page (:handler %)}])
         match #(bidi/match-route routes %)]
   (pushy/pushy dispatch match)))
 
