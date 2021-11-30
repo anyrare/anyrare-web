@@ -1,7 +1,7 @@
 (ns app.asset.views
   (:require
    [reagent.core :as reagent]
-   [re-frame.core :refer [subscribe dispatch dispatch-sync]]
+   [re-frame.core :refer [subscribe dispatch]]
    [app.asset.events :as events]
    [app.asset.subs :as subs]
    [app.subs :as app-subs]
@@ -57,7 +57,7 @@
        (when @toggle
          [:div
           [:p {:class [:text-base :mt-2]} (asset-detail :description)]
-          [:p {:class [:py-2]}
+          [:p {:class [:mt-2]}
            [:span {:class [:text-base :mr-1]} (str (i18n :asset-id) ":")]
            [:span {:class [:font-kanit :font-medium]} (asset-detail :address)]]
           [:div {:class [:flex :mt-2]}
@@ -73,7 +73,6 @@
              (get-in asset-detail [:owner :thumbnail])
              (get-in asset-detail [:owner :name])
              (get-in asset-detail [:owner :address])]]]])])))
-
 
 (defn auditor-panel [i18n asset-auditor]
   (let [toggle (reagent/atom false)]
@@ -138,7 +137,6 @@
             [:tr
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])])))
-
 
 (defn asset []
   (let [asset-title @(subscribe [::subs/asset-title])
