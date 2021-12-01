@@ -18,4 +18,5 @@
   (let [active-page @(subscribe [::subs/active-page])]
     [:div
      [header]
-     [pages active-page]]))
+     [:div {:class [:mx-auto :max-w-screen-xl]}
+      [pages active-page]]]))

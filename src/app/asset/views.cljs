@@ -49,7 +49,7 @@
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
      (for [index (range (count attachments))]
-       [:li {:class "splide__slide 2xl:rounded-xl"
+       [:li {:class "splide__slide"
              :key index}
         [:img {:src ((get attachments index) :url)}]])]]])
 
@@ -170,7 +170,8 @@
 
 (defclass image-panel-class []
   (at-media {:min-width "1024px"}
-            {:width "calc(100% - 500px)"})
+            {:width "calc(100% - 500px)"
+             :padding-right "10px"})
             {:width "100%"})
 
 (defclass side-panel-class []
