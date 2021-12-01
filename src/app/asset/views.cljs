@@ -49,13 +49,13 @@
         [:img {:src ((get attachments index) :url)}]])]]])
 
 (defn title-section-toggle [toggle title]
-  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-2] :on-click #(swap! toggle not)}
+  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1] :on-click #(swap! toggle not)}
    [:div {:class [:font-kanit :text-lg :font-kanit :font-medium :flex-grow]} title]
    [:div {:class [:text-right :flex-none]}
     (if @toggle [angle-up 24 24] [angle-down 24 24])]])
 
 (defn detail-panel [i18n asset-detail]
-  (let [toggle (reagent/atom true)]
+  (let [toggle (reagent/atom false)]
     (fn []
       [:div
        [title-section-toggle toggle (i18n :details)]

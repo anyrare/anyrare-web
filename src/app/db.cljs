@@ -16,11 +16,33 @@
     :start-date 169304392
     :end-date 1702932302
     :total-bid 43
-    :highest-bidder 
+    :highest-bidder
     {:name "JammyJam"
      :thumbnail "https://www.brighttv.co.th/wp-content/uploads/2021/07/89f81a8c5ca14803a73345e8397c21b7.jpeg"
      :address "0x9324029323432acccc"
-     :total-bid 143}}
+     :total-bid 143}
+    :bids
+    [{:price 12234
+      :price-denominator 1000
+      :name "JammyJam"
+      :thumbnail "https://www.brighttv.co.th/wp-content/uploads/2021/07/89f81a8c5ca14803a73345e8397c21b7.jpeg"
+      :address "0x92342345bbbbbb"
+      :total-bid 143
+      :date 15482934523}
+     {:price 10392
+      :price-denominator 1000
+      :name "Christy Chung"
+      :thumbnail "https://theindependent.sg/wp-content/uploads/2021/02/chung.png"
+      :address "0x832342345bbbbbb"
+      :total-bid 0
+      :date 14482934523}
+     {:price 9234
+      :price-denominator 1000
+      :name "BinBangkruai"
+      :thumbnail "https://static.wikia.nocookie.net/akb48/images/9/9b/Christy_Darashinai_Aishikata.jpg/revision/latest/scale-to-width-down/240?cb=20210807083959"
+      :address "0x92342345bbbbbb"
+      :total-bid 21
+      :date 13402934523}]}
    :founder
    {:name "panasun"
     :thumbnail "https://i.pinimg.com/originals/d3/8a/dd/d38addafcff4bee00bd99530ebc9efc5.jpg"
