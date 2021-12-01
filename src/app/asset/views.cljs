@@ -7,7 +7,9 @@
    [app.subs :as app-subs]
    [app.lib.format :refer [unix-timestamp-to-local-datetime]]
    [app.component.avatar :refer [avatar avatar-with-username]]
-   [app.component.svg :refer [angle-down angle-up]]))
+   [app.component.svg :refer [angle-down angle-up]]
+   [spade.core :refer [defclass]]
+   [garden.stylesheet :refer (at-media)]))
 
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
@@ -32,14 +34,14 @@
     [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
    [:p
     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
-    [:span {:class [:font-kanit :font-medium]} 
+    [:span {:class [:font-kanit :font-medium]}
      (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
    [:p
     [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
     [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
    [:div
-    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full 
-                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]} 
+    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
+                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]}
      (i18n :place-a-bid)]]])
 
 (defn image-slider-panel [attachments]
@@ -52,7 +54,7 @@
         [:img {:src ((get attachments index) :url)}]])]]])
 
 (defn title-section-toggle [toggle title]
-  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1] 
+  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1]
          :on-click #(swap! toggle not)}
    [:div {:class [:font-kanit :text-lg :font-kanit :font-medium :flex-grow]} title]
    [:div {:class [:text-right :flex-none]}
@@ -99,11 +101,11 @@
            (get-in asset-auditor [:auditor :auditor-report :th])]
           [:p {:class [:text-secondary]}
            (str (i18n :audit-date :font-kanit) ": "
-                (unix-timestamp-to-local-datetime 
+                (unix-timestamp-to-local-datetime
                  (get-in asset-auditor [:auditor :audit-date])))]
           [:p {:class [:text-secondary]}
            (str (i18n :audit-certificate) ": ")
-           [:span {:class [:font-kanit :font-medium]} 
+           [:span {:class [:font-kanit :font-medium]}
             (get-in asset-auditor [:auditor :audit-address])]]])])))
 
 (defn custodian-panel [i18n asset-custodian]
@@ -122,11 +124,11 @@
            (get-in asset-custodian [:custodian :custodian-report :th])]
           [:p {:class [:text-secondary]}
            (str (i18n :custodian-date) ": "
-                (unix-timestamp-to-local-datetime 
+                (unix-timestamp-to-local-datetime
                  (get-in asset-custodian [:custodian :contract-date])))]
           [:p {:class [:text-secondary]}
            (str (i18n :custodian-contract) ": ")
-           [:span {:class [:font-kanit :font-medium]} 
+           [:span {:class [:font-kanit :font-medium]}
             (get-in asset-custodian [:custodian :contract-address])]]])])))
 
 (defn royalty-panel [i18n asset-royalty]
@@ -166,6 +168,21 @@
                 [:span {:class [:text-secondary :text-sm]}
                  (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
+(defclass image-panel-class []
+  (at-media {:min-width "1024px"}
+            {:width "calc(100% - 500px)"})
+            {:width "100%"})
+
+(defclass side-panel-class []
+  (at-media {:min-width "1024px"}
+            {:width "500px"})
+            {:width "100%"})
+
+(defn layout [image-panel content-panel]
+  [:div {:class [:flex :flex-wrap]}
+   [:div {:class [(image-panel-class)]} image-panel]
+   [:div {:class [(side-panel-class)]} content-panel]])
+
 (defn asset []
   (let [asset-title @(subscribe [::subs/asset-title])
         asset-detail @(subscribe [::subs/asset-detail])
@@ -178,12 +195,13 @@
         i18n @(subscribe [::app-subs/i18n])]
     [:div
      (dispatch [::events/initialize-image-slider])
-     [image-slider-panel asset-attachments]
-     [:div {:class [:mx-2 :mb-4]}
-      [title-panel asset-title]
-      [subtitle-panel i18n asset-auction-info]
-      [bids-panel i18n asset-auction-bids]
-      [detail-panel i18n asset-detail]
-      [auditor-panel i18n asset-auditor]
-      [custodian-panel i18n asset-custodian]
-      [royalty-panel i18n asset-royalty]]]))
+     [layout      
+      [image-slider-panel asset-attachments]
+      [:div {:class [:mx-2 :mb-4]}
+       [title-panel asset-title]
+       [subtitle-panel i18n asset-auction-info]
+       [bids-panel i18n asset-auction-bids]
+       [detail-panel i18n asset-detail]
+       [auditor-panel i18n asset-auditor]
+       [custodian-panel i18n asset-custodian]
+       [royalty-panel i18n asset-royalty]]]]))
