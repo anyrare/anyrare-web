@@ -32,12 +32,15 @@
     [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
    [:p
     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
-    [:span {:class [:font-kanit :font-medium]} (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
+    [:span {:class [:font-kanit :font-medium]} 
+     (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
    [:p
     [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
     [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
    [:div
-    [:button {:class [:button :bg-primary :w-full :rounded-full :mt-4 :py-2 :text-white]} "เสนอราคา"]]])
+    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full 
+                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]} 
+     (i18n :place-a-bid)]]])
 
 (defn image-slider-panel [attachments]
   [:div {:id "image-slider" :class "splide"}
@@ -49,7 +52,8 @@
         [:img {:src ((get attachments index) :url)}]])]]])
 
 (defn title-section-toggle [toggle title]
-  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1] :on-click #(swap! toggle not)}
+  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1] 
+         :on-click #(swap! toggle not)}
    [:div {:class [:font-kanit :text-lg :font-kanit :font-medium :flex-grow]} title]
    [:div {:class [:text-right :flex-none]}
     (if @toggle [angle-up 24 24] [angle-down 24 24])]])
@@ -95,10 +99,12 @@
            (get-in asset-auditor [:auditor :auditor-report :th])]
           [:p {:class [:text-secondary]}
            (str (i18n :audit-date :font-kanit) ": "
-                (unix-timestamp-to-local-datetime (get-in asset-auditor [:auditor :audit-date])))]
+                (unix-timestamp-to-local-datetime 
+                 (get-in asset-auditor [:auditor :audit-date])))]
           [:p {:class [:text-secondary]}
            (str (i18n :audit-certificate) ": ")
-           [:span {:class [:font-kanit :font-medium]} (get-in asset-auditor [:auditor :audit-address])]]])])))
+           [:span {:class [:font-kanit :font-medium]} 
+            (get-in asset-auditor [:auditor :audit-address])]]])])))
 
 (defn custodian-panel [i18n asset-custodian]
   (let [toggle (reagent/atom false)]
@@ -116,10 +122,12 @@
            (get-in asset-custodian [:custodian :custodian-report :th])]
           [:p {:class [:text-secondary]}
            (str (i18n :custodian-date) ": "
-                (unix-timestamp-to-local-datetime (get-in asset-custodian [:custodian :contract-date])))]
+                (unix-timestamp-to-local-datetime 
+                 (get-in asset-custodian [:custodian :contract-date])))]
           [:p {:class [:text-secondary]}
            (str (i18n :custodian-contract) ": ")
-           [:span {:class [:font-kanit :font-medium]} (get-in asset-custodian [:custodian :contract-address])]]])])))
+           [:span {:class [:font-kanit :font-medium]} 
+            (get-in asset-custodian [:custodian :contract-address])]]])])))
 
 (defn royalty-panel [i18n asset-royalty]
   (let [toggle (reagent/atom false)]
@@ -171,12 +179,11 @@
     [:div
      (dispatch [::events/initialize-image-slider])
      [image-slider-panel asset-attachments]
-     [:div {:class [:mx-2]}
+     [:div {:class [:mx-2 :mb-4]}
       [title-panel asset-title]
       [subtitle-panel i18n asset-auction-info]
       [bids-panel i18n asset-auction-bids]
       [detail-panel i18n asset-detail]
       [auditor-panel i18n asset-auditor]
       [custodian-panel i18n asset-custodian]
-      [royalty-panel i18n asset-royalty]
-      [:div {:class [:mt-8]}]]]))
+      [royalty-panel i18n asset-royalty]]]))
