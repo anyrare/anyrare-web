@@ -6,7 +6,8 @@
    [app.asset.subs :as subs]
    [app.subs :as app-subs]
    [app.lib.format :refer [unix-timestamp-to-local-datetime]]
-   [app.component.avatar :refer [avatar-with-username]]))
+   [app.component.avatar :refer [avatar-with-username]]
+   [app.component.svg :refer [angle-down angle-up]]))
 
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
@@ -47,13 +48,17 @@
              :key index}
         [:img {:src ((get attachments index) :url)}]])]]])
 
+(defn title-section-toggle [toggle title]
+  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-2] :on-click #(swap! toggle not)}
+   [:div {:class [:font-kanit :text-lg :font-kanit :font-medium :flex-grow]} title]
+   [:div {:class [:text-right :flex-none]}
+    (if @toggle [angle-up 24 24] [angle-down 24 24])]])
+
 (defn detail-panel [i18n asset-detail]
   (let [toggle (reagent/atom true)]
     (fn []
       [:div
-       [:div {:class [:font-kanit :text-lg :mt-8 :mb-2 :font-kanit :font-medium]
-              :on-click #(swap! toggle not)} (i18n :details)]
-       [:hr]
+       [title-section-toggle toggle (i18n :details)]
        (when @toggle
          [:div
           [:p {:class [:text-base :mt-2]} (asset-detail :description)]
@@ -78,9 +83,7 @@
   (let [toggle (reagent/atom false)]
     (fn []
       [:div {:class [:mt-2]}
-       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
-              :on-click #(swap! toggle not)} (i18n :audit-title)]
-       [:hr]
+       [title-section-toggle toggle (i18n :audit-title)]
        (when @toggle
          [:div
           [:div {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :auditor)]
@@ -101,9 +104,7 @@
   (let [toggle (reagent/atom false)]
     (fn []
       [:div {:class [:mt-2]}
-       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
-              :on-click #(swap! toggle not)} (i18n :custodian-title)]
-       [:hr]
+       [title-section-toggle toggle (i18n :custodian-title)]
        (when @toggle
          [:div
           [:p {:class [:text-base :text-sm :my-2 :font-kanit]} (i18n :custodian)]
@@ -124,9 +125,7 @@
   (let [toggle (reagent/atom false)]
     (fn []
       [:div {:class [:mt-2]}
-       [:div {:class [:font-kanit :text-lg :mb-2 :font-kanit :font-medium]
-              :on-click #(swap! toggle not)} (i18n :royalty-fee)]
-       [:hr]
+       [title-section-toggle toggle (i18n :royalty-fee)]
        (when @toggle
          [:div
           [:table {:class [:table-fixed :w-full :border-collapse :border :mt-2]}
