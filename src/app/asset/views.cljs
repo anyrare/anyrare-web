@@ -14,7 +14,7 @@
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
 
-(defn subtitle-panel [i18n auction-info]
+(defn subtitle-panel [i18n auction-info toggle-popup-panel]
   [:div {:class [:mb-4]}
    [:div {:class [:mt-2]}
     [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
@@ -41,7 +41,8 @@
     [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
    [:div
     [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
-                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]}
+                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
+              :on-click #(reset! toggle-popup-panel true)}
      (i18n :place-a-bid)]]])
 
 (defn image-slider-panel [attachments]
@@ -172,16 +173,35 @@
   (fn []
     [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"]))
 
+(defn popup-panel [content toggle-popup-panel]
+  (when @toggle-popup-panel
+    [:div {:class [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-95]}
+
+     [:div {:class [:flex :fixed :bottom-0 :w-screen :mx-auto :md:justify-center :md:h-screen :md:items-center]}
+      [:div {:class [:flex-auto]}]
+      [:div {:class [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
+                     :bg-white :pt-4 :rounded-t-xl :md:rounded-xl :p-4]}
+       [:button {:class [:h-10 :w-10 :bg-gray-800 :active:bg-gray-500 :text-white :rounded-full :m-2
+                         :fixed :right-0 :top-0]
+                 :on-click #(reset! toggle-popup-panel false)} "X"]
+       content]
+      [:div {:class [:flex-auto]}]]]))
+
+(defn popup-auction [i18n title]
+  [:div {:class [:mt-2]}
+   [:h2 {:class [:font-kanit :font-medium :text-xl]} title]
+   [:span {:class [:text-secondary]} (i18n :you-are-about-to-place-a-bid-for)]])
+
 (defclass image-panel-class []
   (at-media {:min-width "1024px"}
             {:width "calc(100% - 500px)"
              :padding-right "16px"})
-            {:width "100%"})
+  {:width "100%"})
 
 (defclass side-panel-class []
   (at-media {:min-width "1024px"}
             {:width "500px"})
-            {:width "100%"})
+  {:width "100%"})
 
 (defn layout [image-panel content-panel]
   [:div {:class [:flex :flex-wrap]}
@@ -197,17 +217,19 @@
         asset-attachments @(subscribe [::subs/asset-attachments])
         asset-auction-info @(subscribe [::subs/asset-auction-info])
         asset-auction-bids @(subscribe [::subs/asset-auction-bids])
-        i18n @(subscribe [::app-subs/i18n])]
+        i18n @(subscribe [::app-subs/i18n])
+        toggle-popup-panel (reagent/atom false)]
     [:div
      (dispatch [::events/initialize-image-slider])
-     [layout      
+     [layout
       [image-slider-panel asset-attachments]
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
-       [subtitle-panel i18n asset-auction-info]
+       [subtitle-panel i18n asset-auction-info toggle-popup-panel]
        [bids-panel i18n asset-auction-bids]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]]]
-     [recommend-auction-panel]]))
+     [recommend-auction-panel]
+     [popup-panel (popup-auction i18n "เสนอราคา") toggle-popup-panel]]))
