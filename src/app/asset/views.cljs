@@ -168,10 +168,14 @@
                 [:span {:class [:text-secondary :text-sm]}
                  (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
+(defn recommend-auction-panel []
+  (fn []
+    [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"]))
+
 (defclass image-panel-class []
   (at-media {:min-width "1024px"}
             {:width "calc(100% - 500px)"
-             :padding-right "10px"})
+             :padding-right "16px"})
             {:width "100%"})
 
 (defclass side-panel-class []
@@ -205,4 +209,5 @@
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
-       [royalty-panel i18n asset-royalty]]]]))
+       [royalty-panel i18n asset-royalty]]]
+     [recommend-auction-panel]]))
