@@ -22,24 +22,27 @@
      :address "0x9324029323432acccc"
      :total-bid 143}
     :bids
-    [{:price 12234
+    [{:bid-id "0x9203231121"
+      :price 12234
       :price-denominator 1000
       :name "JammyJam"
       :thumbnail "https://www.brighttv.co.th/wp-content/uploads/2021/07/89f81a8c5ca14803a73345e8397c21b7.jpeg"
       :address "0x92342345bbbbbb"
       :total-bid 143
       :date 15482934523}
-     {:price 10392
+     {:bid-id "0x123"
+      :price 10392
       :price-denominator 1000
       :name "Christy Chung"
       :thumbnail "https://theindependent.sg/wp-content/uploads/2021/02/chung.png"
       :address "0x832342345bbbbbb"
       :total-bid 0
       :date 14482934523}
-     {:price 9234
+     {:bid-id "0x12393"
+      :price 9234
       :price-denominator 1000
       :name "BinBangkruai"
-      :thumbnail "https://static.wikia.nocookie.net/akb48/images/9/9b/Christy_Darashinai_Aishikata.jpg/revision/latest/scale-to-width-down/240?cb=20210807083959"
+      :thumbnail "https://www.newtv.co.th/images/content/ct_20190908113755446.jpg"
       :address "0x92342345bbbbbb"
       :total-bid 21
       :date 13402934523}]}

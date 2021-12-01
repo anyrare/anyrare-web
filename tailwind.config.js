@@ -174,7 +174,7 @@ module.exports = {
           200: '#eeeeee',
           100: '#f5f5f5',
         },
-        secondary: '##595959',
+        secondary: '##505050',
         setting: '#FCFCFE',
         grey: {
           DEFAULT: '#FCFCFE',

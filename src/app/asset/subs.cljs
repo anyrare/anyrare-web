@@ -59,3 +59,15 @@
       :start-date (auction :start-date)
       :end-date (auction :end-date)
       :highest-bidder (auction :highest-bidder)})))
+
+(reg-sub
+ ::asset-auction-bids
+ (fn [db _]
+   (let [bids (get-in db [:asset-page :auction :bids])]
+     (map (fn [r] {:bid-id (r :bid-id)
+                   :price (format-money (/ (r :price) (r :price-denominator)) 4)
+                   :name (r :name)
+                   :thumbnail (r :thumbnail)
+                   :address (r :address)
+                   :total-bid (r :total-bid)
+                   :date (r :date)}) bids))))

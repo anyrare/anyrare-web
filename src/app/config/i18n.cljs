@@ -156,7 +156,10 @@
     :en "Loading"}
    :ARA
    {:th "ARA"
-    :en "ARA"}})
+    :en "ARA"}
+   :by
+   {:th "โดย"
+    :en "by"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
