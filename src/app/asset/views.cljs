@@ -187,9 +187,9 @@
        content]
       [:div {:class [:flex-auto]}]]]))
 
-(defn popup-auction [i18n title]
+(defn popup-auction [i18n]
   [:div {:class [:mt-2]}
-   [:h2 {:class [:font-kanit :font-medium :text-xl]} title]
+   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (i18n :place-a-bid)]
    [:span {:class [:text-secondary]} (i18n :you-are-about-to-place-a-bid-for)]])
 
 (defclass image-panel-class []
@@ -232,4 +232,4 @@
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]]]
      [recommend-auction-panel]
-     [popup-panel (popup-auction i18n "เสนอราคา") toggle-popup-panel]]))
+     [popup-panel (popup-auction i18n) toggle-popup-panel]]))

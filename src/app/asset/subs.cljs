@@ -71,3 +71,7 @@
                    :address (r :address)
                    :total-bid (r :total-bid)
                    :date (r :date)}) bids))))
+
+(reg-sub
+ ::asset-auction-panel
+ (fn [db _]))
