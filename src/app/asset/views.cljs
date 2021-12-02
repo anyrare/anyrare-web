@@ -1,222 +1,235 @@
 (ns app.asset.views
   (:require
+   [reagent.core :as reagent]
    [re-frame.core :refer [subscribe dispatch]]
-   [herb.core :refer [<class]]
-   [tailwind-hiccup.core :refer [tw]]
-   [app.asset.subs :as subs]
    [app.asset.events :as events]
-   [app.component.button :refer [button-primary button-outline]]
-   [app.config.i18n :refer [i18n]]
-   [app.component.svg :refer [menu-burger]]
-   [app.lib.format :refer [format-money unix-timestamp-to-local-date]]))
+   [app.asset.subs :as subs]
+   [app.subs :as app-subs]
+   [app.lib.format :refer [unix-timestamp-to-local-datetime]]
+   [app.component.avatar :refer [avatar avatar-with-username]]
+   [app.component.svg :refer [angle-down angle-up]]
+   [spade.core :refer [defclass]]
+   [garden.stylesheet :refer (at-media)]))
 
-(defn layout [carousel panel]
-  [:div (tw [:grid :grid-cols-12 :gap-x-2 :md:gap-x-4])
-   [:div (tw [:col-start-1 :col-end-13 :md:col-end-8
-              :lg:col-end-8 :2xl:col-end-10 :4xl:col-end-11])
-    [:div (tw [:lg:max-w-2xl :xl:max-w-4xl :mx-auto])
-     carousel]]
-   ;; ]]
-   [:div (tw [:col-start-1 :col-end-13 :md:col-start-8 :lg:col-start-8
-              :2xl:col-start-10 :4xl:col-start-11])
-    panel]])
+(defn title-panel [text]
+  [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
 
-(defn image-carousel [attachments]
+(defn subtitle-panel [i18n auction-info toggle-popup-panel]
+  [:div {:class [:mb-4]}
+   [:div {:class [:mt-2]}
+    [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
+    [avatar-with-username
+     (get-in auction-info [:highest-bidder :thumbnail])
+     (str (get-in auction-info [:highest-bidder :name])
+          " ("
+          (get-in auction-info [:highest-bidder :total-bid]) ")")
+     (get-in auction-info [:highest-bidder :address])]]
+   [:p {:class [:my-2]}
+    [:span {:class [:text-secondary :mr-1]} (str (i18n :highest-bid) ":")]
+    [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
+                    :bg-gradient-to-br :from-red-400 :to-purple-800]}
+     (str (auction-info :highest-price) " " (i18n :ARA))]]
+   [:p
+    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-ends-in) ":")]
+    [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
+   [:p
+    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
+    [:span {:class [:font-kanit :font-medium]}
+     (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
+   [:p
+    [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
+    [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
+   [:div
+    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
+                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
+              :on-click #(reset! toggle-popup-panel true)}
+     (i18n :place-a-bid)]]])
+
+(defn image-slider-panel [attachments]
   [:div {:id "image-slider" :class "splide"}
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
      (for [index (range (count attachments))]
-       [:li {:class "splide__slide 2xl:rounded-xl"
+       [:li {:class "splide__slide"
              :key index}
         [:img {:src ((get attachments index) :url)}]])]]])
 
-(defn title [text]
-  [:h1 (tw [:text-2xl :font-kanit :font-medium]) text])
+(defn title-section-toggle [toggle title]
+  [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1]
+         :on-click #(swap! toggle not)}
+   [:div {:class [:font-kanit :text-lg :font-kanit :font-medium :flex-grow]} title]
+   [:div {:class [:text-right :flex-none]}
+    (if @toggle [angle-up 24 24] [angle-down 24 24])]])
 
-(defn subtitle [price]
-  [:div
-   [:span (tw [:font-kanit :font-medium]) "ราคาสูงสุด"]
-   [:span (tw [:font-kanit :font-medium :text-transparent :bg-clip-text
-               :bg-gradient-to-br :from-red-400 :to-purple-800 :ml-1])
-    (str price " ARA")]
-   [:span (tw [:text-secondary :text-sm :ml-1]) "~36,203.35 บาท"]])
+(defn detail-panel [i18n asset-detail]
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (i18n :details)]
+       (when @toggle
+         [:div
+          [:p {:class [:text-secondary :mt-2]} (asset-detail :description)]
+          [:p {:class [:mt-2]}
+           [:span {:class [:text-secondary :mr-1]} (str (i18n :asset-id) ":")]
+           [:span {:class [:font-kanit :font-medium]} (asset-detail :address)]]
+          [:div {:class [:flex :mt-2]}
+           [:div {:class ["w-1/2"]}
+            [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :founder)]
+            [avatar-with-username
+             (get-in asset-detail [:founder :thumbnail])
+             (get-in asset-detail [:founder :name])
+             (get-in asset-detail [:founder :address])]]
+           [:div {:class ["w-1/2"]}
+            [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :owner)]
+            [avatar-with-username
+             (get-in asset-detail [:owner :thumbnail])
+             (get-in asset-detail [:owner :name])
+             (get-in asset-detail [:owner :address])]]]])])))
 
-(defn description [text showFull]
-  [:p (tw [:py-2])
-   (if (true? showFull) text (subs text 0 (min (count text) 100)))])
+(defn auditor-panel [i18n asset-auditor]
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (i18n :audit-title)]
+       (when @toggle
+         [:div
+          [:div {:class [:text-secondary :text-sm :my-2 :font-kanit]} (i18n :auditor)]
+          [avatar-with-username
+           (get-in asset-auditor [:auditor :thumbnail])
+           (get-in asset-auditor [:auditor :name])
+           (get-in asset-auditor [:auditor :address])]
+          [:p {:class [:text-secondary :mt-2]}
+           (get-in asset-auditor [:auditor :auditor-report :th])]
+          [:p {:class [:text-secondary]}
+           (str (i18n :audit-date :font-kanit) ": "
+                (unix-timestamp-to-local-datetime
+                 (get-in asset-auditor [:auditor :audit-date])))]
+          [:p {:class [:text-secondary]}
+           (str (i18n :audit-certificate) ": ")
+           [:span {:class [:font-kanit :font-medium]}
+            (get-in asset-auditor [:auditor :audit-address])]]])])))
 
-(defn avatar [src]
-  [:img
-   {:class "rounded-full object-cover w-12 h-12"
-    :src src}])
+(defn custodian-panel [i18n asset-custodian]
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (i18n :custodian-title)]
+       (when @toggle
+         [:div
+          [:p {:class [:text-secondary :text-sm :my-2 :font-kanit]} (i18n :custodian)]
+          [avatar-with-username
+           (get-in asset-custodian [:custodian :thumbnail])
+           (get-in asset-custodian [:custodian :name])
+           (get-in asset-custodian [:custodian :address])]
+          [:p {:class [:text-secondary :mt-2]}
+           (get-in asset-custodian [:custodian :custodian-report :th])]
+          [:p {:class [:text-secondary]}
+           (str (i18n :custodian-date) ": "
+                (unix-timestamp-to-local-datetime
+                 (get-in asset-custodian [:custodian :contract-date])))]
+          [:p {:class [:text-secondary]}
+           (str (i18n :custodian-contract) ": ")
+           [:span {:class [:font-kanit :font-medium]}
+            (get-in asset-custodian [:custodian :contract-address])]]])])))
 
-(defn avartar-with-username [src username]
-  [:div (tw [:flex])
-   (avatar src)
-   [:div (tw [:font-medium :ml-2 :mt-2]) username]])
+(defn royalty-panel [i18n asset-royalty]
+  (let [toggle (reagent/atom false)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (i18n :royalty-fee)]
+       (when @toggle
+         [:div
+          [:table {:class [:table-fixed :w-full :border-collapse :border :mt-2]}
+           [:tbody
+            [:tr
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :founder)]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :founder-fee)]]
+            [:tr
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])])))
 
-(defn founder-owner [founder owner]
-  [:div (tw [:grid :grid-cols-2 :gap-x-2 :mt-2])
-   [:div
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ค้นพบสินทรัพย์"]
-    (avartar-with-username (founder :thumbnail) (founder :name))]
-   [:div
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "เจ้าของปัจจุบัน"]
-    (avartar-with-username (owner :thumbnail) (owner :name))]])
+(defn bids-panel [i18n asset-acution-bids]
+  (let [toggle (reagent/atom true)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (i18n :bids)]
+       (when @toggle
+         [:ul
+          (for [bid asset-acution-bids]
+            [:li {:key (bid :bid-id) :class [:py-2]}
+             [:div {:class [:flex]}
+              [:div {:class [:flex-none :mr-2]} [avatar (bid :thumbnail)]]
+              [:div {:class [:flex-grow]}
+               [:div
+                [:span {:class [:font-kanit :font-medium]} (str (bid :price) " " (i18n :ARA))]
+                [:span {:class [:text-secondary :px-1]} (i18n :by)]
+                [:span {:class [:font-kanit :font-medium]} (str (bid :name))]
+                [:span {:class [:text-secondary :text-sm :px-1]} (str "(" (bid :total-bid) ")")]]
+               [:div
+                [:span {:class [:text-secondary :text-sm]}
+                 (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
-(defn tabs-menu [menus active-index]
-  [:div (tw [:horizontal-scrollbar :overflow-x-hidden :relative])
-   [:div (tw [:grid :grid-flow-col :auto-cols-max :my-4 :border-b])
-    (for [index (range (count menus))]
-      [:div {:on-click #(dispatch [:set-active-tab index])
-             :class "cursor-pointer select-none"
-             :key index}
-       [:div (tw (into [:flex-auto :mr-6 :last:mr-0 :font-kanit :font-medium :text-center]
-                       (if (= index active-index) [:border-b-4 :border-red-700 :text-black] [:text-secondary])))
-        (get menus index)]])]])
+(defn recommend-auction-panel []
+  (fn []
+    [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"]))
 
-(defn panel-bid [histories]
-  [:div (tw [:pb-32 :md:pb-32])
-   (for [index (range (count histories))]
-     (let [data (get histories index)]
-       [:div {:class "flex" :key index}
-        (avatar ((get histories index) :thumbnail))
-        [:div (tw [:flex :flex-col :pb-4])
-         [:div (tw [:ml-2])
-          [:span (tw [:font-kanit :font-medium])
-           (format-money (/ (data :bid-price) (data :bid-price-denominator)) 4) " ARA"]
-          [:span (tw [:text-secondary :ml-1]) "โดย"]
-          [:span (tw [:font-kanit :font-medium :ml-1]) (data :name)]
-          [:span (tw [:text-secondary :ml-1]) (str "(" (data :total-bid) ")")]]
-         [:div (tw [:ml-2])
-          [:span (tw [:text-secondary :text-sm]) "06 พ.ย. 2564 - 23:17:51 น."]
-          [:span (tw [:text-primary :text-sm :ml-1]) (if (= 0 index) "ถึงราคาขั้นต่ำแล้ว" "")]]]]))])
+(defn popup-panel [content toggle-popup-panel]
+  (when @toggle-popup-panel
+    [:div {:class [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-95]}
 
-(defn panel-details [address auditor custodian]
-  [:div (tw [:pb-32 :md:pb-32])
-   [:div (tw [:mb-2])
-    [:span (tw [:text-secondary :font-kanit :font-medium :text-sm]) "รหัสสินทรัพย์"]
-    [:span (tw [:font-kanit :font-medium :ml-1]) address]]
-   [:div (tw [:grid :grid-cols-2 :mb-4])
-    [:div
-     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้ตรวจสอบ"]
-     (avartar-with-username (auditor :thumbnail) (auditor :name))]
-    [:div
-     [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-2]) "ผู้รักษาสินทรัพย์"]
-     (avartar-with-username (custodian :thumbnail) (custodian :name))]]
-   [:div (tw [:mb-4])
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "รายละเอียดการตรวจสอบ"]
-    [:p (get-in auditor [:auditor-report :th])]
-    [:p (str "วันที่ตรวจสอบ: " (unix-timestamp-to-local-date (auditor :audit-date)))]
-    [:p "บัตรรับรองพระ:"
-     [:span (tw [:text-primary :font-medium :ml-1])
-      (auditor :audit-address)]]]
-   [:div (tw [:mb-4])
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm]) "การเก็บรักษาสินทรัพย์"]
-    [:p (str "ผู้รักษาสินทรัพย์: " (custodian :full-name))]
-    [:p (str "วันที่เริ่มต้นเก็บรักษา: " (unix-timestamp-to-local-date (custodian :contract-date)))]
-    [:p "สัญญาการเก็บรักษาสินทรัพย์:"
-     [:span (tw [:text-primary :font-medium :ml-1])
-      (custodian :contract-address)]]]
-   [:div (tw [:mb-4])
-    [:div (tw [:font-kanit :font-medium :text-secondary :text-sm :mb-1]) "ค่าสิทธิ"]
-    [:table (tw [:table-fixed :w-full :border-collapse :border])
-     [:tbody
-      [:tr
-       [:td (tw ["w-1/2" :border :pl-4 :py-1]) "ผู้ค้นพบสินทรัพย์"]
-       [:td (tw ["w-1/2" :border :pl-4 :py-1]) "10%"]]
-      [:tr
-       [:td (tw [:border :pl-4 :py-1]) "ผู้รักษาสินทรัพย์"]
-       [:td (tw [:border :pl-4 :py-1]) "2.5%"]]]]]])
+     [:div {:class [:flex :fixed :bottom-0 :w-screen :mx-auto :md:justify-center :md:h-screen :md:items-center]}
+      [:div {:class [:flex-auto]}]
+      [:div {:class [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
+                     :bg-white :pt-4 :rounded-t-xl :md:rounded-xl :p-4]}
+       [:button {:class [:h-10 :w-10 :bg-gray-800 :active:bg-gray-500 :text-white :rounded-full :m-2
+                         :fixed :right-0 :top-0]
+                 :on-click #(reset! toggle-popup-panel false)} "X"]
+       content]
+      [:div {:class [:flex-auto]}]]]))
 
-(defn panel-tools []
-  [:div (tw [:pb-32 :md:pb-32])
-   [:div (tw [:mb-2]) (button-outline "จัดประมูล" [:w-full])]
-   [:div (tw [:mb-2]) (button-outline "ตั้งราคาขาย" [:w-full])]
-   [:div (tw [:mb-2]) (button-outline "สร้างชุดสะสม" [:w-full])]
-   [:div (tw [:mb-2]) (button-outline "ถอนสินทรัพย์" [:w-full])]
-   [:div (tw [:mb-2]) (button-outline "ปิดการขาย" [:w-full])]])
+(defn popup-auction [i18n]
+  [:div {:class [:mt-2]}
+   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (i18n :place-a-bid)]
+   [:span {:class [:text-secondary]} (i18n :you-are-about-to-place-a-bid-for)]])
 
-(defn panel-display [active-index asset]
-  (case active-index
-    0 (panel-bid (get-in asset [:auction :histories]))
-    1 (panel-details (asset :address) (asset :auditor) (asset :custodian))
-    3 (panel-tools)
-    (panel-details (asset :address) (asset :auditor) (asset :custodian))))
+(defclass image-panel-class []
+  (at-media {:min-width "1024px"}
+            {:width "calc(100% - 500px)"
+             :padding-right "16px"})
+  {:width "100%"})
 
-(defn offer-bar-auction [auction]
-  [:div (tw [:fixed :bg-white :bottom-0 :w-full "md:w-5/12" "2xl:w-3/12" "4xl:w-2/12" :-mx-2 :md:-ml-2 :md:pr-4 :p-2
-             :border-t-2 :mt-36 :offer-bar])
-   [:div (tw [:grid :grid-cols-2 :text-center])
-    [:div (tw [:border-r])
-     [:div (tw [:font-kanit :font-medium :text-xs])
-      [:span (tw [:text-secondary]) "ผู้ให้ราคาสูงสุด"]
-      [:span (tw [:ml-1]) (str (get-in auction [:highest-bid :name]) " (" (get-in auction [:highest-bid :total-bid]) ")")]]
-     [:div (tw [:font-kanit])
-      [:span (tw [:font-medium :text-lg :text-transparent :bg-clip-text
-                  :bg-gradient-to-br :from-red-400 :to-purple-800])
-       (str (format-money
-             (/ (auction :highest-price)
-                (auction :highest-price-denominator))
-             4)) " ARA"]]]
-    [:div
-     [:div (tw [:font-kanit :font-medium :text-xs])
-      [:span (tw [:text-secondary]) "เหลือเวลาประมูล"]]
-     [:div (tw [:font-kanit :font-medium :text-sm :mt-1]) "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]]
-   [:div (tw [:mt-2])
-    (button-primary "เสนอราคา" [:w-full :shadow-md])]])
+(defclass side-panel-class []
+  (at-media {:min-width "1024px"}
+            {:width "500px"})
+  {:width "100%"})
 
-(defn popup []
-  [:div (tw [:fixed :top-0 :left-0 :w-screen :h-screen :bg-black :z-50 :bg-opacity-95])
-   [:div (tw [:fixed :right-0])
-    [:button (tw [:h-10 :w-10 :bg-gray-800 :text-white :rounded-full :m-2]) "X"]]
-   [:div (tw [:flex :fixed :bottom-0 :w-screen :mx-auto :md:justify-center :md:h-screen :md:items-center])
-    [:div (tw [:flex-auto])]
-    [:div (tw [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
-               :bg-white :pt-4 :rounded-t-xl :md:rounded-xl :p-4])
-     [:h2 (tw [:font-kanit :font-medium :text-xl]) "เสนอราคา"]
-     [:div (tw [:mt-2])
-      [:span (tw [:text-secondary]) "คุณกำลังเสนอราคารายการประมูล"]
-      [:span (tw [:font-bold :ml-1]) "พระปิดตาหลวงพ่อปานวัดเครือวัลย์"]]
-     [:div (tw [:font-kanit :text-sm :text-secondary :font-medium :mt-4]) "ราคาที่ต้องการเสนอ"]
-     [:input {:type "number" :class "border-b w-full mt-2 font-kanit font-medium p-1"}]
-     [:div (tw [:text-xs :text-secondary :mt-2]) "ราคาขั้นต่ำ 12.9584 ARA"]
-     [:table (tw [:table-fixed :w-full :text-sm :mt-2])
-      [:tr
-       [:td (tw ["w-2/3" :text-secondary]) "ยอดเงินในกระเป๋าสตางค์ของคุณ"]
-       [:td (tw [:text-right :font-kanit :font-medium]) "459.236 ARA"]]
-      [:tr
-       [:td (tw ["w-2/3" :text-secondary]) "ค่าธรรมเนียม"]
-       [:td (tw [:text-right :font-kanit :font-medium]) "0.329456 ARA"]]
-      [:tr
-       [:td (tw ["w-2/3" :text-secondary]) "ยอดชำระ"]
-       [:td (tw [:text-right :font-kanit :font-medium]) "13.329456 ARA"]]
-      [:tr
-       [:td (tw ["w-2/3" :text-secondary]) ""]
-       [:td (tw [:text-right :font-kanit :text-secondary :text-xs]) "~36,203.35 บาท"]]]
-     [:div (tw [:mt-2])
-      (button-primary "ยืนยันการเสนอราคา" [:w-full])]]
-    [:div (tw [:flex-auto])]]])
-
-(defn panel []
-  (let [asset @(subscribe [::subs/asset])
-        active-index @(subscribe [::subs/tab-active-index])]
-    [:div (tw [:px-2 :mt-4 :md:mt-0])
-     (title (asset :title))
-     (subtitle (format-money
-                (/ (get-in asset [:auction :highest-price])
-                   (get-in asset [:auction :highest-price-denominator]))
-                2))
-     (description (asset :description) true)
-     (founder-owner (asset :founder) (asset :owner))
-     (tabs-menu ["เสนอราคา" "รายละเอียด" "ประวัติ" "เครื่องมือ"] active-index)
-     (panel-display active-index asset)
-     (offer-bar-auction (asset :auction))
-    ;;  (popup)
-     ]))
+(defn layout [image-panel content-panel]
+  [:div {:class [:flex :flex-wrap]}
+   [:div {:class [(image-panel-class)]} image-panel]
+   [:div {:class [(side-panel-class)]} content-panel]])
 
 (defn asset []
-  (let [asset @(subscribe [::subs/asset])]
-    (layout
-     (image-carousel (asset :attachments))
-     (panel))))
+  (let [asset-title @(subscribe [::subs/asset-title])
+        asset-detail @(subscribe [::subs/asset-detail])
+        asset-auditor @(subscribe [::subs/asset-auditor])
+        asset-custodian @(subscribe [::subs/asset-custodian])
+        asset-royalty @(subscribe [::subs/asset-royalty])
+        asset-attachments @(subscribe [::subs/asset-attachments])
+        asset-auction-info @(subscribe [::subs/asset-auction-info])
+        asset-auction-bids @(subscribe [::subs/asset-auction-bids])
+        i18n @(subscribe [::app-subs/i18n])
+        toggle-popup-panel (reagent/atom false)]
+    [:div
+     (dispatch [::events/initialize-image-slider])
+     [layout
+      [image-slider-panel asset-attachments]
+      [:div {:class [:mx-2 :mb-4]}
+       [title-panel asset-title]
+       [subtitle-panel i18n asset-auction-info toggle-popup-panel]
+       [bids-panel i18n asset-auction-bids]
+       [detail-panel i18n asset-detail]
+       [auditor-panel i18n asset-auditor]
+       [custodian-panel i18n asset-custodian]
+       [royalty-panel i18n asset-royalty]]]
+     [recommend-auction-panel]
+     [popup-panel (popup-auction i18n) toggle-popup-panel]]))

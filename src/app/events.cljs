@@ -1,30 +1,23 @@
 (ns app.events
   (:require
    [re-frame.core :refer [reg-event-db reg-event-fx]]
-   [app.asset.db :as asset]
-   [app.db :as db]))
+   [app.db :refer [app-db]]
+   [app.config.i18n :refer [get-dicts-by-lang]]
+   [day8.re-frame.tracing :refer-macros [fn-traced]]))
 
 (reg-event-db
  ::initialize-db
- (fn [db _]
-   (-> db
-       (assoc :default db/default-db)
-       (assoc :asset asset/asset-db))))
-
-(reg-event-db
- ::name-change
- (fn [db [_ new-name-value]]
-   (assoc db :name new-name-value)))
+ (fn-traced [db _] app-db))
 
 (reg-event-fx
- :set-active-page
- (fn [{:keys [db]} [_ {:keys [page slug]}]]
+ ::set-active-page
+ (fn-traced [{:keys [db]} [_ {:keys [page]}]]
    (let [set-page (assoc db :active-page page)]
      (case page
        :home {:db set-page}
-       :asset {:db set-page
-               :dispatch [:initialze-view]}
-       :explorer {:db set-page}
-       :profile {:db set-page}
-       :following {:db set-page}
-       :activity {:db set-page}))))
+       :asset {:db set-page}))))
+
+(reg-event-db
+ ::set-i18n
+ (fn-traced [db [_ lang]]
+            (assoc db :i18n (get-dicts-by-lang lang))))

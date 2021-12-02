@@ -1,7 +1,9 @@
 (ns app.config.i18n
-  (:require [app.lib.localstorage :refer [get-lang]]))
+  (:require
+   [re-frame.core :refer [reg-event-db]]
+   [app.lib.localstorage :refer [get-lang]]))
 
-(def dicts
+(defn dicts []
   {:founder
    {:th "ผู้ค้นพบสินทรัพย์"
     :en "Founder"}
@@ -20,9 +22,18 @@
    :highest-bid-by
    {:th "ผู้ให้ราคาสูงสุด"
     :en "Higest bid by"}
+   :current-highest-bid
+   {:th "ราคาสูงสุดขณะนี้"
+    :en "Current highest bid"}
+   :total-bid
+   {:th "จำนวนการเสนอราคา"
+    :en "Total bid"}
    :auction-ends-in
    {:th "เหลือเวลาประมูล"
     :en "Auction ends in"}
+   :auction-closed
+   {:th "ปิดประมูล"
+    :en "Closed"}
    :place-a-bid
    {:th "เสนอราคา"
     :en "Place a bid"}
@@ -77,9 +88,27 @@
    :asset-id 
    {:th "รหัสสินทรัพย์"
     :en "Asset Id"}
+   :audit-title
+   {:th "การตรวจสอบสินทรัพย์"
+    :en "Audit"}
    :audit-details 
    {:th "รายละเอียดการตรวจสอบ"
     :en "Audit details"}
+   :audit-date
+   {:th "วันที่ตรวจสอบ"
+    :en "Audit date"}
+   :audit-certificate
+   {:th "เอกสารการตรวจสอบ"
+    :en "Certificate"}
+   :custodian-title
+   {:th "การเก็บรักษาสินทรัพย์"
+    :en "Custodian details"}
+   :custodian-date
+   {:th "วันที่เริ่มต้นเก็บรักษา"
+    :en "Contract date"}
+   :custodian-contract
+   {:th "สัญญาการเก็บรักษา"
+    :en "Contract document"}
    :royalty-fee 
    {:th "ค่าสิทธิ"
     :en "Royalty fee"}
@@ -124,7 +153,13 @@
     :en "Second"}
    :loading
    {:th "กำลังโหลด"
-    :en "Loading"
-   }})
-    
-(defn i18n [key] ((dicts key) (-> (get-lang) (keyword))))
+    :en "Loading"}
+   :ARA
+   {:th "ARA"
+    :en "ARA"}
+   :by
+   {:th "โดย"
+    :en "by"}})
+
+(defn get-dicts-by-lang [lang] 
+  (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))

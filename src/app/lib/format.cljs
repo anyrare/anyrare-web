@@ -11,8 +11,13 @@
 
 (defn format-money
   [num digit]
-  (.format (NumberFormat. Format/DECIMAL) (gstring/format (str "%." digit "f") num)))
+  ;; TODO: Add comma formatter
+  (-> (gstring/format (str "%." digit "f") num)))
 
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
   (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "ll")))
+
+(defn unix-timestamp-to-local-datetime
+  [unix-timestamp]
+  (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "lll")))

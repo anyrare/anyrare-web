@@ -2,8 +2,7 @@
   (:require
    [reagent.dom :refer [render unmount-component-at-node]]
    [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
-   [re-graph.core :as re-graph]
-   [app.router :as router]
+   [app.routes :as routes]
    [app.events :as events]
    [app.views :as views]
    [app.config :as config]
@@ -19,16 +18,9 @@
     (unmount-component-at-node root-el)
     (render [views/main-app] root-el)))
 
-(defn init-gql []
-  (dispatch-sync [::re-graph/init  
-    {:ws {:url "ws://localhost:8080/graphql"
-          :supported-operations #{:subscribe}}
-     :http {:url "http://localhost:8080"}}                             
-  ]))
-
 (defn ^:export init []
-  (router/start!)
+  (routes/start!)
   (dispatch-sync [::events/initialize-db])
-  (init-gql)
+  (dispatch-sync [::events/set-i18n :th])
   (dev-setup)
   (mount-root))
