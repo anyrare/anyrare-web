@@ -7,9 +7,7 @@ module.exports = (ctx) => ({
     ctx.env === "production" ? require("cssnano")({ preset: "default" }) : null,
     ctx.env === "production"
       ? require("@fullhuman/postcss-purgecss")({
-          content: ["resources/**/*.html", "resources/**/*.js"],
-          // https://tailwindcss.com/docs/controlling-file-size#setting-up-purgecss
-          // without this we miss keeping eg. `w-1/2`
+        content: ["resources/**/*.html", "resources/**/*.js"],
           defaultExtractor: (content) => content.match(/[\w-/:]+(?<!:)/g) || [],
         })
       : null,
