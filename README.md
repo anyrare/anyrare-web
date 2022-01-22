@@ -95,8 +95,8 @@ Start a temporary local web server, build the app with the `dev` profile, and se
 browser test runner and karma test runner with hot reload:
 
 ```sh
-npm install
-npx shadow-cljs watch app
+yarn install
+yarn run dev
 ```
 
 Please be patient; it may take over 20 seconds to see any output, and over 40 seconds to complete.
@@ -180,8 +180,8 @@ Use `debug?` for logging or other tasks that should run only on `dev` builds:
 Build the app with the `prod` profile:
 
 ```sh
-npm install
-npm run release
+yarn install
+yarn run release
 ```
 
 Please be patient; it may take over 15 seconds to see any output, and over 30 seconds to complete.
