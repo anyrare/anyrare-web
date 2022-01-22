@@ -26,6 +26,7 @@
   "dependencies": {
     "@splidejs/splide": "^3.6.11",
     "cssnano": "5.0.8",
+    "ethers": "^5.5.3",
     "firebase": "^9.6.0",
     "highlight.js": "11.1.0",
     "moment": "2.29.1",
