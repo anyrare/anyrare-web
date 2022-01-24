@@ -1,5 +1,6 @@
 (ns app.home.views
   (:require
+   [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]))
 
 (def member-abi
@@ -38,8 +39,13 @@
 ;;              (.provider js/ethers)))
 
 ;; (def provider (.JsonRpcProvider (.providers js/ethers.) "https://testnet.anyrare.network"))
+;; (def provider
+;;   (new (.JsonRpcProvider (.-providers ethers) {:url "https://testnet.anyrare.network"})))
+
 (def provider
-  (new (.-JsonRpcProvider (.-providers ethers)) "https://testnet.anyrare.network"))
+  (new (.-JsonRpcProvider (.-providers ethers))  "https://testnet.anyrare.network"))
+
+(.log js/console provider)
 
 (def member-contract
   (new (.-Contract ethers)
@@ -47,13 +53,20 @@
        (clj->js member-abi)
        provider))
 
-(.log js/console provider)
 (.log js/console member-contract)
-(.log js/console
-      (.getReferral member-contract "0x1E6C09C1D3Ac114752dbBD3E4e91b0b167ddee84"))
 
+(-> (.getReferral member-contract "0x1E6C09C1D3Ac114752dbBD3E4e91b0b167ddee84")
+    (p/then (fn [x] (js/console.log x)))
+    (p/catch* (fn [err] (js/console.error err))))
 
 (defn home [] [:div "Home"])
+
+
+
+
+
+
+
 
 
 
