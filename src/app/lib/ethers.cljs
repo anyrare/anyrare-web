@@ -3,6 +3,7 @@
    [re-frame.core :refer [dispatch]]
    [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]
+   [app.abi :refer [contract-abi contract-address]]
    [app.events :as events]
    [app.env :as env]
    [app.error :refer [error-log error-messages]]))
@@ -32,3 +33,5 @@
           (get-in error-messages [:ethers :failed-to-init-wallet-signer]) err)))))
 
 
+(defn member-contract []
+  (new (.-Contract ethers) (:member contract-address) (clj->js (:member contract-abi)) provider))

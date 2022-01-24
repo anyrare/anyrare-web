@@ -1306,7 +1306,7 @@
   :stateMutability "nonpayable", 
   :type "function"}])
 
-(def collection-factory
+(def collection-factory-abi
   [{:inputs
   [{:internalType "address",
     :name "_governanceContract",
