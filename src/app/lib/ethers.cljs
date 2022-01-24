@@ -1,8 +1,9 @@
 (ns app.lib.ethers
   (:require
-   [re-frame.core :refer [dispatch]]
+   [re-frame.core :refer [dispatch subscribe]]
    [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]
+   [app.subs :as subs]
    [app.abi :refer [contract-abi contract-address]]
    [app.events :as events]
    [app.env :as env]
@@ -32,6 +33,21 @@
          (error-log
           (get-in error-messages [:ethers :failed-to-init-wallet-signer]) err)))))
 
-
-(defn member-contract []
+(def member-contract
   (new (.-Contract ethers) (:member contract-address) (clj->js (:member contract-abi)) provider))
+
+(defn is-member []
+  (-> (.isMember member-contract "0xb5914c8a28295E400B05EF63aD56E436Af812b64")
+      (p/then (fn [x] (js/console.log x)))))
+  ;; (let [account-id @(subscribe [::subs/account-id])]
+  ;;   (-> (.isMember member-contract account-id)
+  ;;       (p/then (fn [x] (js/console.log x)))
+  ;;       (p/catch* (fn [err] (js/console.error err))))))
+
+
+
+
+
+
+
+

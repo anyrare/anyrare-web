@@ -2,7 +2,7 @@
   (:require
    [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]
-   [app.lib.ethers :refer [init-wallet-signer]]))
+   [app.lib.ethers :refer [init-wallet-signer is-member]]))
 
 ;; (def member-contract
 ;;   (.Contract js/ethers
@@ -55,3 +55,4 @@
 (defn home [] [:div "Home"])
 
 (init-wallet-signer)
+(is-member)

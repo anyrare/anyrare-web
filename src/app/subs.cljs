@@ -11,3 +11,8 @@
  ::i18n
  (fn [db _]
    (:i18n db)))
+
+(reg-sub
+ ::account-id
+ (fn [db _]
+   (:account-id db)))
