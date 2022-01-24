@@ -43,7 +43,9 @@
 ;;   (new (.JsonRpcProvider (.-providers ethers) {:url "https://testnet.anyrare.network"})))
 
 (def provider
-  (new (.-JsonRpcProvider (.-providers ethers))  "https://testnet.anyrare.network"))
+  (new (.-JsonRpcProvider (.-providers ethers))
+       (clj->js {:url "https://testnet.anyrare.network"})
+       (clj->js {:chainId 1687 :name "anyrare"})))
 
 (.log js/console provider)
 
@@ -60,6 +62,43 @@
     (p/catch* (fn [err] (js/console.error err))))
 
 (defn home [] [:div "Home"])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
