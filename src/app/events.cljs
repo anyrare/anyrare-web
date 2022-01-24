@@ -21,3 +21,9 @@
  ::set-i18n
  (fn-traced [db [_ lang]]
             (assoc db :i18n (get-dicts-by-lang lang))))
+
+;; lib/ethers
+(reg-event-db
+ ::set-account-id
+ (fn-traced [db [_ account-id]]
+            (assoc db :account-id account-id)))

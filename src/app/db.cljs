@@ -78,4 +78,5 @@
 
 (def app-db
   {:active-page :home
-   :asset-page asset-page})
+   :asset-page asset-page
+   :account-id nil})
