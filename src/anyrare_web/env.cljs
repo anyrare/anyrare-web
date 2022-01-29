@@ -1,8 +1,8 @@
 (ns anyrare-web.env
   (:require-macros [adzerk.env :as env]))
 
-(env/def GQL_SERVER_HTTP "https://graphql-dev.shoplive.dev")
-(env/def GQL_SERVER_WS "wss://graphql-dev.shoplive.dev/graphql")
+(env/def GRAPHQL_SERVER_HTTP "http://localhost:8888/graphql")
+(env/def GRAPHQL_SERVER_WS "ws://localhost:8888/graphql-ws")
 (env/def CONTRACT_ADDRESS_MEMBER "0x1444DCDAb2C312C1C578AA435B099F79Bfc6E7f0")
 (env/def CONTRACT_ADDRESS_GOVERNANCE "0xd77a17520C593961Cab9ce1bcb5F6d1c6435dAF7")
 (env/def CONTRACT_ADDRESS_ARA_TOKEN "0x2CD790fB0FfA020465DD53d22830dd644271443E")

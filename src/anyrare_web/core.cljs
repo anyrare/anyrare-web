@@ -20,6 +20,7 @@
 (defn ^:export init []
   (routes/start!)
   (dispatch-sync [::events/initialize-db])
+  (config/init-gql)
   (dispatch-sync [::events/set-i18n :th])
   (dev-setup)
   (mount-root))

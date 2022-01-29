@@ -10,6 +10,6 @@
 (defn init-gql []
   (dispatch
    [::re-graph/init
-    {:ws {:url env/GQL_SERVER_WS
+    {:ws {:url env/GRAPHQL_SERVER_WS
           :supported-operations #{:subscribe}}
-     :http {:url env/GQL_SERVER_HTTP}}]))
+     :http {:url env/GRAPHQL_SERVER_HTTP}}]))
