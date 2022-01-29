@@ -44,10 +44,5 @@
   ;;       (p/then (fn [x] (js/console.log x)))
   ;;       (p/catch* (fn [err] (js/console.error err))))))
 
-
-
-
-
-
-
-
+(defn create-member []
+  (.log js/console "A"))

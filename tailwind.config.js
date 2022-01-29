@@ -1,7 +1,7 @@
 module.exports = {
   content: {
     files: [
-      "./{src, test}/app/**/*.cljs",
+      "./{src, test}/anyrare_web/**/*.cljs",
     ],
     extract: {
       cljs: (content) => {

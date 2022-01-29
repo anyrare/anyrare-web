@@ -5,4 +5,5 @@
    [anyrare-web.subs :as subs]))
 
 (defn register []
-  [:div "Register"])
+  [:div "Register"
+   [:button {:class [:w-24 :h-12 :bg-red-300]} "Connect Wallet"]])
