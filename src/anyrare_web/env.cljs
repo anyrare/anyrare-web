@@ -1,0 +1,15 @@
+(ns anyrare-web.env
+  (:require-macros [adzerk.env :as env]))
+
+(env/def GQL_SERVER_HTTP "https://graphql-dev.shoplive.dev")
+(env/def GQL_SERVER_WS "wss://graphql-dev.shoplive.dev/graphql")
+(env/def CONTRACT_ADDRESS_MEMBER "0x1444DCDAb2C312C1C578AA435B099F79Bfc6E7f0")
+(env/def CONTRACT_ADDRESS_GOVERNANCE "0xd77a17520C593961Cab9ce1bcb5F6d1c6435dAF7")
+(env/def CONTRACT_ADDRESS_ARA_TOKEN "0x2CD790fB0FfA020465DD53d22830dd644271443E")
+(env/def CONTRACT_ADDRESS_PROPOSAL "0x9062C34583306Db98f2D4B7710b4c03201161bf7")
+(env/def CONTRACT_ADDRESS_NFT_FACTORY "0x1F4d4AD6fAb160fEa9fb2f213E27cD6F59DDd639")
+(env/def CONTRACT_ADDRESS_COLLECTION_FACTORY "0x25d47DeB463c52CC53f8153Be2AEC31B8fC53DB0")
+(env/def CHAIN_URL "https://testnet.anyrare.network")
+(env/def CHAIN_ID 1687)
+(env/def CHAIN_NAME "anyrare")
+(env/def ENABLED_ERROR_LOG true)
