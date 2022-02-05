@@ -7,8 +7,8 @@
 
 (defn register []
   [:div "Register"
-   (.log js/console (ethers/init-wallet-signer))
+   ;; (.log js/console (ethers/init-wallet-signer))
    [:button {:class [:w-24 :h-12 :bg-red-300]
-             :on-click #(dispatch [::ethers/create-member])}
+             :on-click #(dispatch [::events/create-member])}
     "Connect Wallet"]])
 

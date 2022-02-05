@@ -5,7 +5,7 @@
    ["ethers" :refer [ethers]]
    [anyrare-web.subs :as subs]
    [anyrare-web.abi :refer [contract-abi contract-address]]
-   [anyrare-web.events :as events]
+   ;; [anyrare-web.events :as events]
    [anyrare-web.env :as env]
    [anyrare-web.error :refer [log error-messages]]))
 
@@ -23,15 +23,15 @@
     (catch js/Error e
       (log (get-in error-messages [:ethers :metamask-not-found])))))
 
-(defn init-wallet-signer []
-  (-> (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-              signer (.getSigner provider-metamask)
-              address (.getAddress signer)]
-        (dispatch [::events/set-account-id address]))
-      (p/catch*
-       (fn [err]
-         (log (get-in error-messages
-                      [:ethers :failed-to-init-wallet-signer]) err)))))
+;; (defn init-wallet-signer []
+;;   (-> (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+;;               signer (.getSigner provider-metamask)
+;;               address (.getAddress signer)]
+;;         (dispatch [::events/set-account-id address]))
+;;       (p/catch*
+;;        (fn [err]
+;;          (log (get-in error-messages
+;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
 
 (def member-contract
   (new (.-Contract ethers)
@@ -64,23 +64,36 @@
   [address abi signer]
   (new (.-Contract ethers) address (clj->js abi) signer))
 
-(reg-event-fx
- ::create-member
- (fn [_ _]
-   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-           signer (.getSigner provider-metamask)
-           address (.getAddress signer)
-           tx (.setMember (get-contract (:member contract-address)
-                                        (:member contract-abi)
-                                        signer)
-                          address "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3")]
-     (.log js/console tx))))
+(defn set-member
+  [referral callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.setMember (get-contract (:member contract-address)
+                                       (:member contract-abi)
+                                       signer)
+                         address
+                         referral)]
+    (callback {:result tx})))
+
+;; (reg-event-fx
+;;  ::create-member
+;;  (fn [_ _]
+;;    (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+;;            signer (.getSigner provider-metamask)
+;;            address (.getAddress signer)
+;;            tx (.setMember (get-contract (:member contract-address)
+;;                                         (:member contract-abi)
+;;                                         signer)
+;;                           address "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3")]
+;;      tx)))
 
            ;; tx (.set-member contract (clj-js {:addr address :referral "0xa7Fe534827E20785FDC4Ea7F674B461b50139e56"}))]
      ;; (.log js/console (new (.-Contract ethers)
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
 
 
 

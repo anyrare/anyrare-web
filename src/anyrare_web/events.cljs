@@ -2,10 +2,13 @@
   (:require
    [re-graph.core :as re-graph]
    [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch subscribe]]
+   [kitchen-async.promise :as p]
    [anyrare-web.db :refer [app-db]]
    [anyrare-web.gql :refer [gql]]
+   [anyrare-web.ethers :as ethers]
    [anyrare-web.config.i18n :refer [get-dicts-by-lang]]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]))
+   [day8.re-frame.tracing :refer-macros [fn-traced]]
+   [day8.re-frame.async-flow-fx :as async-flow-fx]))
 
 (reg-event-db
  ::initialize-db
@@ -65,3 +68,23 @@
                ::save-gql-data
                :referral
                :member_by_code)}))
+
+(reg-event-fx
+ ::ethers-set-member
+ (fn [_ _]
+   (ethers/set-member "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3" #(dispatch [::save-member]))))
+
+(reg-event-fx
+ ::create-member
+ (fn [_ _]
+   {:async-flow
+    {:first-dispatch [::ethers-set-member]}}))
+
+(reg-event-fx
+ ::save-member
+ (fn [_ _]
+   (.log js/console "save-member")))
+
+
+
+
