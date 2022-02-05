@@ -11,7 +11,7 @@
     :failed-to-get-provider
     "1002: Failed to get provider."}})
 
-(defn error-log [message & [err]]
+(defn log [message & [err]]
   (when env/ENABLED_ERROR_LOG
     (.error js/console message)
     (when (some? err) (.error js/console err))))

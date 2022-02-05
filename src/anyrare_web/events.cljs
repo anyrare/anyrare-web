@@ -65,4 +65,3 @@
                ::save-gql-data
                :referral
                :member_by_code)}))
-
