@@ -10,7 +10,7 @@
    [:div
     [:button {:class [:w-24 :h-12 :bg-red-300]
               :on-click #(dispatch
-                          [::events/mint-nft
+                          [::events/nft-mint
                            {:founder-address "0xb30Ec3b60A5d5ca4822E950942B75eb03D8BBF15"
                             :custodian-address "0x16e498ff4Bfb297b79a9E6C06142b593Ddb3f4F5"
                             :token-uri "https://examle/metadata.json"
@@ -23,12 +23,18 @@
      "Mint"]]
    [:div [:button {:class [:w-24 :h-12 :bg-yellow-300]
                    :on-click #(dispatch
-                               [::events/mint-nft-custodian-sign
-                                {:token-id 15
+                               [::events/nft-custodian-sign
+                                {:token-id 18
                                  :custodian-weight 2000
                                  :custodian-general-fee 2000
                                  :custodian-redeem-weight 2000}])}
           "custodian sign"]]
+   
+   [:div [:button {:class [:w-24 :h-12 :bg-blue-300]
+                   :on-click #(dispatch
+                               [::events/nft-pay-fee-and-claim-token
+                                {:token-id 18}])}
+          "claimToken"]]
    [:div [:button {:class [:w-24 :h-12 :bg-green-300]
                    :on-click #(dispatch
                                [::events/nft-current-token-id])}

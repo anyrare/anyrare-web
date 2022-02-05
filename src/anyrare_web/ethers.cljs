@@ -9,6 +9,9 @@
    [anyrare-web.env :as env]
    [anyrare-web.error :refer [log error-messages]]))
 
+(def MAX_APPROVE_SPEND_LIMIT
+  (.from (.-BigNumber ethers) "1000000000000000000000000000000"))
+
 (def provider
   (try
     (new (.-JsonRpcProvider (.-providers ethers))
@@ -90,8 +93,9 @@
 ;; NFT
 
 
-(defn mint-nft
+(defn nft-mint
   [params callback]
+  (.log js/console "nft-mint")
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -108,7 +112,7 @@
                     (:audit-fee params))]
     (callback {:result (js->clj tx)})))
 
-(defn mint-nft-custodian-sign
+(defn nft-custodian-sign
   [params callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
@@ -120,6 +124,23 @@
                              (:custodian-weight params)
                              (:custodian-general-fee params)
                              (:custodian-redeem-weight params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-pay-fee-and-claim-token
+  [params callback]
+  (.log js/console (:token-id params))
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          approve-spend (.approve (get-contract (:ara-token contract-address)
+                                                (:ara-token contract-abi)
+                                                signer)
+                                  (:nft-factory contract-address)
+                                  MAX_APPROVE_SPEND_LIMIT)
+          tx (.payFeeAndClaimToken (get-contract (:nft-factory contract-address)
+                                                 (:nft-factory contract-abi)
+                                                 signer)
+                                   (:token-id params))]
     (callback {:result (js->clj tx)})))
 
 (defn nft-current-token-id
@@ -149,6 +170,7 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
 
 
 

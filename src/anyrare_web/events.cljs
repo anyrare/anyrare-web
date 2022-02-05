@@ -83,14 +83,19 @@
    {:result (ethers/set-member referral #(dispatch [::ethers-tx-callback %]))}))
 
 (reg-event-fx
- ::ethers-mint-nft
+ ::ethers-nft-mint
  (fn [_ [_ params]]
-   {:result (ethers/mint-nft params #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-mint params #(dispatch [::ethers-tx-callback %]))}))
 
 (reg-event-fx
- ::ethers-mint-nft-custodian-sign
+ ::ethers-nft-custodian-sign
  (fn [_ [_ params]]
-   {:result (ethers/mint-nft-custodian-sign params #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-custodian-sign params #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-pay-fee-and-claim-token
+ (fn [_ [_ params]]
+   {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-current-token-id
@@ -146,25 +151,32 @@
    {:result (.log js/console "Save asset")}))
 
 (reg-event-fx
- ::mint-nft
+ ::nft-mint
  (fn [_ [_ params]]
    {:async-flow
-    {:first-dispatch [::ethers-mint-nft params]
+    {:first-dispatch [::ethers-nft-mint params]
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
 (reg-event-fx
- ::mint-nft-custodian-sign
+ ::nft-custodian-sign
  (fn [_ [_ params]]
    {:async-flow
-    {:first-dispatch [::ethers-mint-nft-custodian-sign params]
+    {:first-dispatch [::ethers-nft-custodian-sign params]
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
+(reg-event-fx
+ ::nft-pay-fee-and-claim-token
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-pay-fee-and-claim-token params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
 (reg-event-fx
  ::nft-current-token-id
- (fn [_ [_ params]]
+ (fn [_ _]
    {:async-flow
     {:first-dispatch [::ethers-nft-current-token-id]
      :rules [{:when :seen? :events ::ethers-tx-callback
