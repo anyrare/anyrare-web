@@ -4,6 +4,7 @@
    [anyrare-web.component.header :refer [header]]
    [anyrare-web.page.home :refer [home]]
    [anyrare-web.page.asset :refer [asset]]
+   [anyrare-web.page.asset-mint :refer [asset-mint]]
    [anyrare-web.page.register :refer [register]]
    [anyrare-web.styles :as styles]
    [anyrare-web.subs :as subs]))
@@ -13,6 +14,7 @@
     :home [home]
     :asset [asset]
     :register [register]
+    :asset-mint [asset-mint]
     [home]))
 
 (defn main-app

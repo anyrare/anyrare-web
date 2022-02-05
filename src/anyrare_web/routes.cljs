@@ -7,7 +7,8 @@
 (def routes
   ["/" {"" :home
         "asset" :asset
-        ["register/" :code] :register}])
+        ["register/" :code] :register
+        "asset/" {"mint" :asset-mint}}])
 
 (def routes-guard [:account])
 
