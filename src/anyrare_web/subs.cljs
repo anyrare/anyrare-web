@@ -16,3 +16,8 @@
  ::account-id
  (fn [db _]
    (:account-id db)))
+
+(reg-sub
+ ::referral
+ (fn [db _]
+   (:referral db)))
