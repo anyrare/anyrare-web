@@ -32,7 +32,9 @@
                            :dispatch-n [[::fetch-member-by-code
                                          {:code (:code route-params)}]]}))))
 
+
 ;; GraphQL Flow
+
 
 (defn fetch-gql [query type params callback save-var nested-var]
   (case type
@@ -51,13 +53,33 @@
  (fn-traced [db [_ lang]]
             (assoc db :i18n (get-dicts-by-lang lang))))
 
+
 ;; lib/ethers
+
+
 (reg-event-db
  ::set-account-id
  (fn-traced [db [_ account-id]]
             (assoc db :account-id account-id)))
 
+
+;; Ethers
+
+
+(reg-event-fx
+ ::ethers-set-member
+ (fn [_ [_ referral]]
+   {:result (ethers/set-member referral #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-db
+ ::ethers-tx-callback
+ (fn [db [_ data]]
+   (assoc db :ethers-tx-result data)))
+
+
 ;; Register
+
+
 (reg-event-fx
  ::fetch-member-by-code
  (fn [_ [_ {:keys [code]}]]
@@ -70,20 +92,29 @@
                :member_by_code)}))
 
 (reg-event-fx
- ::ethers-set-member
- (fn [_ _]
-   (ethers/set-member "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3" #(dispatch [::save-member]))))
-
-(reg-event-fx
  ::create-member
- (fn [_ _]
+ (fn [_ [_ referral]]
+   (.log js/console referral)
    {:async-flow
-    {:first-dispatch [::ethers-set-member]}}))
+    {:first-dispatch [::ethers-set-member referral]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]]
+                             [[::save-member (:address result) referral]])}]}}))
 
 (reg-event-fx
  ::save-member
- (fn [_ _]
-   (.log js/console "save-member")))
+ (fn [_ [_ address referral]]
+   {:dispatch (fetch-gql
+               (get-in gql [:create-member :query])
+               (get-in gql [:create-member :type])
+               {:address address
+                :referral referral
+                :code address
+                :username address
+                :thumbnail "https://image.net/1.jpg"}
+               ::save-gql-data
+               :member
+               :create_member)}))
 
 
 

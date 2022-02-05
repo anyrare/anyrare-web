@@ -74,7 +74,8 @@
                                        signer)
                          address
                          referral)]
-    (callback {:result tx})))
+    (callback {:result (js->clj tx)
+               :address address})))
 
 ;; (reg-event-fx
 ;;  ::create-member
@@ -93,6 +94,7 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
 
 
 

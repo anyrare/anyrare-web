@@ -11,5 +11,29 @@
       code
       username
       thumbnail
+    }}"}
+
+   :create-member
+   {:name "create_member"
+    :type :mutation
+    :query "mutation create_member(
+    $address: String!
+    $referral: String!
+    $code: String!
+    $username: String!
+    $thumbnail: String!
+    ) {
+    create_member(
+      address: $address
+      referral: $referral
+      code: $code
+      username: $username
+      thumbnail: $thumbnail
+    ) {
+      address
+      referral
+      code
+      username
+      thumbnail
     }}"}})
 
