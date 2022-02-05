@@ -60,25 +60,29 @@
 ;;        (p/let [tx (.isMember contract address)]
 ;;          (.log js/console tx))))))
 
+(defn get-contract
+  [address abi signer]
+  (new (.-Contract ethers) address (clj->js abi) signer))
+
 (reg-event-fx
  ::create-member
  (fn [_ _]
    (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
            signer (.getSigner provider-metamask)
-           address (.getAddress signer)]
-     (let [contract (new (.-Contract ethers)
-                         (:member contract-address)
-                         (clj->js (:member contract-abi))
-                         signer)]
-       (.log js/console provider-metamask)
-       (p/let [tx (.setMember contract address "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3")]
-         (.log js/console tx))))))
+           address (.getAddress signer)
+           tx (.setMember (get-contract (:member contract-address)
+                                        (:member contract-abi)
+                                        signer)
+                          address "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3")]
+     (.log js/console tx))))
 
            ;; tx (.set-member contract (clj-js {:addr address :referral "0xa7Fe534827E20785FDC4Ea7F674B461b50139e56"}))]
      ;; (.log js/console (new (.-Contract ethers)
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
+
 
 
 
