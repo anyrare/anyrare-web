@@ -9,6 +9,9 @@
    [anyrare-web.env :as env]
    [anyrare-web.error :refer [log error-messages]]))
 
+(def MAX_APPROVE_SPEND_LIMIT
+  (.from (.-BigNumber ethers) "1000000000000000000000000000000"))
+
 (def provider
   (try
     (new (.-JsonRpcProvider (.-providers ethers))
@@ -39,9 +42,14 @@
        (clj->js (:member contract-abi))
        provider))
 
-(defn is-member []
-  (-> (.isMember member-contract "0xb5914c8a28295E400B05EF63aD56E436Af812b64")
-      (p/then (fn [x] (js/console.log x)))))
+;; (defn private-key->public-key
+;;   [private-key]
+;;   (.log js/console private-key)
+;;   (new (.Wallet ethers) private-key))
+
+(defn number->BigNumber
+  [number]
+  (.from (.-BigNumber ethers) number))
 
 ;; (defn create-member []
 ;;   (init-wallet-signer))
@@ -62,10 +70,14 @@
 
 (defn get-contract
   [address abi signer]
+  (.log js/console (new (.-Contract ethers) address (clj->js abi) signer))
   (new (.-Contract ethers) address (clj->js abi) signer))
 
+;; Member
+
+
 (defn set-member
-  [referral callback]
+  [params callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -73,9 +85,97 @@
                                        (:member contract-abi)
                                        signer)
                          address
-                         referral)]
+                         (:referral params))]
     (callback {:result (js->clj tx)
                :address address})))
+
+
+;; NFT
+
+
+(defn nft-mint
+  [params callback]
+  (.log js/console "nft-mint")
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.mint (get-contract (:nft-factory contract-address)
+                                  (:nft-factory contract-abi)
+                                  signer)
+                    (:founder-address params)
+                    (:custodian-address params)
+                    (:token-uri params)
+                    (:max-weight params)
+                    (:founder-weight params)
+                    (:founder-redeem-weight params)
+                    (:founder-general-fee params)
+                    (:audit-fee params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-custodian-sign
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.custodianSign (get-contract (:nft-factory contract-address)
+                                           (:nft-factory contract-abi)
+                                           signer)
+                             (:token-id params)
+                             (:custodian-weight params)
+                             (:custodian-general-fee params)
+                             (:custodian-redeem-weight params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-pay-fee-and-claim-token
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          ;; Check spend limit
+          approve-spend (.approve (get-contract (:ara-token contract-address)
+                                                (:ara-token contract-abi)
+                                                signer)
+                                  (:nft-factory contract-address)
+                                  MAX_APPROVE_SPEND_LIMIT)
+          tx (.payFeeAndClaimToken (get-contract (:nft-factory contract-address)
+                                                 (:nft-factory contract-abi)
+                                                 signer)
+                                   (:token-id params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-current-token-id
+  [callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.getCurrentTokenId (get-contract (:nft-factory contract-address)
+                                               (:nft-factory contract-abi)
+                                               signer))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-by-id
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.nfts (get-contract (:nft-factory contract-address)
+                                  (:nft-factory contract-abi)
+                                  signer)
+                    (:token-id params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-token-uri
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.tokenURI (get-contract (:nft-factory contract-address)
+                                      (:nft-factory contract-abi)
+                                      signer)
+                        (:token-id params))]
+    (callback {:result (js->clj tx)})))
+
+
 
 ;; (reg-event-fx
 ;;  ::create-member
@@ -94,6 +194,10 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
+
+
+
 
 
 

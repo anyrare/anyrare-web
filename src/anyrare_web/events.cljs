@@ -19,6 +19,10 @@
  (fn [_ [_ handler]]
    {:navigate handler}))
 
+
+;; Router
+
+
 (reg-event-fx
  ::set-active-page
  (fn-traced [{:keys [db]} [_ {:keys [page route-params]}]]
@@ -30,7 +34,8 @@
                 :asset {:db set-page}
                 :register {:db set-page
                            :dispatch-n [[::fetch-member-by-code
-                                         {:code (:code route-params)}]]}))))
+                                         {:code (:code route-params)}]]}
+                :asset-mint {:db set-page}))))
 
 
 ;; GraphQL Flow
@@ -66,16 +71,46 @@
 ;; Ethers
 
 
+(reg-event-db
+ ::ethers-tx-callback
+ (fn [db [_ data]]
+   (.log js/console "tx-callback" (clj->js data))
+   (assoc db :ethers-tx-result data)))
+
 (reg-event-fx
  ::ethers-set-member
  (fn [_ [_ referral]]
    {:result (ethers/set-member referral #(dispatch [::ethers-tx-callback %]))}))
 
-(reg-event-db
- ::ethers-tx-callback
- (fn [db [_ data]]
-   (assoc db :ethers-tx-result data)))
+(reg-event-fx
+ ::ethers-nft-mint
+ (fn [_ [_ params]]
+   {:result (ethers/nft-mint params #(dispatch [::ethers-tx-callback %]))}))
 
+(reg-event-fx
+ ::ethers-nft-custodian-sign
+ (fn [_ [_ params]]
+   {:result (ethers/nft-custodian-sign params #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-pay-fee-and-claim-token
+ (fn [_ [_ params]]
+   {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-current-token-id
+ (fn [_ _]
+   {:result (ethers/nft-current-token-id #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-by-id
+ (fn [_ [_ params]]
+   {:result (ethers/nft-by-id params #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-token-uri
+ (fn [_ [_ params]]
+   {:result (ethers/nft-token-uri params #(dispatch [::ethers-tx-callback %]))}))
 
 ;; Register
 
@@ -93,13 +128,12 @@
 
 (reg-event-fx
  ::create-member
- (fn [_ [_ referral]]
-   (.log js/console referral)
+ (fn [_ [_ params]]
    {:async-flow
-    {:first-dispatch [::ethers-set-member referral]
+    {:first-dispatch [::ethers-set-member (:referral params)l]
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]]
-                             [[::save-member (:address result) referral]])}]}}))
+                             [[::save-member (:address result) (:referral params)]])}]}}))
 
 (reg-event-fx
  ::save-member
@@ -117,5 +151,51 @@
                :create_member)}))
 
 
+;; Asset Mint
 
+
+(reg-event-fx
+ ::save-asset
+ (fn [_ _]
+   {:result (.log js/console "Save asset")}))
+
+(reg-event-fx
+ ::nft-mint
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-mint params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+
+(reg-event-fx
+ ::nft-custodian-sign
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-custodian-sign params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+
+(reg-event-fx
+ ::nft-pay-fee-and-claim-token
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-pay-fee-and-claim-token params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+
+(reg-event-fx
+ ::nft-by-id
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-by-id params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+
+(reg-event-fx
+ ::nft-token-uri
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-token-uri params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
