@@ -128,10 +128,10 @@
 
 (defn nft-pay-fee-and-claim-token
   [params callback]
-  (.log js/console (:token-id params))
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
+          ;; Check spend limit
           approve-spend (.approve (get-contract (:ara-token contract-address)
                                                 (:ara-token contract-abi)
                                                 signer)
@@ -153,6 +153,30 @@
                                                signer))]
     (callback {:result (js->clj tx)})))
 
+(defn nft-by-id
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.nfts (get-contract (:nft-factory contract-address)
+                                  (:nft-factory contract-abi)
+                                  signer)
+                    (:token-id params))]
+    (callback {:result (js->clj tx)})))
+
+(defn nft-token-uri
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.tokenURI (get-contract (:nft-factory contract-address)
+                                      (:nft-factory contract-abi)
+                                      signer)
+                        (:token-id params))]
+    (callback {:result (js->clj tx)})))
+
+
+
 ;; (reg-event-fx
 ;;  ::create-member
 ;;  (fn [_ _]
@@ -170,6 +194,7 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
 
 
 

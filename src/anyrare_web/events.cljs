@@ -102,6 +102,15 @@
  (fn [_ _]
    {:result (ethers/nft-current-token-id #(dispatch [::ethers-tx-callback %]))}))
 
+(reg-event-fx
+ ::ethers-nft-by-id
+ (fn [_ [_ params]]
+   {:result (ethers/nft-by-id params #(dispatch [::ethers-tx-callback %]))}))
+
+(reg-event-fx
+ ::ethers-nft-token-uri
+ (fn [_ [_ params]]
+   {:result (ethers/nft-token-uri params #(dispatch [::ethers-tx-callback %]))}))
 
 ;; Register
 
@@ -175,11 +184,18 @@
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
 (reg-event-fx
- ::nft-current-token-id
- (fn [_ _]
+ ::nft-by-id
+ (fn [_ [_ params]]
    {:async-flow
-    {:first-dispatch [::ethers-nft-current-token-id]
+    {:first-dispatch [::ethers-nft-by-id params]
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
+(reg-event-fx
+ ::nft-token-uri
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-token-uri params]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
