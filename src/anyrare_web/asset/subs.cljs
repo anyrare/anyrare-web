@@ -47,11 +47,11 @@
  ::asset-royalty
  (fn [db _]
    {:founder-fee (format-money
-                  (/ (get-in db [:asset-page :founder :fee])
-                     (get-in db [:asset-page :founder :fee-denominator])) 4)
+                  (/ (get-in db [:asset-page :feeFounderWeight])
+                     (get-in db [:asset-page :feeMaxWeight])) 4)
     :custodian-fee (format-money
-                    (/ (get-in db [:asset-page :custodian :fee])
-                       (get-in db [:asset-page :custodian :fee-denominator])) 4)}))
+                    (/ (get-in db [:asset-page :feeCustodianWeight])
+                       (get-in db [:asset-page :feeMaxWeight])) 4)}))
 
 (reg-sub
  ::asset-attachments

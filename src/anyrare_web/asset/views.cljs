@@ -138,10 +138,10 @@
            [:tbody
             [:tr
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :founder)]
-             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :founder-fee)]]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :founder-fee)]]
             [:tr
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
-             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])])))
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :custodian-fee)]]]]])])))
 
 (defn bids-panel [i18n asset-acution-bids]
   (let [toggle (reagent/atom true)]
@@ -210,6 +210,7 @@
         asset-detail (subscribe [::subs/asset-detail])
         asset-auditor (subscribe [::subs/asset-auditor])
         asset-custodian (subscribe [::subs/asset-custodian])
+        asset-royalty (subscribe [::subs/asset-royalty])
         i18n @(subscribe [::app-subs/i18n])]
     [:div
      (.log js/console (clj->js asset-detail))
@@ -220,7 +221,8 @@
        [title-panel asset-title]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
-       [custodian-panel i18n asset-custodian]]]]))
+       [custodian-panel i18n asset-custodian]
+       [royalty-panel i18n asset-royalty]]]]))
      ;; (dispatch [::events/initialize-image-slider])]))
 
 
