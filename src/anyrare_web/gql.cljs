@@ -45,7 +45,6 @@
       id
       tokenId
       tokenURI
-      tokenURIData
       tokenURIData {
         address
         founderAddress
@@ -71,9 +70,29 @@
         }
       }
       founderAddress
+      founder {
+        address
+        username
+        thumbnail
+      }
       ownerAddress
+      owner {
+        address
+        username
+        thumbnail
+      }
       auditorAddress
+      auditor {
+        address
+        username
+        thumbnail
+      }
       custodianAddress
+      custodian {
+        address
+        username
+        thumbnail
+      }
       feeMaxWeight
       feeFounderWeight
       feeFounderGeneralFee

@@ -68,23 +68,23 @@
        [title-section-toggle toggle (i18n :details)]
        (when @toggle
          [:div
-          [:p {:class [:text-secondary :mt-2]} (asset-detail :description)]
+          [:p {:class [:text-secondary :mt-2]} (:description @asset-detail)]
           [:p {:class [:mt-2]}
            [:span {:class [:text-secondary :mr-1]} (str (i18n :asset-id) ":")]
-           [:span {:class [:font-kanit :font-medium]} (asset-detail :address)]]
+           [:span {:class [:font-kanit :font-medium]} (:address @asset-detail)]]
           [:div {:class [:flex :mt-2]}
            [:div {:class ["w-1/2"]}
             [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :founder)]
             [avatar-with-username
-             (get-in asset-detail [:founder :thumbnail])
-             (get-in asset-detail [:founder :name])
-             (get-in asset-detail [:founder :address])]]
+             (get-in @asset-detail [:founder :thumbnail])
+             (get-in @asset-detail [:founder :username])
+             (get-in @asset-detail [:founder :address])]]
            [:div {:class ["w-1/2"]}
             [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :owner)]
             [avatar-with-username
-             (get-in asset-detail [:owner :thumbnail])
-             (get-in asset-detail [:owner :name])
-             (get-in asset-detail [:owner :address])]]]])])))
+             (get-in @asset-detail [:owner :thumbnail])
+             (get-in @asset-detail [:owner :username])
+             (get-in @asset-detail [:owner :address])]]]])])))
 
 (defn auditor-panel [i18n asset-auditor]
   (let [toggle (reagent/atom false)]
@@ -95,19 +95,18 @@
          [:div
           [:div {:class [:text-secondary :text-sm :my-2 :font-kanit]} (i18n :auditor)]
           [avatar-with-username
-           (get-in asset-auditor [:auditor :thumbnail])
-           (get-in asset-auditor [:auditor :name])
-           (get-in asset-auditor [:auditor :address])]
+           (:thumbnail @asset-auditor)
+           (:username @asset-auditor)
+           (:address @asset-auditor)]
           [:p {:class [:text-secondary :mt-2]}
-           (get-in asset-auditor [:auditor :auditor-report :th])]
-          [:p {:class [:text-secondary]}
+           (:report @asset-auditor)]
+          [:p {:class [:text-secondary :mt-2]}
            (str (i18n :audit-date :font-kanit) ": "
-                (unix-timestamp-to-local-datetime
-                 (get-in asset-auditor [:auditor :audit-date])))]
+                (:timestamp @asset-auditor))]
           [:p {:class [:text-secondary]}
            (str (i18n :audit-certificate) ": ")
            [:span {:class [:font-kanit :font-medium]}
-            (get-in asset-auditor [:auditor :audit-address])]]])])))
+            (:address @asset-auditor)]]])])))
 
 (defn custodian-panel [i18n asset-custodian]
   (let [toggle (reagent/atom false)]
@@ -118,15 +117,11 @@
          [:div
           [:p {:class [:text-secondary :text-sm :my-2 :font-kanit]} (i18n :custodian)]
           [avatar-with-username
-           (get-in asset-custodian [:custodian :thumbnail])
-           (get-in asset-custodian [:custodian :name])
-           (get-in asset-custodian [:custodian :address])]
+           (:thumbnail @asset-custodian)
+           (:username @asset-custodian)
+           (:address @asset-custodian)]
           [:p {:class [:text-secondary :mt-2]}
            (get-in asset-custodian [:custodian :custodian-report :th])]
-          [:p {:class [:text-secondary]}
-           (str (i18n :custodian-date) ": "
-                (unix-timestamp-to-local-datetime
-                 (get-in asset-custodian [:custodian :contract-date])))]
           [:p {:class [:text-secondary]}
            (str (i18n :custodian-contract) ": ")
            [:span {:class [:font-kanit :font-medium]}
@@ -211,15 +206,23 @@
 (defn asset []
   (let [asset @(subscribe [::subs/asset])
         asset-data @(subscribe [::subs/asset-data])
-        asset-title @(subscribe [::subs/asset-title])]
+        asset-title @(subscribe [::subs/asset-title])
+        asset-detail (subscribe [::subs/asset-detail])
+        asset-auditor (subscribe [::subs/asset-auditor])
+        asset-custodian (subscribe [::subs/asset-custodian])
+        i18n @(subscribe [::app-subs/i18n])]
     [:div
-     (.log js/console asset-data)
+     (.log js/console (clj->js asset-detail))
      (dispatch [::events/initialize-image-slider])
      [layout
       [image-slider-panel (:assets asset-data)]
       [:div {:class [:mx-2 :mb-4]}
-       [title-panel asset-title]]]]))
+       [title-panel asset-title]
+       [detail-panel i18n asset-detail]
+       [auditor-panel i18n asset-auditor]
+       [custodian-panel i18n asset-custodian]]]]))
      ;; (dispatch [::events/initialize-image-slider])]))
+
 
 
 

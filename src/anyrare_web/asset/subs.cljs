@@ -1,46 +1,47 @@
 (ns anyrare-web.asset.subs
   (:require
    [re-frame.core :refer [reg-sub]]
-   [anyrare-web.lib.format :refer [format-money]]
-   [anyrare-web.lib.utils :refer [parse-json]]))
-
+   [anyrare-web.lib.format :refer [format-money]]))
 
 (reg-sub
  ::asset
  (fn [db _]
-   (-> (:asset db)
-       (as-> x (when (some? x) (assoc x :tokenURIData
-                                      (.parse js/JSON (:tokenURIData x))))))))
+   (:asset-page db)))
 
 (reg-sub
  ::asset-data
  (fn [db _]
-    (parse-json (:tokenURIData (:asset db)))))
+   (:tokenURIData (:asset-page db))))
 
 (reg-sub
  ::asset-title
  (fn [db _]
-   (-> 
-    (parse-json (:tokenURIData (:asset db)))
-    (get-in [:title :th]))))
+   (get-in db [:asset-page :tokenURIData :title :th])))
 
 (reg-sub
  ::asset-detail
  (fn [db _]
-   {:description (get-in db [:asset-page :description])
+   {:description (get-in db [:asset-page :tokenURIData :description :th])
     :address (get-in db [:asset-page :address])
-    :owner (get-in db [:asset-page :owner])
+    :owner (get-in db [:asset-page :ownerAddress])
     :founder (get-in db [:asset-page :founder])}))
 
 (reg-sub
  ::asset-auditor
  (fn [db _]
-   {:auditor (get-in db [:asset-page :auditor])}))
+   {:address (get-in db [:asset-page :auditorAddress])
+    :thumbnail (get-in db [:asset-page :auditor :thumbnail])
+    :username (get-in db [:asset-page :auditor :username])
+    :report (get-in db [:asset-page :tokenURIData :auditor :report])
+    :assets (get-in db [:asset-page :tokenURIData :auditor :assets])
+    :timestamp (get-in db [:asset-page :tokenURIData :auditor :timestamp])}))
 
 (reg-sub
  ::asset-custodian
  (fn [db _]
-   {:custodian (get-in db [:asset-page :custodian])}))
+   {:address (get-in db [:asset-page :custodianAddress])
+    :thumbnail (get-in db [:asset-page :custodian :thumbnail])
+    :username (get-in db [:asset-page :custodian :username])}))
 
 (reg-sub
  ::asset-royalty
@@ -91,6 +92,5 @@
 (reg-sub
  ::asset-auction-panel
  (fn [db _]))
-
 
 

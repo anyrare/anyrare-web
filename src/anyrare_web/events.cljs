@@ -219,5 +219,5 @@
                (get-in gql [:get-nft :type])
                {:tokenId (js/parseInt token-id)}
                ::save-gql-data
-               :asset
+               :asset-page
                :getNFT)}))

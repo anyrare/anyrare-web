@@ -79,5 +79,4 @@
 (def app-db
   {:active-page :home
    :route-params nil
-   :asset-page asset-page
    :account-id nil})
