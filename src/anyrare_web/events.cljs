@@ -31,7 +31,9 @@
                                (assoc :route-params route-params))]
               (case page
                 :home {:db set-page}
-                :asset {:db set-page}
+                :asset {:db set-page
+                        :dispatch-n [[::fetch-nft-by-token-id
+                                      {:token-id (:token-id route-params)}]]}
                 :register {:db set-page
                            :dispatch-n [[::fetch-member-by-code
                                          {:code (:code route-params)}]]}
@@ -130,7 +132,7 @@
  ::create-member
  (fn [_ [_ params]]
    {:async-flow
-    {:first-dispatch [::ethers-set-member (:referral params)l]
+    {:first-dispatch [::ethers-set-member (:referral params)]
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]]
                              [[::save-member (:address result) (:referral params)]])}]}}))
@@ -199,3 +201,23 @@
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
+(reg-event-fx
+ ::nft-current-token-id
+ (fn [_ _]
+   {:async-flow
+    {:first-dispatch [::ethers-nft-current-token-id]
+     :rules [{:when :seen? :events ::ethers-tx-callback
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+
+;; Asset
+
+(reg-event-fx
+ ::fetch-nft-by-token-id
+ (fn [_ [_ {:keys [token-id]}]]
+   {:dispatch (fetch-gql
+               (get-in gql [:get-nft :query])
+               (get-in gql [:get-nft :type])
+               {:tokenId (js/parseInt token-id)}
+               ::save-gql-data
+               :asset
+               :getNFT)}))

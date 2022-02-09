@@ -13,7 +13,7 @@
                           [::events/nft-mint
                            {:founder-address "0xb30Ec3b60A5d5ca4822E950942B75eb03D8BBF15"
                             :custodian-address "0x16e498ff4Bfb297b79a9E6C06142b593Ddb3f4F5"
-                            :token-uri "https://examle/metadata.json"
+                            :token-uri "https://bafybeihfzhk3wcxmbwaiwqtuc7qrzcocnlh7qkujmycvslppicodkfz2s4.ipfs.infura-ipfs.io"
                             :max-weight 1000000
                             :founder-weight 100000
                             :founder-redeem-weight 300000
@@ -42,11 +42,11 @@
    [:div [:button {:class [:w-24 :h-12 :bg-orange-300]
                    :on-click #(dispatch
                                [::events/nft-by-id
-                                {:token-id 18}])}
+                                {:token-id 19}])}
           "nftInfo"]]
    [:div [:button {:class [:w-24 :h-12 :bg-green-300]
                    :on-click #(dispatch
                                [::events/nft-token-uri
-                                {:token-id 18}])}
+                                {:token-id 19}])}
           "tokenURI"]]])
 

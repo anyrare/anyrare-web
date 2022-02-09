@@ -21,3 +21,8 @@
  ::referral
  (fn [db _]
    (:referral db)))
+
+(reg-sub
+ ::asset
+ (fn [db _]
+   (:asset db)))

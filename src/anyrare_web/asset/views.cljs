@@ -209,27 +209,17 @@
    [:div {:class [(side-panel-class)]} content-panel]])
 
 (defn asset []
-  (let [asset-title @(subscribe [::subs/asset-title])
-        asset-detail @(subscribe [::subs/asset-detail])
-        asset-auditor @(subscribe [::subs/asset-auditor])
-        asset-custodian @(subscribe [::subs/asset-custodian])
-        asset-royalty @(subscribe [::subs/asset-royalty])
-        asset-attachments @(subscribe [::subs/asset-attachments])
-        asset-auction-info @(subscribe [::subs/asset-auction-info])
-        asset-auction-bids @(subscribe [::subs/asset-auction-bids])
-        i18n @(subscribe [::app-subs/i18n])
-        toggle-popup-panel (reagent/atom false)]
+  (let [asset @(subscribe [::subs/asset])
+        asset-data @(subscribe [::subs/asset-data])
+        asset-title @(subscribe [::subs/asset-title])]
     [:div
+     (.log js/console asset-data)
      (dispatch [::events/initialize-image-slider])
      [layout
-      [image-slider-panel asset-attachments]
+      [image-slider-panel (:assets asset-data)]
       [:div {:class [:mx-2 :mb-4]}
-       [title-panel asset-title]
-       [subtitle-panel i18n asset-auction-info toggle-popup-panel]
-       [bids-panel i18n asset-auction-bids]
-       [detail-panel i18n asset-detail]
-       [auditor-panel i18n asset-auditor]
-       [custodian-panel i18n asset-custodian]
-       [royalty-panel i18n asset-royalty]]]
-     [recommend-auction-panel]
-     [popup-panel (popup-auction i18n) toggle-popup-panel]]))
+       [title-panel asset-title]]]]))
+     ;; (dispatch [::events/initialize-image-slider])]))
+
+
+

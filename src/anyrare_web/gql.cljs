@@ -35,5 +35,63 @@
       code
       username
       thumbnail
+    }}"}
+
+   :get-nft
+   {:name "getNFT"
+    :type :query
+    :query "query GetNFT($tokenId: Int!) {
+    getNFT(tokenId: $tokenId) {
+      id
+      tokenId
+      tokenURI
+      tokenURIData
+      tokenURIData {
+        address
+        founderAddress
+        auditorAddress
+        custodianAddress
+        assets {
+          type
+          url
+        }
+        title {
+          th
+        }
+        description {
+          th
+        }
+        auditor {
+          report
+          assets {
+            type
+            url
+          }
+          timestamp
+        }
+      }
+      founderAddress
+      ownerAddress
+      auditorAddress
+      custodianAddress
+      feeMaxWeight
+      feeFounderWeight
+      feeFounderGeneralFee
+      feeFounderRedeemWeight
+      feeCustodianWeight
+      feeAuditFee
+      feeMintFee
+      statusAuction
+      statusLockInCollection
+      statusBuyItNow
+      statusOffer
+      statusRedeem
+      statusFreeze
+      auditorReportURI
+      auditorDescription
+      custodianContractURI
+      buyItNowPrice
+      totalAuction
+      totalOffer
     }}"}})
 

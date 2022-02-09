@@ -1,12 +1,28 @@
 (ns anyrare-web.asset.subs
   (:require
    [re-frame.core :refer [reg-sub]]
-   [anyrare-web.lib.format :refer [format-money]]))
+   [anyrare-web.lib.format :refer [format-money]]
+   [anyrare-web.lib.utils :refer [parse-json]]))
+
+
+(reg-sub
+ ::asset
+ (fn [db _]
+   (-> (:asset db)
+       (as-> x (when (some? x) (assoc x :tokenURIData
+                                      (.parse js/JSON (:tokenURIData x))))))))
+
+(reg-sub
+ ::asset-data
+ (fn [db _]
+    (parse-json (:tokenURIData (:asset db)))))
 
 (reg-sub
  ::asset-title
  (fn [db _]
-   (get-in db [:asset-page :title])))
+   (-> 
+    (parse-json (:tokenURIData (:asset db)))
+    (get-in [:title :th]))))
 
 (reg-sub
  ::asset-detail
@@ -75,3 +91,6 @@
 (reg-sub
  ::asset-auction-panel
  (fn [db _]))
+
+
+

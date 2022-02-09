@@ -3,7 +3,7 @@
    [re-frame.core :refer [subscribe]]
    [anyrare-web.component.header :refer [header]]
    [anyrare-web.page.home :refer [home]]
-   [anyrare-web.page.asset :refer [asset]]
+   [anyrare-web.asset.views :refer [asset]]
    [anyrare-web.page.asset-mint :refer [asset-mint]]
    [anyrare-web.page.register :refer [register]]
    [anyrare-web.styles :as styles]

@@ -6,8 +6,8 @@
 
 (def routes
   ["/" {"" :home
-        "asset" :asset
         ["register/" :code] :register
+        ["asset/" :token-id] :asset
         "asset/" {"mint" :asset-mint}}])
 
 (def routes-guard [:account])
