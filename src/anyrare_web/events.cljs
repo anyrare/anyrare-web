@@ -41,8 +41,8 @@
                         :dispatch-n [[::fetch-asset-data
                                       {:token-id (:token-id route-params)}]]}
                 :register {:db set-page
-                           :dispatch-n [[::fetch-member-by-code
-                                         {:code (:code route-params)}]]}
+                           :dispatch-n [[::fetch-member-by-username
+                                         {:username (:username route-params)}]]}
                 :asset-mint {:db set-page}))))
 
 
@@ -104,6 +104,7 @@
 (reg-event-fx
  ::ethers-nft-pay-fee-and-claim-token
  (fn [_ [_ params]]
+   (.log js/console params)
    {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
@@ -118,6 +119,11 @@
    {:result (ethers/nft-token-uri params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 ;; Register
+
+(reg-event-fx
+ ::fetch-member-by-username
+ (fn [_ [_ params]]
+   {:dispatch-fn [(ethers/member-by-username params #(dispatch [::save-data :referral %]))]}))
 
 
 (reg-event-fx
@@ -212,5 +218,4 @@
  (fn [_ [_ {:keys [token-id]}]]
    {:dispatch-fn [(ethers/nft-by-id {:token-id token-id} #(dispatch [::save-data :asset-page %]))
                   (ethers/signer-address #(dispatch [::save-data :signer %]))]}))
-
 

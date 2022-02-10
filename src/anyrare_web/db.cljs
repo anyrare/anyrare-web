@@ -77,6 +77,4 @@
     :contract-address "0x3484820bcaf3234234"}})
 
 (def app-db
-  {:active-page :home
-   :route-params nil
-   :account-id nil})
+  {:active-page :home})

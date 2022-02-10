@@ -11,12 +11,12 @@
 (reg-sub
  ::asset-data
  (fn [db _]
-   (:tokenURIData (:asset-page db))))
+   (:token-uri-data (:asset-page db))))
 
 (reg-sub
  ::asset-title
  (fn [db _]
-   (get-in db [:asset-page :tokenURIData :title :th])))
+   (get-in db [:asset-page :token-uri-data :title :th])))
 
 (reg-sub
  ::asset-detail

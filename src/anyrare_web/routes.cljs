@@ -6,7 +6,7 @@
 
 (def routes
   ["/" {"" :home
-        ["register/" :code] :register
+        ["register/" :username] :register
         "asset/" {"mint" :asset-mint}
         ["asset/" :token-id] :asset}])
 

@@ -87,6 +87,7 @@
 
 (defn set-member
   [params callback]
+  (.log js/console (clj->js params))
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -94,11 +95,23 @@
                                        (:member contract-abi)
                                        signer)
                          address
-                         (:referral params))]
+                         (:referral params)
+                         (:username params)
+                         (:thumbnail params))]
     (callback {:result (js->clj tx)
                :address address})))
 
-
+(defn member-by-username
+  [params callback]
+  (.log js/console (:username params))
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.getAddressByUsername (get-contract (:member contract-address)
+                                                  (:member contract-abi)
+                                                  signer)
+                                    (:username params))]
+    (callback (js->clj tx))))
 ;; NFT
 
 
@@ -149,7 +162,7 @@
                                                  (:nft-factory contract-abi)
                                                  signer)
                                    (:token-id params))]
-    (callback {:result (js->clj tx)})))
+    (callback (js->clj tx))))
 
 (defn nft-current-token-id
   [callback]
@@ -230,7 +243,7 @@
                                       (:nft-factory contract-abi)
                                       signer)
                         (:token-id params))]
-    (callback {:result (js->clj tx)})))
+    (callback (js->clj tx))))
 
 (defn nft-open-auction
   [params callback]
@@ -247,32 +260,6 @@
                            (:reserve-price params)
                            (:max-weight params)
                            (:next-bid-weight params))]
-    (callback {:result (js->clj tx)})))
-
-;; (reg-event-fx
-;;  ::create-member
-;;  (fn [_ _]
-;;    (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-;;            signer (.getSigner provider-metamask)
-;;            address (.getAddress signer)
-;;            tx (.setMember (get-contract (:member contract-address)
-;;                                         (:member contract-abi)
-;;                                         signer)
-;;                           address "0x5A81399116Ad2e89E45b31c4e1A67C7F254F58f3")]
-;;      tx)))
-
-           ;; tx (.set-member contract (clj-js {:addr address :referral "0xa7Fe534827E20785FDC4Ea7F674B461b50139e56"}))]
-     ;; (.log js/console (new (.-Contract ethers)
-     ;;                     (:member contract-address)
-     ;;                     (clj->js (:member contract-abi))
-     ;;                     signer)))))
-
-
-
-
-
-
-
-
+    (callback (js->clj tx))))
 
 

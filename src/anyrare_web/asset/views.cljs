@@ -166,15 +166,15 @@
                  (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
 
-(defn actions-panel [i18n]
+(defn actions-panel [i18n signer asset]
   (let [toggle (reagent/atom true)]
-    (fn []
+    (when (= (:address @signer) (get-in @asset [:owner :address]))
       [:div {:class [:mt-2]}
        [title-section-toggle toggle (:tools i18n)]
        (when @toggle
          [:div
           [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
-                    :on-click #(dispatch [::events/open-auction {:token-id 20
+                    :on-click #(dispatch [::events/open-auction {:token-id 0
                                                                  :close-auction-period-second 86000
                                                                  :starting-price 1000
                                                                  :reserve-price 500000
@@ -222,16 +222,16 @@
    [:div {:class [(side-panel-class)]} content-panel]])
 
 (defn asset []
-  (let [asset @(subscribe [::subs/asset])
+  (let [asset (subscribe [::subs/asset])
         asset-data @(subscribe [::subs/asset-data])
         asset-title @(subscribe [::subs/asset-title])
         asset-detail (subscribe [::subs/asset-detail])
         asset-auditor (subscribe [::subs/asset-auditor])
         asset-custodian (subscribe [::subs/asset-custodian])
         asset-royalty (subscribe [::subs/asset-royalty])
-        i18n @(subscribe [::app-subs/i18n])]
+        i18n @(subscribe [::app-subs/i18n])
+        signer (subscribe [::app-subs/signer])]
     [:div
-     (.log js/console (clj->js asset-detail))
      (dispatch [::events/initialize-image-slider])
      [layout
       [image-slider-panel (:assets asset-data)]
@@ -241,10 +241,5 @@
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]
-       [actions-panel i18n]]
+       [actions-panel i18n signer asset]]
       [recommend-auction-panel]]]))
-
-
-
-
-
