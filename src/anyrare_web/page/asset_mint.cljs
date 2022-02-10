@@ -24,7 +24,7 @@
    [:div [:button {:class [:w-24 :h-12 :bg-yellow-300]
                    :on-click #(dispatch
                                [::events/nft-custodian-sign
-                                {:token-id 18
+                                {:token-id 20
                                  :custodian-weight 2000
                                  :custodian-general-fee 2000
                                  :custodian-redeem-weight 2000}])}
@@ -33,7 +33,7 @@
    [:div [:button {:class [:w-24 :h-12 :bg-blue-300]
                    :on-click #(dispatch
                                [::events/nft-pay-fee-and-claim-token
-                                {:token-id 18}])}
+                                {:token-id 20}])}
           "claimToken"]]
    [:div [:button {:class [:w-24 :h-12 :bg-green-300]
                    :on-click #(dispatch
@@ -42,11 +42,11 @@
    [:div [:button {:class [:w-24 :h-12 :bg-orange-300]
                    :on-click #(dispatch
                                [::events/nft-by-id
-                                {:token-id 19}])}
+                                {:token-id 20}])}
           "nftInfo"]]
    [:div [:button {:class [:w-24 :h-12 :bg-green-300]
                    :on-click #(dispatch
                                [::events/nft-token-uri
-                                {:token-id 19}])}
+                                {:token-id 20}])}
           "tokenURI"]]])
 

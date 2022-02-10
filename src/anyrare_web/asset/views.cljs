@@ -172,7 +172,15 @@
       [:div {:class [:mt-2]}
        [title-section-toggle toggle (:tools i18n)]
        (when @toggle
-         [:div "Button"])])))
+         [:div
+          [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
+                    :on-click #(dispatch [::events/open-auction {:token-id 20
+                                                                 :close-auction-period-second 86000
+                                                                 :starting-price 1000
+                                                                 :reserve-price 500000
+                                                                 :max-weight 1000000
+                                                                 :next-bid-weight 1000}])}
+           "ตั้งประมูล"]])])))
 
 (defn recommend-auction-panel []
   [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"])

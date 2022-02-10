@@ -80,7 +80,6 @@
 
 (defn get-contract
   [address abi signer]
-  (.log js/console (new (.-Contract ethers) address (clj->js abi) signer))
   (new (.-Contract ethers) address (clj->js abi) signer))
 
 ;; Member
@@ -105,7 +104,6 @@
 
 (defn nft-mint
   [params callback]
-  (.log js/console "nft-mint")
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -198,7 +196,7 @@
                 :status {:auction (.. tx -status -auction)
                          :buy-it-now (.. tx -status -buyItNow)
                          :claim (.. tx -status -claim)
-                         :custodian-sign (.. tx -status -custodian-sign)
+                         :custodian-sign (.. tx -status -custodianSign)
                          :freeze (.. tx -status -freeze)
                          :lock-in-collection (.. tx -status -lockInCollection)
                          :offer (.. tx -status -offer)
@@ -234,7 +232,22 @@
                         (:token-id params))]
     (callback {:result (js->clj tx)})))
 
-
+(defn nft-open-auction
+  [params callback]
+  (.log js/console (:close-auction-period-second params))
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.openAuction (get-contract (:nft-factory contract-address)
+                                         (:nft-factory contract-abi)
+                                         signer)
+                           (:token-id params)
+                           (:close-auction-period-second params)
+                           (:starting-price params)
+                           (:reserve-price params)
+                           (:max-weight params)
+                           (:next-bid-weight params))]
+    (callback {:result (js->clj tx)})))
 
 ;; (reg-event-fx
 ;;  ::create-member
@@ -253,6 +266,7 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
 
 
 
