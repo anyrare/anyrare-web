@@ -8,6 +8,7 @@
    [anyrare-web.lib.format :refer [unix-timestamp-to-local-datetime]]
    [anyrare-web.component.avatar :refer [avatar avatar-with-username]]
    [anyrare-web.component.svg :refer [angle-down angle-up]]
+   [anyrare-web.ethers :refer [signer-address]]
    [spade.core :refer [defclass]]
    [garden.stylesheet :refer (at-media)]))
 
@@ -164,9 +165,18 @@
                 [:span {:class [:text-secondary :text-sm]}
                  (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
+
+(defn actions-panel [i18n]
+  (let [toggle (reagent/atom true)]
+    (fn []
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (:tools i18n)]
+       (when @toggle
+         [:div "Button"])])))
+
 (defn recommend-auction-panel []
-  (fn []
-    [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"]))
+  [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"])
+
 
 (defn popup-panel [content toggle-popup-panel]
   (when @toggle-popup-panel
@@ -183,7 +193,7 @@
       [:div {:class [:flex-auto]}]]]))
 
 (defn popup-auction [i18n]
-  [:div {:class [:mt-2]}
+  [:div {:class [:mt-4]}
    [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (i18n :place-a-bid)]
    [:span {:class [:text-secondary]} (i18n :you-are-about-to-place-a-bid-for)]])
 
@@ -222,8 +232,10 @@
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
-       [royalty-panel i18n asset-royalty]]]]))
-     ;; (dispatch [::events/initialize-image-slider])]))
+       [royalty-panel i18n asset-royalty]
+       [actions-panel i18n]]
+      [recommend-auction-panel]]]))
+
 
 
 

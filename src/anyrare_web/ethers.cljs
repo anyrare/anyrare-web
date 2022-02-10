@@ -3,10 +3,12 @@
    [re-frame.core :refer [dispatch subscribe reg-event-fx]]
    [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]
+   [lambdaisland.fetch :as fetch]
    [anyrare-web.subs :as subs]
    [anyrare-web.abi :refer [contract-abi contract-address]]
    ;; [anyrare-web.events :as events]
    [anyrare-web.env :as env]
+   [anyrare-web.lib.utils :refer [json->clj]]
    [anyrare-web.error :refer [log error-messages]]))
 
 (def MAX_APPROVE_SPEND_LIMIT
@@ -35,6 +37,14 @@
 ;;        (fn [err]
 ;;          (log (get-in error-messages
 ;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
+
+
+(defn signer-address [callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)]
+    (callback {:address address
+               :signer signer})))
 
 (def member-contract
   (new (.-Contract ethers)
@@ -153,6 +163,8 @@
                                                signer))]
     (callback {:result (js->clj tx)})))
 
+(def lisa-image "https://upload.wikimedia.org/wikipedia/commons/e/e9/Blackpink_Lisa_Vogue_2021_%281%29.jpg")
+
 (defn nft-by-id
   [params callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
@@ -161,8 +173,55 @@
           tx (.nfts (get-contract (:nft-factory contract-address)
                                   (:nft-factory contract-abi)
                                   signer)
-                    (:token-id params))]
-    (callback {:result (js->clj tx)})))
+                    (:token-id params))
+          tx-token-uri (.tokenURI (get-contract (:nft-factory contract-address)
+                                                (:nft-factory contract-abi)
+                                                signer)
+                                  (:token-id params))
+          tx-token-uri-data (fetch/get tx-token-uri)]
+    (callback (js->clj
+               {:token-id (.-tokenId tx)
+                :token-uri tx-token-uri
+                :token-uri-data (json->clj (:body tx-token-uri-data))
+                :founder {:address (.. tx -addr -founder)
+                          :username (.. tx -addr -founder)
+                          :thumbnail lisa-image}
+                :auditor {:address (.. tx -addr -auditor)
+                          :username (.. tx -addr -auditor)
+                          :thumbnail lisa-image}
+                :custodian {:address (.. tx -addr -custodian)
+                            :username (.. tx -addr -custodian)
+                            :thumbnail lisa-image}
+                :owner {:address (.. tx -addr -owner)
+                        :username (.. tx -addr -owner)
+                        :thumbnail lisa-image}
+                :status {:auction (.. tx -status -auction)
+                         :buy-it-now (.. tx -status -buyItNow)
+                         :claim (.. tx -status -claim)
+                         :custodian-sign (.. tx -status -custodian-sign)
+                         :freeze (.. tx -status -freeze)
+                         :lock-in-collection (.. tx -status -lockInCollection)
+                         :offer (.. tx -status -offer)
+                         :redeem (.. tx -status -redeem)}
+                :fee {:max-weight (.. tx -fee -maxWeight)
+                      :audit-fee (.. tx -fee -auditFee)
+                      :custodian-general-fee (.. tx -fee -custodianGeneralFee)
+                      :custodian-redeem-weight (.. tx -fee -custodianRedeemWeight)
+                      :custodian-weight (.. tx -fee -custodianWeight)
+                      :founder-general-fee (.. tx -fee -founderGeneralFee)
+                      :founder-redeem-weight (.. tx -fee -founderRedeemWeight)
+                      :founder-weight (.. tx -fee -founderWeight)
+                      :mint-fee (.. tx -fee -mintFee)}
+                :total-auction (.. tx -totalAuction)
+                :buy-it-now {:owner (.. tx -buyItNow -owner)
+                             :value (.. tx -buyItNow -value)}
+                :bid-id (.. tx -bidId)
+                :offer {:bidder (.. tx -offer -bidder)
+                        :close-offer-timestamp (.. tx -offer -closeOfferTimestamp)
+                        :open-offer-timestamp (.. tx -offer -openOfferTimestamp)
+                        :owner (.. tx -offer -owner)
+                        :value (.. tx -offer -value)}
+                :redeem-timestamp (.. tx -offer -redeemTimestamp)}))))
 
 (defn nft-token-uri
   [params callback]
@@ -194,6 +253,12 @@
      ;;                     (:member contract-address)
      ;;                     (clj->js (:member contract-abi))
      ;;                     signer)))))
+
+
+
+
+
+
 
 
 

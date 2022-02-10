@@ -159,7 +159,10 @@
     :en "ARA"}
    :by
    {:th "โดย"
-    :en "by"}})
+    :en "by"}
+   :tools
+   {:th "เครื่องมือ"
+    :en "Tools"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
