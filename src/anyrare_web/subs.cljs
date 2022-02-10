@@ -23,6 +23,6 @@
    (:referral db)))
 
 (reg-sub
- ::asset
+ ::signer
  (fn [db _]
-   (:asset db)))
+   (:signer db)))

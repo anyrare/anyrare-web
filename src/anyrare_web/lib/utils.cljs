@@ -1,4 +1,4 @@
 (ns anyrare-web.lib.utils)
 
-(defn parse-json [e]
-  (js->clj (js/JSON.parse e) :keywordize-keys true))
+(defn json->clj [e]
+  (js->clj (-> e (js/JSON.stringify) (js/JSON.parse)) :keywordize-keys true))

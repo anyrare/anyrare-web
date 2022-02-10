@@ -8,6 +8,7 @@
    [anyrare-web.lib.format :refer [unix-timestamp-to-local-datetime]]
    [anyrare-web.component.avatar :refer [avatar avatar-with-username]]
    [anyrare-web.component.svg :refer [angle-down angle-up]]
+   [anyrare-web.ethers :refer [signer-address]]
    [spade.core :refer [defclass]]
    [garden.stylesheet :refer (at-media)]))
 
@@ -138,10 +139,10 @@
            [:tbody
             [:tr
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :founder)]
-             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :founder-fee)]]
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :founder-fee)]]
             [:tr
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
-             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (asset-royalty :custodian-fee)]]]]])])))
+             [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :custodian-fee)]]]]])])))
 
 (defn bids-panel [i18n asset-acution-bids]
   (let [toggle (reagent/atom true)]
@@ -164,9 +165,26 @@
                 [:span {:class [:text-secondary :text-sm]}
                  (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
 
+
+(defn actions-panel [i18n signer asset]
+  (let [toggle (reagent/atom true)]
+    (when (= (:address @signer) (get-in @asset [:owner :address]))
+      [:div {:class [:mt-2]}
+       [title-section-toggle toggle (:tools i18n)]
+       (when @toggle
+         [:div
+          [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
+                    :on-click #(dispatch [::events/open-auction {:token-id 0
+                                                                 :close-auction-period-second 86000
+                                                                 :starting-price 1000
+                                                                 :reserve-price 500000
+                                                                 :max-weight 1000000
+                                                                 :next-bid-weight 1000}])}
+           "ตั้งประมูล"]])])))
+
 (defn recommend-auction-panel []
-  (fn []
-    [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"]))
+  [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"])
+
 
 (defn popup-panel [content toggle-popup-panel]
   (when @toggle-popup-panel
@@ -183,7 +201,7 @@
       [:div {:class [:flex-auto]}]]]))
 
 (defn popup-auction [i18n]
-  [:div {:class [:mt-2]}
+  [:div {:class [:mt-4]}
    [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (i18n :place-a-bid)]
    [:span {:class [:text-secondary]} (i18n :you-are-about-to-place-a-bid-for)]])
 
@@ -204,15 +222,16 @@
    [:div {:class [(side-panel-class)]} content-panel]])
 
 (defn asset []
-  (let [asset @(subscribe [::subs/asset])
+  (let [asset (subscribe [::subs/asset])
         asset-data @(subscribe [::subs/asset-data])
         asset-title @(subscribe [::subs/asset-title])
         asset-detail (subscribe [::subs/asset-detail])
         asset-auditor (subscribe [::subs/asset-auditor])
         asset-custodian (subscribe [::subs/asset-custodian])
-        i18n @(subscribe [::app-subs/i18n])]
+        asset-royalty (subscribe [::subs/asset-royalty])
+        i18n @(subscribe [::app-subs/i18n])
+        signer (subscribe [::app-subs/signer])]
     [:div
-     (.log js/console (clj->js asset-detail))
      (dispatch [::events/initialize-image-slider])
      [layout
       [image-slider-panel (:assets asset-data)]
@@ -220,9 +239,7 @@
        [title-panel asset-title]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
-       [custodian-panel i18n asset-custodian]]]]))
-     ;; (dispatch [::events/initialize-image-slider])]))
-
-
-
-
+       [custodian-panel i18n asset-custodian]
+       [royalty-panel i18n asset-royalty]
+       [actions-panel i18n signer asset]]
+      [recommend-auction-panel]]]))

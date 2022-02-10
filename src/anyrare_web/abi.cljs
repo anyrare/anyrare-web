@@ -3,434 +3,109 @@
    [anyrare-web.env :as env]))
 
 (def member-abi
-  [{:inputs [{:internalType "address", :name "root", :type "address"}]
-    :stateMutability "nonpayable"
-    :type "constructor"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "getReferral"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "account", :type "address"}]
-    :name "isMember"
-    :outputs [{:internalType "bool", :name "", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "", :type "address"}]
-    :name "members"
-    :outputs
-    [{:internalType "address", :name "referral", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "addr", :type "address"}
-     {:internalType "address", :name "referral", :type "address"}]
-    :name "setMember"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}])
+ [{:inputs [{:internalType "address", :name "root", :type "address"}],
+  :stateMutability "nonpayable",
+  :type "constructor"}
+ {:inputs [{:internalType "string", :name "username", :type "string"}],
+  :name "getAddressByUsername",
+  :outputs [{:internalType "address", :name "", :type "address"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs [{:internalType "address", :name "addr", :type "address"}],
+  :name "getReferral",
+  :outputs [{:internalType "address", :name "", :type "address"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs [{:internalType "address", :name "addr", :type "address"}],
+  :name "isMember",
+  :outputs [{:internalType "bool", :name "", :type "bool"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs [{:internalType "address", :name "", :type "address"}],
+  :name "members",
+  :outputs
+  [{:internalType "address", :name "referral", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs
+  [{:internalType "address", :name "addr", :type "address"}
+   {:internalType "address", :name "referral", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :name "setMember",
+  :outputs [],
+  :stateMutability "nonpayable",
+  :type "function"}
+ {:inputs [{:internalType "string", :name "str", :type "string"}],
+  :name "stringToBytes32",
+  :outputs [{:internalType "bytes32", :name "", :type "bytes32"}],
+  :stateMutability "pure",
+  :type "function"}
+ {:inputs
+  [{:internalType "address", :name "addr", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :name "updateMember",
+  :outputs [],
+  :stateMutability "nonpayable",
+  :type "function"}
+ {:inputs [{:internalType "bytes32", :name "", :type "bytes32"}],
+  :name "usernames",
+  :outputs [{:internalType "address", :name "", :type "address"}],
+  :stateMutability "view", 
+  :type "function"}])
 
 (def governance-abi
-  [{:inputs [], :stateMutability "nonpayable", :type "constructor"}
-   {:inputs [{:internalType "address", :name "", :type "address"}]
-    :name "auditors"
-    :outputs
-    [{:internalType "bool", :name "approve", :type "bool"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "", :type "address"}]
-    :name "custodians"
-    :outputs
-    [{:internalType "bool", :name "approve", :type "bool"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getARATokenContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getBancorFormulaContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getCollectionFactoryContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getCollectionUtilsContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getManagementFundContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "uint16", :name "index", :type "uint16"}]
-    :name "getManager"
-    :outputs
-    [{:components
-      [{:internalType "address", :name "addr", :type "address"}
-       {:internalType "uint256", :name "controlWeight", :type "uint256"}
-       {:internalType "string", :name "dataURI", :type "string"}]
-      :internalType "struct Governance.Manager"
-      :name "manager"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "getManagerByAddress"
-    :outputs
-    [{:components
-      [{:internalType "address", :name "addr", :type "address"}
-       {:internalType "uint256", :name "controlWeight", :type "uint256"}
-       {:internalType "string", :name "dataURI", :type "string"}]
-      :internalType "struct Governance.Manager"
-      :name "manager"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getManagerMaxControlWeight"
-    :outputs [{:internalType "uint256", :name "", :type "uint256"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getMemberContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getNFTFactoryContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getNFTUtilsContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "uint16", :name "index", :type "uint16"}]
-    :name "getOperation"
-    :outputs
-    [{:components
-      [{:internalType "address", :name "addr", :type "address"}
-       {:internalType "uint256", :name "controlWeight", :type "uint256"}
-       {:internalType "string", :name "dataURI", :type "string"}]
-      :internalType "struct Governance.Operation"
-      :name "operation"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "getOperationByAddress"
-    :outputs
-    [{:components
-      [{:internalType "address", :name "addr", :type "address"}
-       {:internalType "uint256", :name "controlWeight", :type "uint256"}
-       {:internalType "string", :name "dataURI", :type "string"}]
-      :internalType "struct Governance.Operation"
-      :name "operation"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getOperationMaxControlWeight"
-    :outputs [{:internalType "uint256", :name "", :type "uint256"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "string", :name "policyName", :type "string"}]
-    :name "getPolicy"
-    :outputs
-    [{:components
-      [{:internalType "uint256", :name "policyWeight", :type "uint256"}
-       {:internalType "uint256", :name "maxWeight", :type "uint256"}
-       {:internalType "uint32", :name "voteDuration", :type "uint32"}
-       {:internalType "uint32"
-        :name "effectiveDuration"
-        :type "uint32"}
-       {:internalType "uint256"
-        :name "minWeightOpenVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightValidVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightApproveVote"
-        :type "uint256"}
-       {:internalType "uint256", :name "policyValue", :type "uint256"}
-       {:internalType "uint8", :name "decider", :type "uint8"}
-       {:internalType "bool", :name "exists", :type "bool"}
-       {:internalType "bool", :name "openVote", :type "bool"}]
-      :internalType "struct Governance.Policy"
-      :name "policy"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "bytes32", :name "policyIndex", :type "bytes32"}]
-    :name "getPolicyByIndex"
-    :outputs
-    [{:components
-      [{:internalType "uint256", :name "policyWeight", :type "uint256"}
-       {:internalType "uint256", :name "maxWeight", :type "uint256"}
-       {:internalType "uint32", :name "voteDuration", :type "uint32"}
-       {:internalType "uint32"
-        :name "effectiveDuration"
-        :type "uint32"}
-       {:internalType "uint256"
-        :name "minWeightOpenVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightValidVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightApproveVote"
-        :type "uint256"}
-       {:internalType "uint256", :name "policyValue", :type "uint256"}
-       {:internalType "uint8", :name "decider", :type "uint8"}
-       {:internalType "bool", :name "exists", :type "bool"}
-       {:internalType "bool", :name "openVote", :type "bool"}]
-      :internalType "struct Governance.Policy"
-      :name "policy"
-      :type "tuple"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getProposalContract"
-    :outputs [{:internalType "address", :name "", :type "address"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getTotalManager"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "getTotalOperation"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "_memberContract", :type "address"}
-     {:internalType "address"
-      :name "_araTokenContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_bancorFormulaContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_proposalContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_nftFactoryContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_nftUtilsContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_collectionFactoryContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_collectionUtilsContract"
-      :type "address"}
-     {:internalType "address"
-      :name "_managementFundContract"
-      :type "address"}]
-    :name "initContractAddress"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "_manager", :type "address"}
-     {:internalType "address", :name "_operation", :type "address"}
-     {:internalType "address", :name "_auditor", :type "address"}
-     {:internalType "address", :name "_custodian", :type "address"}
-     {:internalType "uint16", :name "_totalPolicy", :type "uint16"}
-     {:components
-      [{:internalType "string", :name "policyName", :type "string"}
-       {:internalType "uint256", :name "policyWeight", :type "uint256"}
-       {:internalType "uint256", :name "maxWeight", :type "uint256"}
-       {:internalType "uint32", :name "voteDuration", :type "uint32"}
-       {:internalType "uint32"
-        :name "effectiveDuration"
-        :type "uint32"}
-       {:internalType "uint256"
-        :name "minWeightOpenVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightValidVote"
-        :type "uint256"}
-       {:internalType "uint256"
-        :name "minWeightApproveVote"
-        :type "uint256"}
-       {:internalType "uint256", :name "policyValue", :type "uint256"}
-       {:internalType "uint8", :name "decider", :type "uint8"}]
-      :internalType "struct Governance.InitPolicy[]"
-      :name "_policies"
-      :type "tuple[]"}]
-    :name "initPolicy"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "isAuditor"
-    :outputs [{:internalType "bool", :name "", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "isCustodian"
-    :outputs [{:internalType "bool", :name "", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "isManager"
-    :outputs [{:internalType "bool", :name "", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "addr", :type "address"}]
-    :name "isOperation"
-    :outputs [{:internalType "bool", :name "", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "managerMaxControlWeight"
-    :outputs [{:internalType "uint256", :name "", :type "uint256"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :name "managers"
-    :outputs
-    [{:internalType "address", :name "addr", :type "address"}
-     {:internalType "uint256", :name "controlWeight", :type "uint256"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "", :type "address"}]
-    :name "managersAddress"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "operationMaxControlWeight"
-    :outputs [{:internalType "uint256", :name "", :type "uint256"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :name "operations"
-    :outputs
-    [{:internalType "address", :name "addr", :type "address"}
-     {:internalType "uint256", :name "controlWeight", :type "uint256"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "address", :name "", :type "address"}]
-    :name "operationsAddress"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs [{:internalType "bytes32", :name "", :type "bytes32"}]
-    :name "policies"
-    :outputs
-    [{:internalType "uint256", :name "policyWeight", :type "uint256"}
-     {:internalType "uint256", :name "maxWeight", :type "uint256"}
-     {:internalType "uint32", :name "voteDuration", :type "uint32"}
-     {:internalType "uint32", :name "effectiveDuration", :type "uint32"}
-     {:internalType "uint256"
-      :name "minWeightOpenVote"
-      :type "uint256"}
-     {:internalType "uint256"
-      :name "minWeightValidVote"
-      :type "uint256"}
-     {:internalType "uint256"
-      :name "minWeightApproveVote"
-      :type "uint256"}
-     {:internalType "uint256", :name "policyValue", :type "uint256"}
-     {:internalType "uint8", :name "decider", :type "uint8"}
-     {:internalType "bool", :name "exists", :type "bool"}
-     {:internalType "bool", :name "openVote", :type "bool"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "addr", :type "address"}
-     {:internalType "bool", :name "approve", :type "bool"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :name "setAuditorByProposal"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs
-    [{:internalType "address", :name "addr", :type "address"}
-     {:internalType "bool", :name "approve", :type "bool"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :name "setCustodianByProposal"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs
-    [{:internalType "uint16", :name "_totalManager", :type "uint16"}
-     {:internalType "uint16", :name "managerIndex", :type "uint16"}
-     {:internalType "address", :name "addr", :type "address"}
-     {:internalType "uint256", :name "controlWeight", :type "uint256"}
-     {:internalType "uint256", :name "maxWeight", :type "uint256"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :name "setManagerAtIndexByProposal"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs
-    [{:internalType "uint16", :name "_totalOperation", :type "uint16"}
-     {:internalType "uint16", :name "operationIndex", :type "uint16"}
-     {:internalType "address", :name "addr", :type "address"}
-     {:internalType "uint256", :name "controlWeight", :type "uint256"}
-     {:internalType "uint256", :name "maxWeight", :type "uint256"}
-     {:internalType "string", :name "dataURI", :type "string"}]
-    :name "setOperationAtIndexByProposal"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs
-    [{:internalType "bytes32", :name "policyIndex", :type "bytes32"}
-     {:internalType "uint256", :name "policyWeight", :type "uint256"}
-     {:internalType "uint256", :name "maxWeight", :type "uint256"}
-     {:internalType "uint32", :name "voteDuration", :type "uint32"}
-     {:internalType "uint256"
-      :name "minWeightOpenVote"
-      :type "uint256"}
-     {:internalType "uint256"
-      :name "minWeightValidVote"
-      :type "uint256"}
-     {:internalType "uint256"
-      :name "minWeightApproveVote"
-      :type "uint256"}
-     {:internalType "uint256", :name "policyValue", :type "uint256"}
-     {:internalType "uint8", :name "decider", :type "uint8"}]
-    :name "setPolicyByProposal"
-    :outputs []
-    :stateMutability "nonpayable"
-    :type "function"}
-   {:inputs [{:internalType "string", :name "str", :type "string"}]
-    :name "stringToBytes32"
-    :outputs [{:internalType "bytes32", :name "", :type "bytes32"}]
-    :stateMutability "pure"
-    :type "function"}
-   {:inputs []
-    :name "totalManager"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}
-   {:inputs []
-    :name "totalOperation"
-    :outputs [{:internalType "uint16", :name "", :type "uint16"}]
-    :stateMutability "view"
-    :type "function"}])
+[{:inputs [{:internalType "address", :name "root", :type "address"}],
+  :stateMutability "nonpayable",
+  :type "constructor"}
+ {:inputs [{:internalType "address", :name "addr", :type "address"}],
+  :name "getReferral",
+  :outputs [{:internalType "address", :name "", :type "address"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs [{:internalType "address", :name "addr", :type "address"}],
+  :name "isMember",
+  :outputs [{:internalType "bool", :name "", :type "bool"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs [{:internalType "address", :name "", :type "address"}],
+  :name "members",
+  :outputs
+  [{:internalType "address", :name "referral", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :stateMutability "view",
+  :type "function"}
+ {:inputs
+  [{:internalType "address", :name "addr", :type "address"}
+   {:internalType "address", :name "referral", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :name "setMember",
+  :outputs [],
+  :stateMutability "nonpayable",
+  :type "function"}
+ {:inputs [{:internalType "string", :name "str", :type "string"}],
+  :name "stringToBytes32",
+  :outputs [{:internalType "bytes32", :name "", :type "bytes32"}],
+  :stateMutability "pure",
+  :type "function"}
+ {:inputs
+  [{:internalType "address", :name "addr", :type "address"}
+   {:internalType "string", :name "username", :type "string"}
+   {:internalType "string", :name "thumbnail", :type "string"}],
+  :name "updateMember",
+  :outputs [],
+  :stateMutability "nonpayable",
+  :type "function"}
+ {:inputs [{:internalType "bytes32", :name "", :type "bytes32"}],
+  :name "usernames",
+  :outputs [{:internalType "address", :name "", :type "address"}],
+  :stateMutability "view", 
+  :type "function"}])
 
 (def ara-token-abi
   [{:inputs

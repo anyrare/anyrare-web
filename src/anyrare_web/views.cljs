@@ -5,7 +5,7 @@
    [anyrare-web.page.home :refer [home]]
    [anyrare-web.asset.views :refer [asset]]
    [anyrare-web.page.asset-mint :refer [asset-mint]]
-   [anyrare-web.page.register :refer [register]]
+   [anyrare-web.register.views :refer [register]]
    [anyrare-web.styles :as styles]
    [anyrare-web.subs :as subs]))
 

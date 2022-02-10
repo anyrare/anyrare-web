@@ -10,6 +10,8 @@
    [day8.re-frame.tracing :refer-macros [fn-traced]]
    [day8.re-frame.async-flow-fx :as async-flow-fx]))
 
+;; Core
+
 (reg-event-db
  ::initialize-db
  (fn-traced [db _] app-db))
@@ -19,6 +21,10 @@
  (fn [_ [_ handler]]
    {:navigate handler}))
 
+(reg-event-db
+ ::save-data
+ (fn [db [_ key data]]
+   (assoc db key data)))
 
 ;; Router
 
@@ -32,11 +38,11 @@
               (case page
                 :home {:db set-page}
                 :asset {:db set-page
-                        :dispatch-n [[::fetch-nft-by-token-id
+                        :dispatch-n [[::fetch-asset-data
                                       {:token-id (:token-id route-params)}]]}
                 :register {:db set-page
-                           :dispatch-n [[::fetch-member-by-code
-                                         {:code (:code route-params)}]]}
+                           :dispatch-n [[::fetch-member-by-username
+                                         {:username (:username route-params)}]]}
                 :asset-mint {:db set-page}))))
 
 
@@ -74,47 +80,50 @@
 
 
 (reg-event-db
- ::ethers-tx-callback
- (fn [db [_ data]]
-   (.log js/console "tx-callback" (clj->js data))
-   (assoc db :ethers-tx-result data)))
+ ::save-data
+ (fn [db [_ key data]]
+   (.log js/console key)
+   (assoc db key data)))
+
 
 (reg-event-fx
  ::ethers-set-member
  (fn [_ [_ referral]]
-   {:result (ethers/set-member referral #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/set-member referral #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-mint
  (fn [_ [_ params]]
-   {:result (ethers/nft-mint params #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-mint params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-custodian-sign
  (fn [_ [_ params]]
-   {:result (ethers/nft-custodian-sign params #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-custodian-sign params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-pay-fee-and-claim-token
  (fn [_ [_ params]]
-   {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::ethers-tx-callback %]))}))
+   (.log js/console params)
+   {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-current-token-id
  (fn [_ _]
-   {:result (ethers/nft-current-token-id #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-current-token-id #(dispatch [::save-data :ethers-tx-callback %]))}))
 
-(reg-event-fx
- ::ethers-nft-by-id
- (fn [_ [_ params]]
-   {:result (ethers/nft-by-id params #(dispatch [::ethers-tx-callback %]))}))
 
 (reg-event-fx
  ::ethers-nft-token-uri
  (fn [_ [_ params]]
-   {:result (ethers/nft-token-uri params #(dispatch [::ethers-tx-callback %]))}))
+   {:result (ethers/nft-token-uri params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 ;; Register
+
+(reg-event-fx
+ ::fetch-member-by-username
+ (fn [_ [_ params]]
+   {:dispatch-fn [(ethers/member-by-username params #(dispatch [::save-data :referral %]))]}))
 
 
 (reg-event-fx
@@ -157,11 +166,6 @@
 
 
 (reg-event-fx
- ::save-asset
- (fn [_ _]
-   {:result (.log js/console "Save asset")}))
-
-(reg-event-fx
  ::nft-mint
  (fn [_ [_ params]]
    {:async-flow
@@ -185,21 +189,12 @@
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
-(reg-event-fx
- ::nft-by-id
- (fn [_ [_ params]]
-   {:async-flow
-    {:first-dispatch [::ethers-nft-by-id params]
-     :rules [{:when :seen? :events ::ethers-tx-callback
-              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
-
-(reg-event-fx
  ::nft-token-uri
  (fn [_ [_ params]]
    {:async-flow
     {:first-dispatch [::ethers-nft-token-uri params]
      :rules [{:when :seen? :events ::ethers-tx-callback
-              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
+              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}})
 
 (reg-event-fx
  ::nft-current-token-id
@@ -211,13 +206,16 @@
 
 ;; Asset
 
+;; (reg-event-fx
+;;  ::fetch-asset-data
+;;  (fn [_ [_ {:keys [token-id]}]]
+;;    {:fx [[:dispatch [::ethers-nft-by-id {:token-id token-id :save-var :asset-page}]]
+;;          [:dispatch [::ethers-get-signer-address]]]}))
+
+
 (reg-event-fx
- ::fetch-nft-by-token-id
+ ::fetch-asset-data
  (fn [_ [_ {:keys [token-id]}]]
-   {:dispatch (fetch-gql
-               (get-in gql [:get-nft :query])
-               (get-in gql [:get-nft :type])
-               {:tokenId (js/parseInt token-id)}
-               ::save-gql-data
-               :asset-page
-               :getNFT)}))
+   {:dispatch-fn [(ethers/nft-by-id {:token-id token-id} #(dispatch [::save-data :asset-page %]))
+                  (ethers/signer-address #(dispatch [::save-data :signer %]))]}))
+
