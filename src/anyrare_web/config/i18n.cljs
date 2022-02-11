@@ -162,7 +162,16 @@
     :en "by"}
    :tools
    {:th "เครื่องมือ"
-    :en "Tools"}})
+    :en "Tools"}
+   :meet-reserve-price
+   {:th "ถึงราคาขั้นต่ำแล้ว"
+    :en "Meet reserve price"}
+   :not-meet-reserve-price
+   {:th "ยังไม่ถึงราคาขั้นต่ำ"
+    :en "Not meet reserve price"}
+   :close-auction-timestamp
+   {:th "เวลาปิดประมูล"
+    :en "Close Auction"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))

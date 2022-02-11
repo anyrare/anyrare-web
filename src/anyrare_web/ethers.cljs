@@ -171,7 +171,7 @@
                                   (:nft-factory contract-abi)
                                   provider)
                     (:token-id params))
-          ;; TODO: Revise Promise.all flow
+          ;; TODO: Revise Promise.all
           token-uri (.tokenURI (get-contract (:nft-factory contract-address)
                                              (:nft-factory contract-abi)
                                              provider)
@@ -185,13 +185,15 @@
           founder (member-by-address {:address (.. tx -addr -founder)} (fn [x] x))
           auditor (member-by-address {:address (.. tx -addr -auditor)} (fn [x] x))
           custodian (member-by-address {:address (.. tx -addr -custodian)} (fn [x] x))
-          owner (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))]
+          owner (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))
+          auction-bidder (member-by-address {:address (.. auction -bidder)} (fn [x] x))
+          offer-bidder (member-by-address {:address (.. tx -offer -bidder)} (fn [x] x))]
     (callback (js->clj
                {:token-id (.-tokenId tx)
                 :token-uri token-uri
                 :token-uri-data (json->clj (:body token-uri-data))
-                :auction {:bidder (.. auction -bidder)
-                          :owner (.. auction -owner)
+                :auction {:bidder auction-bidder
+                          :owner owner
                           :open-auction-timestamp (.. auction -openAuctionTimestamp)
                           :close-auction-timestamp (.. auction -closeAuctionTimestamp)
                           :max-bid (.. auction -maxBid)
@@ -224,13 +226,13 @@
                       :founder-weight (.. tx -fee -founderWeight)
                       :mint-fee (.. tx -fee -mintFee)}
                 :total-auction (.. tx -totalAuction)
-                :buy-it-now {:owner (.. tx -buyItNow -owner)
+                :buy-it-now {:owner owner
                              :value (.. tx -buyItNow -value)}
                 :bid-id (.. tx -bidId)
-                :offer {:bidder (.. tx -offer -bidder)
+                :offer {:bidder offer-bidder
                         :close-offer-timestamp (.. tx -offer -closeOfferTimestamp)
                         :open-offer-timestamp (.. tx -offer -openOfferTimestamp)
-                        :owner (.. tx -offer -owner)
+                        :owner owner
                         :value (.. tx -offer -value)}
                 :redeem-timestamp (.. tx -offer -redeemTimestamp)}))))
 
@@ -318,4 +320,6 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
 
