@@ -171,6 +171,7 @@
                                   (:nft-factory contract-abi)
                                   provider)
                     (:token-id params))
+          ;; TODO: Revise Promise.all flow
           token-uri (.tokenURI (get-contract (:nft-factory contract-address)
                                              (:nft-factory contract-abi)
                                              provider)

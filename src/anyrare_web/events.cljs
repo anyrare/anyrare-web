@@ -211,7 +211,7 @@
               :dispatch-fn
               (fn [[_ _ result]]
                 [[::ethers ethers/nft-get-auction-bids
-                  :auctions {:token-id (:token-id result)
+                  :auction-bids {:token-id (:token-id result)
                             :auction-id (- (:total-auction result) 1)
                             :total-bid (:total-bid (:auction result))
                             :current-bid-id (:bid-id result)}]])}]}}))

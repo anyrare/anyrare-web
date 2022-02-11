@@ -158,26 +158,25 @@
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :custodian-fee)]]]]])])))
 
-(defn bids-panel [i18n asset-acution-bids]
+(defn bids-panel [i18n asset-auction-bids]
   (let [toggle (reagent/atom true)]
     (fn []
       [:div {:class [:mt-2]}
-       [title-section-toggle toggle (i18n :bids)]
+       [title-section-toggle toggle (:bids i18n)]
        (when @toggle
          [:ul
-          (for [bid asset-acution-bids]
-            [:li {:key (bid :bid-id) :class [:py-2]}
+          (for [bid (sort-by :bid-id #(compare %2 %1) @asset-auction-bids)]
+            [:li {:key (:bid-id bid) :class [:py-2]}
              [:div {:class [:flex]}
-              [:div {:class [:flex-none :mr-2]} [avatar (bid :thumbnail)]]
-              [:div {:class [:flex-grow]}
-               [:div
-                [:span {:class [:font-kanit :font-medium]} (str (bid :price) " " (i18n :ARA))]
-                [:span {:class [:text-secondary :px-1]} (i18n :by)]
-                [:span {:class [:font-kanit :font-medium]} (str (bid :name))]
-                [:span {:class [:text-secondary :text-sm :px-1]} (str "(" (bid :total-bid) ")")]]
-               [:div
-                [:span {:class [:text-secondary :text-sm]}
-                 (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
+              [:div {:class [:flex-none :mr-2]} [avatar (:thumbnail (:bidder bid))]
+               (:thumbnail bid)]
+              [:div {:class [:flex-grow]} (:username (:bidder bid)) " " (:bid-id bid)]
+              ]
+             ]
+            )
+          
+          ])])))
+
 
 (defn actions-panel [i18n asset]
   (let [toggle (reagent/atom false)]
@@ -252,6 +251,7 @@
         asset-custodian (subscribe [::subs/asset-custodian])
         asset-royalty (subscribe [::subs/asset-royalty])
         asset-auction-info (subscribe [::subs/asset-auction-info])
+        asset-auction-bids (subscribe [::subs/asset-auction-bids])
         i18n @(subscribe [::app-subs/i18n])]
     [:div
      (dispatch [::events/initialize-image-slider])
@@ -260,11 +260,16 @@
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
        [subtitle-panel]
+       [bids-panel i18n asset-auction-bids]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]
        [actions-panel i18n asset]]
       [recommend-auction-panel]]]))
+
+
+
+
 
 
