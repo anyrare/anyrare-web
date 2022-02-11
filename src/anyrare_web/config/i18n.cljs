@@ -171,7 +171,10 @@
     :en "Not meet reserve price"}
    :close-auction-timestamp
    {:th "เวลาปิดประมูล"
-    :en "Close Auction"}})
+    :en "Close Auction"}
+   :bid-auction
+   {:th "ประมูล"
+    :en "Bid"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
