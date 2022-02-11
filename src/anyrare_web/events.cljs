@@ -9,11 +9,13 @@
    [anyrare-web.i18n :refer [get-dicts-by-lang]]
    [day8.re-frame.async-flow-fx :as async-flow-fx]))
 
+
 ;; Core
+
 
 (reg-event-db
  ::initialize-db
- (fn-traced [db _] app-db))
+ (fn [db _] app-db))
 
 (reg-event-fx
  ::navigate
@@ -24,6 +26,7 @@
  ::save-data
  (fn [db [_ key data]]
    (assoc db key data)))
+
 
 ;; Router
 
