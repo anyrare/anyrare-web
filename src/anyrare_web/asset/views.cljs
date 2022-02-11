@@ -15,36 +15,50 @@
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
 
-(defn subtitle-panel [i18n auction-info toggle-popup-panel]
-  [:div {:class [:mb-4]}
-   [:div {:class [:mt-2]}
-    [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
-    [avatar-with-username
-     (get-in auction-info [:highest-bidder :thumbnail])
-     (str (get-in auction-info [:highest-bidder :name])
-          " ("
-          (get-in auction-info [:highest-bidder :total-bid]) ")")
-     (get-in auction-info [:highest-bidder :address])]]
-   [:p {:class [:my-2]}
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :highest-bid) ":")]
-    [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
-                    :bg-gradient-to-br :from-red-400 :to-purple-800]}
-     (str (auction-info :highest-price) " " (i18n :ARA))]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-ends-in) ":")]
-    [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
-    [:span {:class [:font-kanit :font-medium]}
-     (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
-    [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
-   [:div
-    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
-                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
-              :on-click #(reset! toggle-popup-panel true)}
-     (i18n :place-a-bid)]]])
+(defn subtitle-panel []
+  [:div {:class [:py-2]}
+   [:p [:span "ราคาสูงสุด:"] [:span {:class [:ml-2]} "12.02325 ARA"]]
+   [:p [:span "ผู้ให้ราคาสูงสุด:"] [:span {:class [:ml-2]} "panasun"]]
+   [:p [:span "จำนวนการประมูล:"] [:span {:class [:ml-2]} "12"]]
+   [:p [:span "เวลาปิดประมูล:"] [:span {:class [:ml-2]} "12 เมย 2565 14:03:17"]]
+   [:button {:class [:p-4 :mt-2 :text-lg :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
+             :on-click #(dispatch [::events/bid-auction
+                                   {:token-id 0
+                                    :bid-value 5000000
+                                    :max-bid 5000000}])}
+    "ประมูล"]])
+
+;; (defn subtitle-panel [i18n auction-info toggle-popup-panel]
+;;   [:div {:class [:mb-4]}
+;;    [:div {:class [:mt-2]}
+;;     [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
+;;     [avatar-with-username
+;;      (get-in auction-info [:highest-bidder :thumbnail])
+;;      (str (get-in auction-info [:highest-bidder :name])
+;;           " ("
+;;           (get-in auction-info [:highest-bidder :total-bid]) ")")
+;;      (get-in auction-info [:highest-bidder :address])]]
+;;    [:p {:class [:my-2]}
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :highest-bid) ":")]
+;;     [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
+;;                     :bg-gradient-to-br :from-red-400 :to-purple-800]}
+;;      (str (auction-info :highest-price) " " (i18n :ARA))]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-ends-in) ":")]
+;;     [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
+;;     [:span {:class [:font-kanit :font-medium]}
+;;      (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
+;;     [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
+;;    [:div
+;;     [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
+;;                       :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
+;;               :on-click #(reset! toggle-popup-panel true)}
+;;      (i18n :place-a-bid)]]])
+
 
 (defn image-slider-panel [attachments]
   [:div {:id "image-slider" :class "splide"}
@@ -72,7 +86,7 @@
           [:p {:class [:text-secondary :mt-2]} (:description @asset-detail)]
           [:p {:class [:mt-2]}
            [:span {:class [:text-secondary :mr-1]} (str (i18n :asset-id) ":")]
-           [:span {:class [:font-kanit :font-medium]} (:address @asset-detail)]]
+           [:span {:class [:font-kanit :font-medium]} (:token-id @asset-detail)]]
           [:div {:class [:flex :mt-2]}
            [:div {:class ["w-1/2"]}
             [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :founder)]
@@ -244,15 +258,13 @@
      [layout
       [image-slider-panel (:assets asset-data)]
       [:div {:class [:mx-2 :mb-4]}
-       @asset-auction-info
        [title-panel asset-title]
+       [subtitle-panel]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]
-       [actions-panel i18n asset]
-       [bid-button-panel i18n asset]]
+       [actions-panel i18n asset]]
       [recommend-auction-panel]]]))
-
 
 

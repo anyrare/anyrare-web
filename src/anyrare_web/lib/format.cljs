@@ -21,3 +21,6 @@
 (defn unix-timestamp-to-local-datetime
   [unix-timestamp]
   (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "lll")))
+
+(defn trim-username [text]
+  (if (<= (count text) 12) text (str (.substring text 0 12) "..."))) 

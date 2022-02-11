@@ -1,4 +1,6 @@
-(ns anyrare-web.component.avatar)
+(ns anyrare-web.component.avatar
+  (:require
+   [anyrare-web.lib.format :refer [trim-username]]))
 
 (defn avatar [src]
   [:img
@@ -8,5 +10,4 @@
 (defn avatar-with-username [src username address]
   [:div {:class [:flex]}
    (avatar src)
-   [:div {:class [:font-kanit :font-medium :ml-2 :mt-2]} username]]
-  )
+   [:div {:class [:font-kanit :font-medium :ml-2 :mt-2]} (trim-username username)]])

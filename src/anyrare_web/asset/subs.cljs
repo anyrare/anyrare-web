@@ -22,7 +22,7 @@
  ::asset-detail
  (fn [db _]
    {:description (get-in db [:asset-page :token-uri-data :description :th])
-    :address (get-in db [:asset-page :address])
+    :token-id (str (get-in db [:asset-page :token-id]))
     :owner (get-in db [:asset-page :owner])
     :founder (get-in db [:asset-page :founder])}))
 
