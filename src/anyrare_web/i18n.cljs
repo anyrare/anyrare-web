@@ -1,4 +1,4 @@
-(ns anyrare-web.config.i18n
+(ns anyrare-web.i18n
   (:require
    [re-frame.core :refer [reg-event-db]]
    [anyrare-web.lib.localstorage :refer [get-lang]]))
@@ -59,14 +59,20 @@
    {:th "ขาย"
     :en "Sell"}
    :your-bid 
-   {:th "ราคาที่คุณเสนอ"
+   {:th "ราคาที่ต้องการเสนอ"
     :en "Your bid"}
+   :max-bid
+   {:th "ราคาเสนอสูงสุด"
+    :en "Max bid"}
    :you-are-about-to-place-a-bid-for
    {:th "คุณกำลังเสนอราคารายการประมูล"
     :en "You are about to place a bid for"}
    :your-bidding-balance
    {:th "ยอดเงินในกระเป๋าสตางค์ของคุณ"
     :en "Your balance"}
+   :fee
+   {:th "ค่าธรรมเนียม"
+    :en "Fee"}
    :you-will-pay
    {:th "ยอดชำระ"
     :en "You will pay"}
