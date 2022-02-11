@@ -21,25 +21,25 @@
 (reg-sub
  ::asset-detail
  (fn [db _]
-   {:description (get-in db [:asset-page :tokenURIData :description :th])
-    :address (get-in db [:asset-page :address])
-    :owner (get-in db [:asset-page :ownerAddress])
+   {:description (get-in db [:asset-page :token-uri-data :description :th])
+    :token-id (str (get-in db [:asset-page :token-id]))
+    :owner (get-in db [:asset-page :owner])
     :founder (get-in db [:asset-page :founder])}))
 
 (reg-sub
  ::asset-auditor
  (fn [db _]
-   {:address (get-in db [:asset-page :auditorAddress])
+   {:address (get-in db [:asset-page :auditor :address])
     :thumbnail (get-in db [:asset-page :auditor :thumbnail])
     :username (get-in db [:asset-page :auditor :username])
-    :report (get-in db [:asset-page :tokenURIData :auditor :report])
-    :assets (get-in db [:asset-page :tokenURIData :auditor :assets])
-    :timestamp (get-in db [:asset-page :tokenURIData :auditor :timestamp])}))
+    :report (get-in db [:asset-page :token-uri-data :auditor :report])
+    :assets (get-in db [:asset-page :token-uri-data :auditor :assets])
+    :timestamp (get-in db [:asset-page :token-uri-data :auditor :timestamp])}))
 
 (reg-sub
  ::asset-custodian
  (fn [db _]
-   {:address (get-in db [:asset-page :custodianAddress])
+   {:address (get-in db [:asset-page :custodian :address])
     :thumbnail (get-in db [:asset-page :custodian :thumbnail])
     :username (get-in db [:asset-page :custodian :username])}))
 
@@ -47,11 +47,11 @@
  ::asset-royalty
  (fn [db _]
    {:founder-fee (format-money
-                  (/ (get-in db [:asset-page :feeFounderWeight])
-                     (get-in db [:asset-page :feeMaxWeight])) 4)
+                  (/ (get-in db [:asset-page :fee :founder-weight])
+                     (get-in db [:asset-page :fee :max-weight])) 4)
     :custodian-fee (format-money
-                    (/ (get-in db [:asset-page :feeCustodianWeight])
-                       (get-in db [:asset-page :feeMaxWeight])) 4)}))
+                    (/ (get-in db [:asset-page :fee :custodian-weight])
+                       (get-in db [:asset-page :fee :max-weight])) 4)}))
 
 (reg-sub
  ::asset-attachments
@@ -68,26 +68,12 @@
 (reg-sub
  ::asset-auction-info
  (fn [db _]
-   (let [auction (get-in db [:asset-page :auction])
-         highest-price (auction :highest-price)
-         highest-price-denominator (auction :highest-price-denominator)]
-     {:highest-price (format-money (/ highest-price highest-price-denominator) 4)
-      :total-bid (auction :total-bid)
-      :start-date (auction :start-date)
-      :end-date (auction :end-date)
-      :highest-bidder (auction :highest-bidder)})))
+   (get-in db [:asset-page :auction])))
 
 (reg-sub
  ::asset-auction-bids
  (fn [db _]
-   (let [bids (get-in db [:asset-page :auction :bids])]
-     (map (fn [r] {:bid-id (r :bid-id)
-                   :price (format-money (/ (r :price) (r :price-denominator)) 4)
-                   :name (r :name)
-                   :thumbnail (r :thumbnail)
-                   :address (r :address)
-                   :total-bid (r :total-bid)
-                   :date (r :date)}) bids))))
+   (:auction-bids db)))
 
 (reg-sub
  ::asset-auction-panel

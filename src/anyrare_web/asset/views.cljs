@@ -15,36 +15,50 @@
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} text])
 
-(defn subtitle-panel [i18n auction-info toggle-popup-panel]
-  [:div {:class [:mb-4]}
-   [:div {:class [:mt-2]}
-    [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
-    [avatar-with-username
-     (get-in auction-info [:highest-bidder :thumbnail])
-     (str (get-in auction-info [:highest-bidder :name])
-          " ("
-          (get-in auction-info [:highest-bidder :total-bid]) ")")
-     (get-in auction-info [:highest-bidder :address])]]
-   [:p {:class [:my-2]}
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :highest-bid) ":")]
-    [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
-                    :bg-gradient-to-br :from-red-400 :to-purple-800]}
-     (str (auction-info :highest-price) " " (i18n :ARA))]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-ends-in) ":")]
-    [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
-    [:span {:class [:font-kanit :font-medium]}
-     (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
-   [:p
-    [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
-    [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
-   [:div
-    [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
-                      :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
-              :on-click #(reset! toggle-popup-panel true)}
-     (i18n :place-a-bid)]]])
+(defn subtitle-panel []
+  [:div {:class [:py-2]}
+   [:p [:span "ราคาสูงสุด:"] [:span {:class [:ml-2]} "12.02325 ARA"]]
+   [:p [:span "ผู้ให้ราคาสูงสุด:"] [:span {:class [:ml-2]} "panasun"]]
+   [:p [:span "จำนวนการประมูล:"] [:span {:class [:ml-2]} "12"]]
+   [:p [:span "เวลาปิดประมูล:"] [:span {:class [:ml-2]} "12 เมย 2565 14:03:17"]]
+   [:button {:class [:p-4 :mt-2 :text-lg :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
+             :on-click #(dispatch [::events/bid-auction
+                                   {:token-id 0
+                                    :bid-value 7000000
+                                    :max-bid 8000000}])}
+    "ประมูล"]])
+
+;; (defn subtitle-panel [i18n auction-info toggle-popup-panel]
+;;   [:div {:class [:mb-4]}
+;;    [:div {:class [:mt-2]}
+;;     [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :highest-bid-by)]
+;;     [avatar-with-username
+;;      (get-in auction-info [:highest-bidder :thumbnail])
+;;      (str (get-in auction-info [:highest-bidder :name])
+;;           " ("
+;;           (get-in auction-info [:highest-bidder :total-bid]) ")")
+;;      (get-in auction-info [:highest-bidder :address])]]
+;;    [:p {:class [:my-2]}
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :highest-bid) ":")]
+;;     [:span {:class [:font-kanit :font-medium :text-transparent :bg-clip-text
+;;                     :bg-gradient-to-br :from-red-400 :to-purple-800]}
+;;      (str (auction-info :highest-price) " " (i18n :ARA))]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-ends-in) ":")]
+;;     [:span {:class [:font-kanit :font-medium]} "0 วัน 4 ชั่วโมง 5 นาที 10 วินาที"]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :auction-closed) ":")]
+;;     [:span {:class [:font-kanit :font-medium]}
+;;      (str (unix-timestamp-to-local-datetime (auction-info :end-date)))]]
+;;    [:p
+;;     [:span {:class [:text-secondary :mr-1]} (str (i18n :total-bid) ":")]
+;;     [:span {:class [:font-kanit :font-medium]} (str (auction-info :total-bid) " ครั้ง")]]
+;;    [:div
+;;     [:button {:class [:button :bg-primary :active:bg-primary-600 :w-full
+;;                       :rounded-full :mt-4 :py-2 :text-white :font-kanit :font-medium]
+;;               :on-click #(reset! toggle-popup-panel true)}
+;;      (i18n :place-a-bid)]]])
+
 
 (defn image-slider-panel [attachments]
   [:div {:id "image-slider" :class "splide"}
@@ -72,7 +86,7 @@
           [:p {:class [:text-secondary :mt-2]} (:description @asset-detail)]
           [:p {:class [:mt-2]}
            [:span {:class [:text-secondary :mr-1]} (str (i18n :asset-id) ":")]
-           [:span {:class [:font-kanit :font-medium]} (:address @asset-detail)]]
+           [:span {:class [:font-kanit :font-medium]} (:token-id @asset-detail)]]
           [:div {:class [:flex :mt-2]}
            [:div {:class ["w-1/2"]}
             [:p {:class [:text-secondary :text-sm :mb-2 :font-kanit]} (i18n :founder)]
@@ -144,47 +158,54 @@
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :custodian-fee)]]]]])])))
 
-(defn bids-panel [i18n asset-acution-bids]
+(defn bids-panel [i18n asset-auction-bids]
   (let [toggle (reagent/atom true)]
     (fn []
       [:div {:class [:mt-2]}
-       [title-section-toggle toggle (i18n :bids)]
+       [title-section-toggle toggle (:bids i18n)]
        (when @toggle
          [:ul
-          (for [bid asset-acution-bids]
-            [:li {:key (bid :bid-id) :class [:py-2]}
+          (for [bid (sort-by :bid-id #(compare %2 %1) @asset-auction-bids)]
+            [:li {:key (:bid-id bid) :class [:py-2]}
              [:div {:class [:flex]}
-              [:div {:class [:flex-none :mr-2]} [avatar (bid :thumbnail)]]
-              [:div {:class [:flex-grow]}
-               [:div
-                [:span {:class [:font-kanit :font-medium]} (str (bid :price) " " (i18n :ARA))]
-                [:span {:class [:text-secondary :px-1]} (i18n :by)]
-                [:span {:class [:font-kanit :font-medium]} (str (bid :name))]
-                [:span {:class [:text-secondary :text-sm :px-1]} (str "(" (bid :total-bid) ")")]]
-               [:div
-                [:span {:class [:text-secondary :text-sm]}
-                 (unix-timestamp-to-local-datetime (bid :date))]]]]])])])))
+              [:div {:class [:flex-none :mr-2]} [avatar (:thumbnail (:bidder bid))]
+               (:thumbnail bid)]
+              [:div {:class [:flex-grow]} (:username (:bidder bid)) " " (:bid-id bid)]
+              ]
+             ]
+            )
+          
+          ])])))
 
 
-(defn actions-panel [i18n signer asset]
-  (let [toggle (reagent/atom true)]
-    (when (= (:address @signer) (get-in @asset [:owner :address]))
-      [:div {:class [:mt-2]}
-       [title-section-toggle toggle (:tools i18n)]
-       (when @toggle
-         [:div
-          [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
-                    :on-click #(dispatch [::events/open-auction {:token-id 0
-                                                                 :close-auction-period-second 86000
-                                                                 :starting-price 1000
-                                                                 :reserve-price 500000
-                                                                 :max-weight 1000000
-                                                                 :next-bid-weight 1000}])}
-           "ตั้งประมูล"]])])))
+(defn actions-panel [i18n asset]
+  (let [toggle (reagent/atom false)]
+    (fn []
+      (when (= (:signer @asset) (get-in @asset [:owner :address]))
+        [:div {:class [:mt-2]}
+         [title-section-toggle toggle (:tools i18n)]
+         (when @toggle
+           [:div
+            [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
+                      :on-click #(dispatch [::events/open-auction {:token-id 0
+                                                                   :close-auction-period-second 86000
+                                                                   :starting-price 1000
+                                                                   :reserve-price 500000
+                                                                   :max-weight 1000000
+                                                                   :next-bid-weight 1000}])}
+             "ตั้งประมูล"]])]))))
+
+(defn bid-button-panel [i18n]
+  [:div {:class [:mt-2 :w-full]}
+   [:button {:class [:p-4 :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
+             :on-click #(dispatch [::events/bid-auction
+                                   {:token-id 0
+                                    :bid-value 5000000
+                                    :max-bid 5000000}])}
+    "ประมูล"]])
 
 (defn recommend-auction-panel []
   [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"])
-
 
 (defn popup-panel [content toggle-popup-panel]
   (when @toggle-popup-panel
@@ -229,17 +250,26 @@
         asset-auditor (subscribe [::subs/asset-auditor])
         asset-custodian (subscribe [::subs/asset-custodian])
         asset-royalty (subscribe [::subs/asset-royalty])
-        i18n @(subscribe [::app-subs/i18n])
-        signer (subscribe [::app-subs/signer])]
+        asset-auction-info (subscribe [::subs/asset-auction-info])
+        asset-auction-bids (subscribe [::subs/asset-auction-bids])
+        i18n @(subscribe [::app-subs/i18n])]
     [:div
      (dispatch [::events/initialize-image-slider])
      [layout
       [image-slider-panel (:assets asset-data)]
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
+       [subtitle-panel]
+       [bids-panel i18n asset-auction-bids]
        [detail-panel i18n asset-detail]
        [auditor-panel i18n asset-auditor]
        [custodian-panel i18n asset-custodian]
        [royalty-panel i18n asset-royalty]
-       [actions-panel i18n signer asset]]
+       [actions-panel i18n asset]]
       [recommend-auction-panel]]]))
+
+
+
+
+
+

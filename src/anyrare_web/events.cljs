@@ -31,19 +31,19 @@
 
 (reg-event-fx
  ::set-active-page
- (fn-traced [{:keys [db]} [_ {:keys [page route-params]}]]
-            (let [set-page (-> db
-                               (assoc :active-page page)
-                               (assoc :route-params route-params))]
-              (case page
-                :home {:db set-page}
-                :asset {:db set-page
-                        :dispatch-n [[::fetch-asset-data
-                                      {:token-id (:token-id route-params)}]]}
-                :register {:db set-page
-                           :dispatch-n [[::fetch-member-by-username
-                                         {:username (:username route-params)}]]}
-                :asset-mint {:db set-page}))))
+ (fn [{:keys [db]} [_ {:keys [page route-params]}]]
+   (let [set-page (-> db
+                      (assoc :active-page page)
+                      (assoc :route-params route-params))]
+     (case page
+       :home {:db set-page}
+       :asset {:db set-page
+               :dispatch-n [[::fetch-asset-data
+                             {:token-id (:token-id route-params)}]]}
+       :register {:db set-page
+                  :dispatch-n [[::fetch-member-by-username
+                                {:username (:username route-params)}]]}
+       :asset-mint {:db set-page}))))
 
 
 ;; GraphQL Flow
@@ -63,8 +63,8 @@
 
 (reg-event-db
  ::set-i18n
- (fn-traced [db [_ lang]]
-            (assoc db :i18n (get-dicts-by-lang lang))))
+ (fn [db [_ lang]]
+   (assoc db :i18n (get-dicts-by-lang lang))))
 
 
 ;; lib/ethers
@@ -72,8 +72,8 @@
 
 (reg-event-db
  ::set-account-id
- (fn-traced [db [_ account-id]]
-            (assoc db :account-id account-id)))
+ (fn [db [_ account-id]]
+   (assoc db :account-id account-id)))
 
 
 ;; Ethers
@@ -82,9 +82,7 @@
 (reg-event-db
  ::save-data
  (fn [db [_ key data]]
-   (.log js/console key)
    (assoc db key data)))
-
 
 (reg-event-fx
  ::ethers-set-member
@@ -104,7 +102,6 @@
 (reg-event-fx
  ::ethers-nft-pay-fee-and-claim-token
  (fn [_ [_ params]]
-   (.log js/console params)
    {:result (ethers/nft-pay-fee-and-claim-token params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
 (reg-event-fx
@@ -112,19 +109,24 @@
  (fn [_ _]
    {:result (ethers/nft-current-token-id #(dispatch [::save-data :ethers-tx-callback %]))}))
 
-
 (reg-event-fx
  ::ethers-nft-token-uri
  (fn [_ [_ params]]
    {:result (ethers/nft-token-uri params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
+(reg-event-fx
+ ::ethers
+ (fn [_ [_ func key params]]
+   (.log js/console (clj->js params))
+   {:result (func params #(dispatch [::save-data key %]))}))
+
 ;; Register
+
 
 (reg-event-fx
  ::fetch-member-by-username
  (fn [_ [_ params]]
    {:dispatch-fn [(ethers/member-by-username params #(dispatch [::save-data :referral %]))]}))
-
 
 (reg-event-fx
  ::fetch-member-by-code
@@ -189,13 +191,6 @@
      :rules [{:when :seen? :events ::ethers-tx-callback
               :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}}))
 
- ::nft-token-uri
- (fn [_ [_ params]]
-   {:async-flow
-    {:first-dispatch [::ethers-nft-token-uri params]
-     :rules [{:when :seen? :events ::ethers-tx-callback
-              :dispatch-fn (fn [[_ result]] [[::save-asset result]])}]}})
-
 (reg-event-fx
  ::nft-current-token-id
  (fn [_ _]
@@ -206,16 +201,18 @@
 
 ;; Asset
 
-;; (reg-event-fx
-;;  ::fetch-asset-data
-;;  (fn [_ [_ {:keys [token-id]}]]
-;;    {:fx [[:dispatch [::ethers-nft-by-id {:token-id token-id :save-var :asset-page}]]
-;;          [:dispatch [::ethers-get-signer-address]]]}))
-
 
 (reg-event-fx
  ::fetch-asset-data
  (fn [_ [_ {:keys [token-id]}]]
-   {:dispatch-fn [(ethers/nft-by-id {:token-id token-id} #(dispatch [::save-data :asset-page %]))
-                  (ethers/signer-address #(dispatch [::save-data :signer %]))]}))
+   {:async-flow
+    {:first-dispatch [::ethers ethers/nft-by-id :asset-page {:token-id token-id}]
+     :rules [{:when :seen? :events ::save-data
+              :dispatch-fn
+              (fn [[_ _ result]]
+                [[::ethers ethers/nft-get-auction-bids
+                  :auction-bids {:token-id (:token-id result)
+                            :auction-id (- (:total-auction result) 1)
+                            :total-bid (:total-bid (:auction result))
+                            :current-bid-id (:bid-id result)}]])}]}}))
 
