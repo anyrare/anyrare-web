@@ -6,5 +6,5 @@
 
 (defn header []
   [:div
-   {:class [:bg-white :h-12 :text-lg :pt-2 :pl-2 :font-medium (header-shadow)]}
+   {:class [:bg-white :h-12 :text-lg :pt-2 :pl-2 :font-kanit :font-medium (header-shadow)]}
    [:div {:class [:mx-auto :max-w-screen-xl]} "AnyRare"]])

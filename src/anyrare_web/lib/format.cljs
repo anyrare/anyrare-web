@@ -14,6 +14,15 @@
   ;; TODO: Add comma formatter
   (-> (gstring/format (str "%." digit "f") num)))
 
+(defn format-currency
+  [num]
+  (format-money
+   (/ num "1000000000000") 16))
+
+(defn format-currency
+  [num]
+  num)
+
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
   (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "ll")))

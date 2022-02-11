@@ -24,34 +24,26 @@
    {:description (get-in db [:asset-page :token-uri-data :description :th])
     :token-id (str (get-in db [:asset-page :token-id]))
     :owner (get-in db [:asset-page :owner])
-    :founder (get-in db [:asset-page :founder])}))
-
-(reg-sub
- ::asset-auditor
- (fn [db _]
-   {:address (get-in db [:asset-page :auditor :address])
-    :thumbnail (get-in db [:asset-page :auditor :thumbnail])
-    :username (get-in db [:asset-page :auditor :username])
-    :report (get-in db [:asset-page :token-uri-data :auditor :report])
-    :assets (get-in db [:asset-page :token-uri-data :auditor :assets])
-    :timestamp (get-in db [:asset-page :token-uri-data :auditor :timestamp])}))
-
-(reg-sub
- ::asset-custodian
- (fn [db _]
-   {:address (get-in db [:asset-page :custodian :address])
-    :thumbnail (get-in db [:asset-page :custodian :thumbnail])
-    :username (get-in db [:asset-page :custodian :username])}))
+    :founder (get-in db [:asset-page :founder])
+    :auditor (get-in db [:asset-page :auditor])
+    :custodian (get-in db [:asset-page :custodian])
+    :audit-date (get-in db [:asset-page :token-uri-data :auditor :timestamp])}))
 
 (reg-sub
  ::asset-royalty
  (fn [db _]
-   {:founder-fee (format-money
+   {:founder-fee (->
                   (/ (get-in db [:asset-page :fee :founder-weight])
-                     (get-in db [:asset-page :fee :max-weight])) 4)
-    :custodian-fee (format-money
+                     (get-in db [:asset-page :fee :max-weight]))
+                  (* 100)
+                  (format-money 2)
+                  (str " %"))
+    :custodian-fee (->
                     (/ (get-in db [:asset-page :fee :custodian-weight])
-                       (get-in db [:asset-page :fee :max-weight])) 4)}))
+                       (get-in db [:asset-page :fee :max-weight]))
+                    (* 100)
+                    (format-money 2)
+                    (str " %"))}))
 
 (reg-sub
  ::asset-attachments
@@ -66,17 +58,21 @@
      (format-money (/ highest-price highest-price-denominator) 4))))
 
 (reg-sub
- ::asset-auction-info
+ ::asset-auction
  (fn [db _]
    (get-in db [:asset-page :auction])))
 
 (reg-sub
  ::asset-auction-bids
  (fn [db _]
-   (:auction-bids db)))
+   (sort-by :bid-id #(compare %2 %1) (:auction-bids db))))
 
 (reg-sub
  ::asset-auction-panel
  (fn [db _]))
+
+
+
+
 
 
