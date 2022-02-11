@@ -61,26 +61,10 @@
   [number]
   (.from (.-BigNumber ethers) number))
 
-;; (defn create-member []
-;;   (init-wallet-signer))
-
-;; (reg-event-fx
-;;  ::create-member
-;;  (fn [_ _]
-;;    (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-;;            signer (.getSigner provider-metamask)
-;;            address (.getAddress signer)]
-;;      (let [contract (new (.-Contract ethers)
-;;                          (:member contract-address)
-;;                          (clj->js (:member contract-abi))
-;;                          signer)]
-;;        (.log js/console provider-metamask)
-;;        (p/let [tx (.isMember contract address)]
-;;          (.log js/console tx))))))
-
 (defn get-contract
   [address abi signer]
   (new (.-Contract ethers) address (clj->js abi) signer))
+
 
 ;; Member
 
@@ -101,15 +85,23 @@
     (callback {:result (js->clj tx)
                :address address})))
 
+(defn member-by-address
+  [params callback]
+  (p/let [tx (.members (get-contract (:member contract-address)
+                                     (:member contract-abi)
+                                     provider)
+                       (:address params))]
+    (callback (js->clj
+               {:address (:address params)
+                :referral (.. tx -referral)
+                :username (.. tx -username)
+                :thumbnail (.. tx -thumbnail)}))))
+
 (defn member-by-username
   [params callback]
-  (.log js/console (:username params))
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)
-          tx (.getAddressByUsername (get-contract (:member contract-address)
+  (p/let [tx (.getAddressByUsername (get-contract (:member contract-address)
                                                   (:member contract-abi)
-                                                  signer)
+                                                  provider)
                                     (:username params))]
     (callback (js->clj tx))))
 
@@ -168,68 +160,51 @@
 
 (defn nft-current-token-id
   [callback]
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)
-          tx (.getCurrentTokenId (get-contract (:nft-factory contract-address)
+  (p/let [tx (.getCurrentTokenId (get-contract (:nft-factory contract-address)
                                                (:nft-factory contract-abi)
-                                               signer))]
+                                               provider))]
     (callback {:result (js->clj tx)})))
-
-(def lisa-image "https://upload.wikimedia.org/wikipedia/commons/e/e9/Blackpink_Lisa_Vogue_2021_%281%29.jpg")
 
 (defn nft-by-id
   [params callback]
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)
-          tx (.nfts (get-contract (:nft-factory contract-address)
+  (p/let [tx (.nfts (get-contract (:nft-factory contract-address)
                                   (:nft-factory contract-abi)
-                                  signer)
+                                  provider)
                     (:token-id params))
-          tx-token-uri (.tokenURI (get-contract (:nft-factory contract-address)
-                                                (:nft-factory contract-abi)
-                                                signer)
-                                  (:token-id params))
-          tx-token-uri-data (fetch/get tx-token-uri)
-          tx-auction (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
-                                                           (:nft-factory contract-abi)
-                                                           signer)
-                                             (:token-id params)
-                                             (- (.. tx -totalAuction) 1))]
-    (.log js/console (get-contract (:nft-factory contract-address)
-                                   (:nft-factory contract-abi)
-                                   signer))
-
+          token-uri (.tokenURI (get-contract (:nft-factory contract-address)
+                                             (:nft-factory contract-abi)
+                                             provider)
+                               (:token-id params))
+          token-uri-data (fetch/get token-uri)
+          auction (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
+                                                        (:nft-factory contract-abi)
+                                                        provider)
+                                          (:token-id params)
+                                          (- (.. tx -totalAuction) 1))
+          founder (member-by-address {:address (.. tx -addr -founder)} (fn [x] x))
+          auditor (member-by-address {:address (.. tx -addr -auditor)} (fn [x] x))
+          custodian (member-by-address {:address (.. tx -addr -custodian)} (fn [x] x))
+          owner (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))]
     (callback (js->clj
                {:token-id (.-tokenId tx)
-                :signer address
-                :token-uri tx-token-uri
-                :token-uri-data (json->clj (:body tx-token-uri-data))
-                :auction {:bidder (.. tx-auction -bidder)
-                          :owner (.. tx-auction -owner)
-                          :open-auction-timestamp (.. tx-auction -openAuctionTimestamp)
-                          :close-auction-timestamp (.. tx-auction -closeAuctionTimestamp)
-                          :max-bid (.. tx-auction -maxBid)
-                          :max-weight (.. tx-auction -maxWeight)
-                          :meet-reserve-price (.. tx-auction -meetReservePrice)
-                          :next-bid-weight (.. tx-auction -nextBidWeight)
-                          :reserve-price (.. tx-auction -reservePrice)
-                          :starting-price (.. tx-auction -startingPrice)
-                          :total-bid (.. tx-auction -totalBid)
-                          :value (.. tx-auction -value)}
-                :founder {:address (.. tx -addr -founder)
-                          :username (.. tx -addr -founder)
-                          :thumbnail lisa-image}
-                :auditor {:address (.. tx -addr -auditor)
-                          :username (.. tx -addr -auditor)
-                          :thumbnail lisa-image}
-                :custodian {:address (.. tx -addr -custodian)
-                            :username (.. tx -addr -custodian)
-                            :thumbnail lisa-image}
-                :owner {:address (.. tx -addr -owner)
-                        :username (.. tx -addr -owner)
-                        :thumbnail lisa-image}
+                :token-uri token-uri
+                :token-uri-data (json->clj (:body token-uri-data))
+                :auction {:bidder (.. auction -bidder)
+                          :owner (.. auction -owner)
+                          :open-auction-timestamp (.. auction -openAuctionTimestamp)
+                          :close-auction-timestamp (.. auction -closeAuctionTimestamp)
+                          :max-bid (.. auction -maxBid)
+                          :max-weight (.. auction -maxWeight)
+                          :meet-reserve-price (.. auction -meetReservePrice)
+                          :next-bid-weight (.. auction -nextBidWeight)
+                          :reserve-price (.. auction -reservePrice)
+                          :starting-price (.. auction -startingPrice)
+                          :total-bid (.. auction -totalBid)
+                          :value (.. auction -value)}
+                :founder founder
+                :auditor auditor
+                :custodian custodian
+                :owner owner
                 :status {:auction (.. tx -status -auction)
                          :buy-it-now (.. tx -status -buyItNow)
                          :claim (.. tx -status -claim)
@@ -276,16 +251,15 @@
 
 (defn nft-auction-by-auction-id
   [params callback]
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)
-          tx (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
+  (p/let [tx (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
                                                    (:nft-factory contract-abi)
-                                                   signer)
+                                                   provider)
                                      (:token-id params)
-                                     (:auction-id params))]
-    (callback (js->clj {:bidder (.. tx -bidder)
-                        :owner (.. tx -owner)
+                                     (:auction-id params))
+          owner (member-by-address {:address (.. tx -owner)} (fn [x] x))
+          bidder (member-by-address {:address (.. tx -bidder)} (fn [x] x))]
+    (callback (js->clj {:bidder bidder
+                        :owner owner
                         :open-auction-timestamp (.. tx -openAuctionTimestamp)
                         :close-auction-timestamp (.. tx -closeAuctionTimestamp)
                         :max-bid (.. tx -maxBid)
@@ -299,19 +273,17 @@
 
 (defn nft-get-auction-bid
   [params callback]
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)
-          tx (.getAuctionBid (get-contract (:nft-factory contract-address)
+  (p/let [tx (.getAuctionBid (get-contract (:nft-factory contract-address)
                                            (:nft-factory contract-abi)
-                                           signer)
+                                           provider)
                              (:token-id params)
-                             (:bid-id params))]
+                             (:bid-id params))
+          bidder (member-by-address {:address (.. tx -bidder)} (fn [x] x))]
     (callback (js->clj {:auction-id (.. tx -auctionId)
                         :token-id (:token-id params)
                         :bid-id (:bid-id params)
                         :auto-rebid (.. tx -autoRebid)
-                        :bidder (.. tx -bidder)
+                        :bidder bidder
                         :meet-reserve-price (.. tx -meetReservePrice)
                         :timestamp (.. tx -timestamp)
                         :value (.. tx -value)}))))
@@ -345,11 +317,4 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
-
-
-
-
-
-
-
 

@@ -216,8 +216,3 @@
                             :total-bid (:total-bid (:auction result))
                             :current-bid-id (:bid-id result)}]])}]}}))
 
-
-
-
-
-
