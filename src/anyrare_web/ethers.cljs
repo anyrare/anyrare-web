@@ -198,8 +198,9 @@
                                              (:token-id params)
                                              (- (.. tx -totalAuction) 1))]
     (.log js/console (get-contract (:nft-factory contract-address)
-                                                           (:nft-factory contract-abi)
-                                                           signer))
+                                   (:nft-factory contract-abi)
+                                   signer))
+
     (callback (js->clj
                {:token-id (.-tokenId tx)
                 :signer address
@@ -296,6 +297,43 @@
                         :total-bid (.. tx -totalBid)
                         :value (.. tx -value)}))))
 
+(defn nft-get-auction-bid
+  [params callback]
+  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          signer (.getSigner provider-metamask)
+          address (.getAddress signer)
+          tx (.getAuctionBid (get-contract (:nft-factory contract-address)
+                                           (:nft-factory contract-abi)
+                                           signer)
+                             (:token-id params)
+                             (:bid-id params))]
+    (callback (js->clj {:auction-id (.. tx -auctionId)
+                        :token-id (:token-id params)
+                        :bid-id (:bid-id params)
+                        :auto-rebid (.. tx -autoRebid)
+                        :bidder (.. tx -bidder)
+                        :meet-reserve-price (.. tx -meetReservePrice)
+                        :timestamp (.. tx -timestamp)
+                        :value (.. tx -value)}))))
+
+(defn nft-get-auction-bids
+  [params callback]
+  (.log js/console (- (:current-bid-id params) (:total-bid params)))
+  ;; (-> (for [bid-id (range (+ 1 (:current-bid-id params)))
+  ;;           :when (> bid-id (- (:current-bid-id params) (:total-bid params)))]
+  ;;       (nft-get-auction-bid {:token-id (:token-id params) :bid-id bid-id}
+  ;;                            #(%)))
+  ;;     (vec)
+  ;;     (as-> r (p/all r))))
+  (->
+   (for [bid-id (range (+ 1 (:current-bid-id params)))
+         :when (> bid-id (- (:current-bid-id params) (:total-bid params)))]
+     (nft-get-auction-bid {:token-id (:token-id params) :bid-id bid-id}
+                          (fn [x] x)))
+   (vec)
+   (p/all)
+   (p/then (fn [x] (callback (js->clj x))))
+   ))
 
 (defn nft-bid-auction
   [params callback]
@@ -309,11 +347,16 @@
                                   (:nft-factory contract-address)
                                   MAX_APPROVE_SPEND_LIMIT)
           tx (.bidAuction (get-contract (:nft-factory contract-address)
-                                                   (:nft-factory contract-abi)
-                                                   signer)
-                                     (:token-id params)
-                                     (:bid-value params)
-                                     (:max-bid params))]
-   (callback {:result (js->clj tx)})))
+                                        (:nft-factory contract-abi)
+                                        signer)
+                          (:token-id params)
+                          (:bid-value params)
+                          (:max-bid params))]
+    (callback {:result (js->clj tx)})))
+
+
+
+
+
 
 

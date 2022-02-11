@@ -114,10 +114,10 @@
  (fn [_ [_ params]]
    {:result (ethers/nft-token-uri params #(dispatch [::save-data :ethers-tx-callback %]))}))
 
-
 (reg-event-fx
  ::ethers
  (fn [_ [_ func key params]]
+   (.log js/console (clj->js params))
    {:result (func params #(dispatch [::save-data key %]))}))
 
 ;; Register
@@ -205,4 +205,19 @@
 (reg-event-fx
  ::fetch-asset-data
  (fn [_ [_ {:keys [token-id]}]]
-   {:dispatch [::ethers ethers/nft-by-id :asset-page {:token-id token-id}]}))
+   {:async-flow
+    {:first-dispatch [::ethers ethers/nft-by-id :asset-page {:token-id token-id}]
+     :rules [{:when :seen? :events ::save-data
+              :dispatch-fn
+              (fn [[_ _ result]]
+                [[::ethers ethers/nft-get-auction-bids
+                  :auctions {:token-id (:token-id result)
+                            :auction-id (- (:total-auction result) 1)
+                            :total-bid (:total-bid (:auction result))
+                            :current-bid-id (:bid-id result)}]])}]}}))
+
+
+
+
+
+

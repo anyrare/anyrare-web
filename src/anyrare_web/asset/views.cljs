@@ -24,8 +24,8 @@
    [:button {:class [:p-4 :mt-2 :text-lg :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
              :on-click #(dispatch [::events/bid-auction
                                    {:token-id 0
-                                    :bid-value 5000000
-                                    :max-bid 5000000}])}
+                                    :bid-value 7000000
+                                    :max-bid 8000000}])}
     "ประมูล"]])
 
 ;; (defn subtitle-panel [i18n auction-info toggle-popup-panel]
