@@ -33,13 +33,13 @@
    [:p
     [:span (:close-auction-timestamp i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
-     (format/unix-timestamp-to-local-datetime (str (:close-auction-timestamp @asset-auction)))]]
-   [:button {:class [:p-2 :mt-2 :text-lg :button
-                     :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
-             :on-click #(dispatch [::events/bid-auction
-                                   {:token-id (:token-id @asset)
-                                    :bid-value 30000
-                                    :max-bid 50000}])}
+     (format/unix-timestamp-to-local-datetime
+      (str (:close-auction-timestamp @asset-auction)))]]
+   [:button {:class [:p-2 :mt-2 :text-lg :button :bg-primary :font-kanit
+                     :font-medium :text-white :rounded-full :w-full]
+             :on-click (fn []
+                         (reset! content-popup-panel :bid-auction)
+                         (reset! toggle-popup-panel true))}
     (:bid-auction i18n)]])
 
 (defn image-slider-panel
@@ -149,7 +149,7 @@
                 [:span {:class [:ml-2]}
                  (when (= (:bid-id bid) (:bid-id (first @asset-auction-bids)))
                    (if (>= (:value bid) (:reserve-price @asset-auction))
-                     (:meet-reserve-price i18n)
+                     [:span {:class [:text-green-700]} (:meet-reserve-price i18n)]
                      (:not-meet-reserve-price i18n)))]]]]])])])))
 
 (defn actions-panel
@@ -183,8 +183,8 @@
      [:div {:class [:flex :fixed :bottom-0 :w-screen :mx-auto
                     :md:justify-center :md:h-screen :md:items-center]}
       [:div {:class [:flex-auto]}]
-      [:div {:class [:w-full "md:w-3/5" "lg:w-3/8" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
-                     :bg-white :pt-4 :rounded-t-xl :md:rounded-xl :p-4]}
+      [:div {:class [:w-full "md:w-3/6" "lg:w-3/9" "xl:w-5/12" "2xl:w-4/12" "3xl:w-3/12"
+                     :bg-white :rounded-t-xl :md:rounded-xl :p-4]}
        [:button {:class [:h-10 :w-10 :bg-gray-800 :active:bg-gray-500
                          :text-white :rounded-full :m-2
                          :fixed :right-0 :top-0]
@@ -196,14 +196,64 @@
   [i18n]
   [:div {:class [:mt-4]}
    [:div "AAAAAAAA"]
-   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (:place-a-bid i18n)]
+   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]}
+    (:place-a-bid i18n) " "]
    [:span {:class [:text-secondary]} (:you-are-about-to-place-a-bid-for i18n)]])
 
 (defn popup-bid-auction
-  [i18n]
-  [:div {:class [:mt-4]}
-   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]} (:place-a-bid i18n)]
-   [:span {:class [:text-secondary]} (:you-are-about-to-place-a-bid-for i18n)]])
+  [i18n asset asset-title asset-auction]
+  (when (some? @asset-auction)
+    (let [minimum-bid (-> (* (:value @asset-auction)
+                             (:next-bid-weight @asset-auction))
+                          (/ (:max-weight @asset-auction))
+                          (Math/ceil)
+                          (js/BigInt)
+                          (+ (js/BigInt (:value @asset-auction)))
+                          (str))
+          bid-value (reagent/atom minimum-bid)
+          max-bid-value (reagent/atom minimum-bid)]
+      (fn []
+        [:div {:class [:w-full]}
+         [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]}
+          (:place-a-bid i18n)]
+         [:span {:class [:text-secondary]}
+          (:you-are-about-to-place-a-bid-for i18n)
+          [:span {:class [:font-bold :ml-2]} @asset-title]]
+         [:div {:class [:flex :flex-auto :space-x-2]}
+          [:div {:class [:font-kanit :font-medium :mt-4]}
+           [:p (:your-bid i18n)]
+           [:input {:class [:p-2 :mt-2 :w-full :border-2 :border-gray-300
+                            :hover:border-gray-500 :rounded-md]
+                    :type "number"
+                    :value @bid-value
+                    :on-change #(reset! bid-value (-> % .-target .-value))}]]
+          [:div {:class [:font-kanit :font-medium :mt-4]}
+           [:p (:max-bid i18n)]
+           [:input {:class [:p-2 :mt-2 :w-full :border-2 :border-gray-300
+                            :hover:border-gray-500 :rounded-md]
+                    :type "number"
+                    :value @max-bid-value
+                    :on-change #(reset! max-bid-value (-> % .-target .-value))}]]]
+         [:p {:class [:mt-2 :text-sm]}
+          (:minimum-bid i18n) " " minimum-bid " ARA"]
+         [:table {:class [:mt-4 :w-full]}
+          [:tbody
+           [:tr
+            [:td (:your-bidding-balance i18n)]
+            [:td {:class [:text-left :font-kanit :font-medium]} "343321 ARA"]]
+           [:tr
+            [:td (:fee i18n)]
+            [:td {:class [:text-left :font-kanit :font-medium]} "343321 ARA"]]
+           [:tr
+            [:td (:you-will-pay i18n)]
+            [:td {:class [:text-left :font-kanit :font-medium]} "343321 ARA"]]]]
+         [:button {:class [:p-2 :mt-4 :text-lg :button :bg-primary :font-kanit
+                           :font-medium :text-white :rounded-full :w-full]
+                   :on-click #(dispatch [::events/bid-auction
+                                         {:token-id (:token-id @asset)
+                                          :bid-value @bid-value
+                                          :max-bid @max-bid-value}])}
+          (:bid-auction i18n)]]))))
 
 (defclass image-panel-class []
   (at-media {:min-width "1024px"}
@@ -222,8 +272,8 @@
    [:div {:class [(image-panel-class)]} image-panel]
    [:div {:class [(side-panel-class)]} content-panel]])
 
-(def toggle-popup-panel (reagent/atom true))
-(def content-popup-panel (reagent/atom :open-auction))
+(def toggle-popup-panel (reagent/atom false))
+(def content-popup-panel (reagent/atom :bid-auction))
 
 (defn asset []
   (let [asset (subscribe [::subs/asset])
@@ -242,7 +292,8 @@
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
        (when (some? @asset-auction)
-         [auction-subtitle-panel i18n asset asset-auction (first @asset-auction-bids)])
+         [auction-subtitle-panel i18n asset asset-auction
+          (first @asset-auction-bids)])
        [detail-panel i18n asset-detail]
        [royalty-panel i18n asset-royalty]
        (when (not (:auction (:status @asset)))
@@ -251,6 +302,7 @@
          [auction-bids-panel i18n asset-auction asset-auction-bids])]]
      [popup-panel toggle-popup-panel
       (cond
-        (= @content-popup-panel :bid-auction) [popup-bid-auction i18n]
+        (= @content-popup-panel :bid-auction) [popup-bid-auction i18n
+                                               asset asset-title asset-auction]
         (= @content-popup-panel :open-auction) [popup-open-auction i18n])]]))
 

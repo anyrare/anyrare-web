@@ -6,15 +6,16 @@
    [anyrare-web.db :refer [app-db]]
    [anyrare-web.gql :refer [gql]]
    [anyrare-web.ethers :as ethers]
-   [anyrare-web.config.i18n :refer [get-dicts-by-lang]]
-   [day8.re-frame.tracing :refer-macros [fn-traced]]
+   [anyrare-web.i18n :refer [get-dicts-by-lang]]
    [day8.re-frame.async-flow-fx :as async-flow-fx]))
+
 
 ;; Core
 
+
 (reg-event-db
  ::initialize-db
- (fn-traced [db _] app-db))
+ (fn [db _] app-db))
 
 (reg-event-fx
  ::navigate
@@ -25,6 +26,7 @@
  ::save-data
  (fn [db [_ key data]]
    (assoc db key data)))
+
 
 ;; Router
 
@@ -117,8 +119,8 @@
 (reg-event-fx
  ::ethers
  (fn [_ [_ func key params]]
-   (.log js/console (clj->js params))
    {:result (func params #(dispatch [::save-data key %]))}))
+
 
 ;; Register
 
@@ -217,6 +219,4 @@
                    :total-bid (:total-bid (:auction result))
                    :current-bid-id (:bid-id result)}]
                  [::ethers ethers/signer-address :signer nil]])}]}}))
-
-
 

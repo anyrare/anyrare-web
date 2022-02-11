@@ -71,8 +71,3 @@
  ::asset-auction-panel
  (fn [db _]))
 
-
-
-
-
-
