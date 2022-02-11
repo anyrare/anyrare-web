@@ -306,24 +306,3 @@
                                                asset asset-title asset-auction]
         (= @content-popup-panel :open-auction) [popup-open-auction i18n])]]))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
