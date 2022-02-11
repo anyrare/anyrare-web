@@ -39,7 +39,7 @@
 ;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
 
 
-(defn signer-address [callback]
+(defn signer-address [_ callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)]
@@ -167,43 +167,54 @@
 
 (defn nft-by-id
   [params callback]
-  (p/let [tx (.nfts (get-contract (:nft-factory contract-address)
-                                  (:nft-factory contract-abi)
-                                  provider)
-                    (:token-id params))
-          ;; TODO: Revise Promise.all
-          token-uri (.tokenURI (get-contract (:nft-factory contract-address)
-                                             (:nft-factory contract-abi)
-                                             provider)
-                               (:token-id params))
-          token-uri-data (fetch/get token-uri)
-          auction (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
-                                                        (:nft-factory contract-abi)
-                                                        provider)
-                                          (:token-id params)
-                                          (- (.. tx -totalAuction) 1))
-          founder (member-by-address {:address (.. tx -addr -founder)} (fn [x] x))
-          auditor (member-by-address {:address (.. tx -addr -auditor)} (fn [x] x))
-          custodian (member-by-address {:address (.. tx -addr -custodian)} (fn [x] x))
-          owner (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))
-          auction-bidder (member-by-address {:address (.. auction -bidder)} (fn [x] x))
-          offer-bidder (member-by-address {:address (.. tx -offer -bidder)} (fn [x] x))]
-    (callback (js->clj
+  (-> [(.nfts (get-contract (:nft-factory contract-address)
+                            (:nft-factory contract-abi)
+                            provider)
+              (:token-id params))
+       (.tokenURI (get-contract (:nft-factory contract-address)
+                                (:nft-factory contract-abi)
+                                provider)
+                  (:token-id params))]
+      (p/all)
+      (p/then
+       (fn [[tx token-uri]]
+         (->
+          [(fetch/get token-uri)
+           (member-by-address {:address (.. tx -addr -founder)} (fn [x] x))
+           (member-by-address {:address (.. tx -addr -auditor)} (fn [x] x))
+           (member-by-address {:address (.. tx -addr -custodian)} (fn [x] x))
+           (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))
+           (member-by-address {:address (.. tx -addr -owner)} (fn [x] x))
+           (member-by-address {:address (.. tx -offer -bidder)} (fn [x] x))
+           (if (= (.. tx -totalAuction) 0) nil
+               (.getAuctionByAuctionId (get-contract (:nft-factory contract-address)
+                                                     (:nft-factory contract-abi)
+                                                     provider)
+                                       (:token-id params)
+                                       (- (.. tx -totalAuction) 1)))]
+          (p/all)
+          (p/then
+           (fn
+             [[token-uri-data founder auditor
+               custodian auction-bidder owner offer-bidder auction]]
+             (callback
+              (js->clj
                {:token-id (.-tokenId tx)
                 :token-uri token-uri
                 :token-uri-data (json->clj (:body token-uri-data))
-                :auction {:bidder auction-bidder
-                          :owner owner
-                          :open-auction-timestamp (.. auction -openAuctionTimestamp)
-                          :close-auction-timestamp (.. auction -closeAuctionTimestamp)
-                          :max-bid (.. auction -maxBid)
-                          :max-weight (.. auction -maxWeight)
-                          :meet-reserve-price (.. auction -meetReservePrice)
-                          :next-bid-weight (.. auction -nextBidWeight)
-                          :reserve-price (.. auction -reservePrice)
-                          :starting-price (.. auction -startingPrice)
-                          :total-bid (.. auction -totalBid)
-                          :value (.. auction -value)}
+                :auction (if (nil? auction) nil
+                             {:bidder-address (.. auction -bidder)
+                              :owner owner
+                              :open-auction-timestamp (.. auction -openAuctionTimestamp)
+                              :close-auction-timestamp (.. auction -closeAuctionTimestamp)
+                              :max-bid (.. auction -maxBid)
+                              :max-weight (.. auction -maxWeight)
+                              :meet-reserve-price (.. auction -meetReservePrice)
+                              :next-bid-weight (.. auction -nextBidWeight)
+                              :reserve-price (.. auction -reservePrice)
+                              :starting-price (.. auction -startingPrice)
+                              :total-bid (.. auction -totalBid)
+                              :value (.. auction -value)})
                 :founder founder
                 :auditor auditor
                 :custodian custodian
@@ -234,7 +245,7 @@
                         :open-offer-timestamp (.. tx -offer -openOfferTimestamp)
                         :owner owner
                         :value (.. tx -offer -value)}
-                :redeem-timestamp (.. tx -offer -redeemTimestamp)}))))
+                :redeem-timestamp (.. tx -offer -redeemTimestamp)})))))))))
 
 (defn nft-open-auction
   [params callback]
@@ -320,6 +331,16 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
+
+
+
+
+
+
+
+
 
 
 

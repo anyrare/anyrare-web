@@ -15,10 +15,10 @@
 (reg-event-fx
  ::open-auction
  (fn [_ [_ params]]
-   {:dispatch-fn [(ethers/nft-open-auction params #(dispatch [::app-events/save-data ::ethers-tx-callback %]))]}))
+   {:dispatch-fn [(ethers/nft-open-auction params #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
 
 (reg-event-fx
  ::bid-auction
  (fn [_ [_ params]]
-   {:dispatch-fn [(ethers/nft-bid-auction params #(dispatch [::app-events/save-data ::ethers-tx-callback %]))]}))
+   {:dispatch-fn [(ethers/nft-bid-auction params #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
 

@@ -124,7 +124,7 @@
    :in-collection
    {:th "สินทรัพย์ของชุดสะสม"
     :en "In collection"}
-   :set-auction
+   :open-auction
    {:th "จัดประมูล"
     :en "Auction"}
    :set-price

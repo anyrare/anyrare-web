@@ -15,14 +15,14 @@
 (defn title-panel [text]
   [:h1 {:class [:text-2xl :font-kanit :text-black :font-medium :mt-2]} @text])
 
-(defn subtitle-panel [i18n asset-auction]
+(defn auction-subtitle-panel [i18n asset asset-auction asset-auction-bid]
   [:div {:class [:py-2]}
    [:p
     [:span (:highest-bid i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]} (format/format-currency (str (:value @asset-auction))) " ARA"]]
    [:p
     [:span (:highest-bid-by i18n) ":"]
-    [:span {:class [:ml-2 :font-kanit :font-medium]} (get-in @asset-auction [:bidder :username])]]
+    [:span {:class [:ml-2 :font-kanit :font-medium]} (get-in asset-auction-bid [:bidder :username])]]
    [:p
     [:span (:total-bid i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]} (:total-bid @asset-auction)]]
@@ -30,21 +30,24 @@
     [:span (:close-auction-timestamp i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
      (format/unix-timestamp-to-local-datetime (str (:close-auction-timestamp @asset-auction)))]]
-   [:button {:class [:p-4 :mt-2 :text-lg :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
+   [:button {:class [:p-2 :mt-2 :text-lg :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
              :on-click #(dispatch [::events/bid-auction
-                                   {:token-id 0
-                                    :bid-value 7000000
-                                    :max-bid 8000000}])}
+                                   {:token-id (:token-id @asset)
+                                    :bid-value 30000
+                                    :max-bid 50000}])}
     "ประมูล"]])
 
 (defn image-slider-panel [attachments]
   [:div {:id "image-slider" :class "splide"}
+
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
-     (for [index (range (count attachments))]
-       [:li {:class "splide__slide"
-             :key index}
-        [:img {:src ((get attachments index) :url)}]])]]])
+     (if (some? attachments)
+       (for [index (range (count attachments))]
+         [:li {:class "splide__slide"
+               :key index}
+          [:img {:src ((get attachments index) :url)}]])
+       [:div {:class [:bg-gray-100 :h-72 :w-full]}])]]])
 
 (defn title-section-toggle [toggle title]
   [:div {:class [:flex :active:bg-gray-100 :-px-4 :cursor-pointer :py-1]
@@ -95,7 +98,6 @@
              (get-in @asset-detail [:custodian :username])
              (get-in @asset-detail [:custodian :address])]]]])])))
 
-
 (defn royalty-panel [i18n asset-royalty]
   (let [toggle (reagent/atom false)]
     (fn []
@@ -112,7 +114,7 @@
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (i18n :custodian)]
              [:td {:class ["w-1/2" :border :pl-4 :py-1]} (@asset-royalty :custodian-fee)]]]]])])))
 
-(defn bids-panel [i18n asset-auction asset-auction-bids]
+(defn auction-bids-panel [i18n asset-auction asset-auction-bids]
   (let [toggle (reagent/atom true)]
     (fn []
       [:div {:class [:mt-2]}
@@ -140,31 +142,22 @@
                      (:meet-reserve-price i18n)
                      (:not-meet-reserve-price i18n)))]]]]])])])))
 
-(defn actions-panel [i18n asset]
+(defn actions-panel [i18n asset signer]
   (let [toggle (reagent/atom false)]
     (fn []
-      (when (= (:signer @asset) (get-in @asset [:owner :address]))
+      (when (= (:address @signer) (get-in @asset [:owner :address]))
         [:div {:class [:mt-2]}
          [title-section-toggle toggle (:tools i18n)]
          (when @toggle
            [:div
             [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
-                      :on-click #(dispatch [::events/open-auction {:token-id 0
+                      :on-click #(dispatch [::events/open-auction {:token-id (:token-id @asset)
                                                                    :close-auction-period-second 86000
                                                                    :starting-price 1000
                                                                    :reserve-price 500000
                                                                    :max-weight 1000000
                                                                    :next-bid-weight 1000}])}
-             "ตั้งประมูล"]])]))))
-
-(defn bid-button-panel [i18n]
-  [:div {:class [:mt-2 :w-full]}
-   [:button {:class [:p-4 :button :bg-primary :font-kanit :font-medium :text-white :rounded-full :w-full]
-             :on-click #(dispatch [::events/bid-auction
-                                   {:token-id 0
-                                    :bid-value 120000000
-                                    :max-bid 150000000}])}
-    "ประมูล"]])
+             (:open-auction i18n)]])]))))
 
 (defn recommend-auction-panel []
   [:div {:class [:font-kanit :py-1 :font-medium :mx-2 :text-lg]} "การประมูลแนะนำ"])
@@ -212,19 +205,29 @@
         asset-royalty (subscribe [::subs/asset-royalty])
         asset-auction (subscribe [::subs/asset-auction])
         asset-auction-bids (subscribe [::subs/asset-auction-bids])
-        i18n @(subscribe [::app-subs/i18n])]
+        i18n @(subscribe [::app-subs/i18n])
+        signer (subscribe [::app-subs/signer])]
     [:div
      (dispatch [::events/initialize-image-slider])
      [layout
       [image-slider-panel (:assets @asset-data)]
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
-       [subtitle-panel i18n asset-auction]
+       (when (some? @asset-auction)
+         [auction-subtitle-panel i18n asset asset-auction (first @asset-auction-bids)])
        [detail-panel i18n asset-detail]
        [royalty-panel i18n asset-royalty]
-       [actions-panel i18n asset]
-       [bids-panel i18n asset-auction asset-auction-bids]]
+       (when (not (:auction (:status @asset)))
+         [actions-panel i18n asset signer])
+       (when (and (some? @asset-auction) (> (:total-bid @asset-auction) 0))
+         [auction-bids-panel i18n asset-auction asset-auction-bids])]
       [recommend-auction-panel]]]))
+
+
+
+
+
+
 
 
 
