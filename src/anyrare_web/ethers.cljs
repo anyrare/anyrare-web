@@ -318,22 +318,14 @@
 
 (defn nft-get-auction-bids
   [params callback]
-  (.log js/console (- (:current-bid-id params) (:total-bid params)))
-  ;; (-> (for [bid-id (range (+ 1 (:current-bid-id params)))
-  ;;           :when (> bid-id (- (:current-bid-id params) (:total-bid params)))]
-  ;;       (nft-get-auction-bid {:token-id (:token-id params) :bid-id bid-id}
-  ;;                            #(%)))
-  ;;     (vec)
-  ;;     (as-> r (p/all r))))
   (->
-   (for [bid-id (range (+ 1 (:current-bid-id params)))
-         :when (> bid-id (- (:current-bid-id params) (:total-bid params)))]
+   (for [bid-id (range (:current-bid-id params))
+         :when (>= bid-id (- (:current-bid-id params) (:total-bid params)))]
      (nft-get-auction-bid {:token-id (:token-id params) :bid-id bid-id}
                           (fn [x] x)))
    (vec)
    (p/all)
-   (p/then (fn [x] (callback (js->clj x))))
-   ))
+   (p/then (fn [x] (callback (js->clj x))))))
 
 (defn nft-bid-auction
   [params callback]
@@ -353,6 +345,7 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
 
 
 
