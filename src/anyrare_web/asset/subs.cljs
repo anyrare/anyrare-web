@@ -32,12 +32,18 @@
 (reg-sub
  ::asset-royalty
  (fn [db _]
-   {:founder-fee (format-money
+   {:founder-fee (->
                   (/ (get-in db [:asset-page :fee :founder-weight])
-                     (get-in db [:asset-page :fee :max-weight])) 4)
-    :custodian-fee (format-money
+                     (get-in db [:asset-page :fee :max-weight]))
+                  (* 100)
+                  (format-money 2)
+                  (str " %"))
+    :custodian-fee (->
                     (/ (get-in db [:asset-page :fee :custodian-weight])
-                       (get-in db [:asset-page :fee :max-weight])) 4)}))
+                       (get-in db [:asset-page :fee :max-weight]))
+                    (* 100)
+                    (format-money 2)
+                    (str " %"))}))
 
 (reg-sub
  ::asset-attachments
@@ -59,11 +65,14 @@
 (reg-sub
  ::asset-auction-bids
  (fn [db _]
-       (sort-by :bid-id #(compare %2 %1) (:auction-bids db)
-       )))
+   (sort-by :bid-id #(compare %2 %1) (:auction-bids db))))
 
 (reg-sub
  ::asset-auction-panel
  (fn [db _]))
+
+
+
+
 
 
