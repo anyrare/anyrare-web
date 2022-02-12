@@ -4,9 +4,7 @@
    [kitchen-async.promise :as p]
    ["ethers" :refer [ethers]]
    [lambdaisland.fetch :as fetch]
-   [anyrare-web.subs :as subs]
    [anyrare-web.abi :refer [contract-abi contract-address]]
-   ;; [anyrare-web.events :as events]
    [anyrare-web.env :as env]
    [anyrare-web.lib.utils :refer [json->clj]]
    [anyrare-web.error :refer [log error-messages]]))
@@ -39,7 +37,8 @@
 ;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
 
 
-(defn signer-address [_ callback]
+(defn signer-address
+  [_ callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)]
@@ -66,12 +65,27 @@
   (new (.-Contract ethers) address (clj->js abi) signer))
 
 
+;; ARA
+
+(defn check-ara-balance
+  [params callback]
+  (p/let [tx (.balanceOf (get-contract (:ara-token contract-address)
+                                     (:ara-token contract-abi)
+                                     provider)
+                         (:address params))]
+    (callback (js->clj
+               {:address (:address params)
+                :symbol "ARA"
+                :token (:ara-token contract-address)
+                :value tx}))))
+  
+
+
 ;; Member
 
 
 (defn set-member
   [params callback]
-  (.log js/console (clj->js params))
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -331,16 +345,4 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
-
-
-
-
-
-
-
-
-
-
-
-
 

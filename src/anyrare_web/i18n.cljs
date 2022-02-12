@@ -180,7 +180,13 @@
     :en "Close Auction"}
    :bid-auction
    {:th "ประมูล"
-    :en "Bid"}})
+    :en "Bid"}
+   :connect-to-wallet
+   {:th "เชื่อมต่อบัญชีกระเป๋าสตางค์"
+    :en "Connect wallet"}
+   :you-are-not-connect-to-wallet
+   {:th "คุณยังไม่ได้เชื่อมต่อบัญชีกระเป๋าสตางค์ กรุณาเลือกบัญชีที่ต้องการ"
+    :en "You are not connect to wallet. Please select your wallet provider."}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))

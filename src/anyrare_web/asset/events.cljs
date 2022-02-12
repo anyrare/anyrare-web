@@ -3,6 +3,7 @@
    [re-frame.core :refer [reg-event-db reg-event-fx]]
    [anyrare-web.ethers :as ethers]
    [anyrare-web.events :as app-events]
+   [kitchen-async.promise :as p]
    ["@splidejs/splide" :default Splide]))
 
 (reg-event-db
@@ -22,9 +23,19 @@
 (reg-event-fx
  ::bid-auction
  (fn [_ [_ params]]
-   (prn params)
-   {:dispatch-fn [(ethers/nft-bid-auction params #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
+   {:dispatch-fn [(ethers/nft-bid-auction
+                   params
+                   #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
 
-
-
+(reg-event-fx
+ ::open-auction-bid-panel
+ (fn [_ [_ toggle-popup-panel content-popup-panel]]
+   {:async-flow
+    {:first-dispatch [::app-events/ethers ethers/signer-address :signer nil]
+     :rules [{:when :seen? :events ::app-events/save-data
+              :dispatch-fn
+              (fn [[_ _ params]]
+                [[::app-events/ethers ethers/check-ara-balance :balance params]
+                 [::app-events/result (reset! content-popup-panel :bid-auction)]
+                 [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
 
