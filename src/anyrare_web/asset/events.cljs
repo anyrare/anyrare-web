@@ -41,3 +41,17 @@
                           (if (contains? result :error) :login :bid-auction))]
                  [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
 
+(reg-event-fx
+ ::open-auction-bid-panel
+ (fn [_ [_ toggle-popup-panel content-popup-panel]]
+   {:dispatch-n  [[::app-events/result (reset! content-popup-panel :open-auction)]
+                  [::app-events/result (reset! toggle-popup-panel true)]]}))
+
+
+
+
+
+
+
+
+
