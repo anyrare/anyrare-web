@@ -26,28 +26,6 @@
     (catch js/Error e
       (log (get-in error-messages [:ethers :metamask-not-found])))))
 
-;; (defn init-wallet-signer []
-;;   (-> (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-;;               signer (.getSigner provider-metamask)
-;;               address (.getAddress signer)]
-;;         (dispatch [::events/set-account-id address]))
-;;       (p/catch*
-;;        (fn [err]
-;;          (log (get-in error-messages
-;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
-
-
-;; (defn signer-address
-;;   [_ callback]
-;;   (prn "A")
-  ;; (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          ;; signer (.getSigner provider-metamask)
-          ;; address (.getAddress signer)]
-    ;; (callback {:address address
-               ;; :signer signer})
-;;     (p/catch (prn "B"))))
-
-
 (defn signer-address
   [_ callback]
   (try

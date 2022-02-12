@@ -186,7 +186,10 @@
     :en "Connect wallet"}
    :you-are-not-connect-to-wallet
    {:th "คุณยังไม่ได้เชื่อมต่อบัญชีกระเป๋าสตางค์ กรุณาเลือกบัญชีที่ต้องการ"
-    :en "You are not connect to wallet. Please select your wallet provider."}})
+    :en "You are not connect to wallet. Please select your wallet provider."}
+   :wallet-address
+   {:th "รหัสกระเป๋า"
+    :en "Wallet address"}})
 
 (defn get-dicts-by-lang [lang] 
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))

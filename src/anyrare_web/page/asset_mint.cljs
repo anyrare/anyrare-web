@@ -5,7 +5,7 @@
    [anyrare-web.subs :as subs]
    [anyrare-web.ethers :as ethers]))
 
-(def token-id 1)
+(def token-id 2)
 
 (defn asset-mint []
   [:div "Mint Asset"

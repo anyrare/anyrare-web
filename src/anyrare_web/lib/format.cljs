@@ -19,9 +19,9 @@
   (format-money
    (/ num "1000000000000") 16))
 
-(defn format-currency
-  [num]
-  num)
+;; (defn format-currency
+;;   [num]
+;;   num)
 
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
@@ -31,5 +31,7 @@
   [unix-timestamp]
   (-> (moment. unix-timestamp "X") (.locale "th") (.add 543 "year") (.format "lll")))
 
-(defn trim-username [text]
-  (if (<= (count text) 12) text (str (.substring text 0 12) "..."))) 
+(defn trim-username [text &[len]]
+  (let [text-len (if (nil? len) 12 len)]
+    (if (<= (count text) text-len) text (str (.substring text 0 text-len) "..."))))
+
