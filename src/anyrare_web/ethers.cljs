@@ -37,13 +37,27 @@
 ;;                       [:ethers :failed-to-init-wallet-signer]) err)))))
 
 
+;; (defn signer-address
+;;   [_ callback]
+;;   (prn "A")
+  ;; (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+          ;; signer (.getSigner provider-metamask)
+          ;; address (.getAddress signer)]
+    ;; (callback {:address address
+               ;; :signer signer})
+;;     (p/catch (prn "B"))))
+
+
 (defn signer-address
   [_ callback]
-  (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
-          signer (.getSigner provider-metamask)
-          address (.getAddress signer)]
-    (callback {:address address
-               :signer signer})))
+  (try
+    (do (.send provider-metamask "eth_requestAccounts" [])
+        (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
+                signer (.getSigner provider-metamask)
+                address (.getAddress signer)]
+          (callback {:address address
+                     :signer signer})))
+    (catch js/Error e (callback {:error (str e)}))))
 
 (def member-contract
   (new (.-Contract ethers)
@@ -67,18 +81,19 @@
 
 ;; ARA
 
+
 (defn check-ara-balance
   [params callback]
   (p/let [tx (.balanceOf (get-contract (:ara-token contract-address)
-                                     (:ara-token contract-abi)
-                                     provider)
+                                       (:ara-token contract-abi)
+                                       provider)
                          (:address params))]
     (callback (js->clj
                {:address (:address params)
                 :symbol "ARA"
                 :token (:ara-token contract-address)
                 :value tx}))))
-  
+
 
 
 ;; Member
@@ -345,4 +360,18 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

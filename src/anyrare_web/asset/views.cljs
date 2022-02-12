@@ -194,11 +194,11 @@
 
 (defn popup-login
   [i18n]
-  [:div {:class [:mt-4]}
+  [:div
    [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]}
     (:connect-to-wallet i18n) " "]
    [:span {:class [:text-secondary]} (:you-are-not-connect-to-wallet i18n)]
-   [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full
+   [:button {:class [:button :mt-4 :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full
                      :font-kanit :font-medium]
              :on-click #(%)} "Metamask"]])
 
