@@ -27,6 +27,10 @@
  (fn [db [_ key data]]
    (assoc db key data)))
 
+(reg-event-fx
+ ::result
+ (fn [x] x))
+
 
 ;; Router
 
