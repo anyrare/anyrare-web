@@ -34,7 +34,7 @@
    [:p
     [:span (:close-auction-timestamp i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
-     (when (number? (:close-auction-timestamp @asset-auction))
+     (when (some? (:close-auction-timestamp @asset-auction))
        (format/unix-timestamp-to-local-datetime
         (str (:close-auction-timestamp @asset-auction))))]]
    [:button {:class [:p-2 :mt-2 :text-lg :button :bg-primary :font-kanit
@@ -249,11 +249,11 @@
             [:td {:class [:text-right :font-kanit :font-medium]}
              " " (format/format-currency (:value @balance)) " ARA"]]
            [:tr
-            [:td (:fee i18n)]
-            [:td {:class [:text-right :font-kanit :font-medium]} "0 ARA"]]
-           [:tr
             [:td (:you-will-pay i18n)]
-            [:td {:class [:text-right :font-kanit :font-medium]} "0 ARA"]]]]
+            [:td {:class [:text-right :font-kanit :font-medium]}
+             " " (if (< @max-bid-value @bid-value)
+                   @bid-value @max-bid-value)
+             " ARA"]]]]
          [:button {:class [:p-2 :mt-4 :text-lg :button :bg-primary :font-kanit
                            :font-medium :text-white :rounded-full :w-full]
                    :on-click
