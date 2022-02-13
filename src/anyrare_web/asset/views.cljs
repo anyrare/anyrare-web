@@ -383,14 +383,3 @@
         [popup-open-auction i18n balance asset asset-title asset-auction]
         (= @content-popup-panel :login) [popup-login i18n])]]))
 
-
-
-
-
-
-
-
-
-
-
-
