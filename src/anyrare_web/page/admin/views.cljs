@@ -11,7 +11,6 @@
         file (aget (.-files el) 0)
         form-data (js/FormData.)
         _ (.append form-data "file" file)]
-    (.log js/console "name" form-data file)
     (dispatch [::events/upload-file form-data])))
 
 
@@ -31,5 +30,8 @@
        [:button {:class [:button :bg-red-700]
                  :on-click #(upload-image input-id)}
         "Upload Image"]
+              [:button {:class [:button :bg-yellow-700]
+                 :on-click #(dispatch [::events/upload-json {:key "hello123"}])}
+        "Upload Json"]
        ])))
        

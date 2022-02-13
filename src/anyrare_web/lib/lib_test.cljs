@@ -9,13 +9,3 @@
    done
    (ipfs/upload-file "/home/ps/Downloads/ss3.png" (fn [] (done)))))
 
-
-;; (deftest ipfs-upload-json
-;;   (async
-;;    done
-;;    (ipfs/upload-json {:key "hello world"}
-;;                      (fn [res]
-;;                        (is (string? (:ipfs-hash res)))
-;;                        (done)))))
-
-
