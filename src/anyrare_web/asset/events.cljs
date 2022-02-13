@@ -28,7 +28,7 @@
                    #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
 
 (reg-event-fx
- ::open-auction-bid-panel
+ ::toggle-bid-auction-panel
  (fn [_ [_ toggle-popup-panel content-popup-panel]]
    {:async-flow
     {:first-dispatch [::app-events/ethers ethers/signer-address :signer nil]
@@ -39,5 +39,19 @@
                  [::app-events/result
                   (reset! content-popup-panel
                           (if (contains? result :error) :login :bid-auction))]
+                 [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
+
+(reg-event-fx
+ ::toggle-open-auction-panel
+ (fn [_ [_ toggle-popup-panel content-popup-panel]]
+   {:async-flow
+    {:first-dispatch [::app-events/ethers ethers/signer-address :signer nil]
+     :rules [{:when :seen? :events ::app-events/save-data
+              :dispatch-fn
+              (fn [[_ _ result]]
+                [[::app-events/ethers ethers/check-ara-balance :balance result]
+                 [::app-events/result
+                  (reset! content-popup-panel
+                          (if (contains? result :error) :login :open-auction))]
                  [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
 

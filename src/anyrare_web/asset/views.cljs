@@ -9,6 +9,7 @@
    [anyrare-web.component.avatar :refer [avatar avatar-with-username]]
    [anyrare-web.component.svg :refer [angle-down angle-up]]
    [anyrare-web.ethers :as ethers]
+   [anyrare-web.env :as env]
    [spade.core :refer [defclass]]
    [garden.stylesheet :refer (at-media)]))
 
@@ -22,7 +23,7 @@
    [:p
     [:span (:highest-bid i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
-     (format/format-currency (str (:value @asset-auction))) " ARA"]]
+     (format/format-currency (:value @asset-auction)) " ARA"]]
    [:p
     [:span (:highest-bid-by i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
@@ -33,11 +34,12 @@
    [:p
     [:span (:close-auction-timestamp i18n) ":"]
     [:span {:class [:ml-2 :font-kanit :font-medium]}
-     (format/unix-timestamp-to-local-datetime
-      (str (:close-auction-timestamp @asset-auction)))]]
+     (when (some? (:close-auction-timestamp @asset-auction))
+       (format/unix-timestamp-to-local-datetime
+        (str (:close-auction-timestamp @asset-auction))))]]
    [:button {:class [:p-2 :mt-2 :text-lg :button :bg-primary :font-kanit
                      :font-medium :text-white :rounded-full :w-full]
-             :on-click #(dispatch [::events/open-auction-bid-panel
+             :on-click #(dispatch [::events/toggle-bid-auction-panel
                                    toggle-popup-panel
                                    content-popup-panel])}
     (:bid-auction i18n)]])
@@ -45,7 +47,6 @@
 (defn image-slider-panel
   [attachments]
   [:div {:id "image-slider" :class "splide"}
-
    [:div {:class "splide__track"}
     [:ul {:class "splide__list"}
      (if (some? attachments)
@@ -139,7 +140,7 @@
               [:div {:class [:flex-grow]}
                [:div
                 [:span {:class [:font-kanit :font-medium]}
-                 (format/format-currency (str (:value bid))) " ARA"]
+                 (format/format-currency (:value bid)) " ARA"]
                 [:span {:class [:mx-2]} (:by i18n)]
                 [:span {:class [:font-kanit :font-medium]}
                  (format/trim-username (:username (:bidder bid)))
@@ -162,12 +163,9 @@
          (when @toggle
            [:div
             [:button {:class [:button :h-12 :bg-white :border :border-gray-100 :w-full :rounded-full]
-                      :on-click #(dispatch [::events/open-auction {:token-id (:token-id @asset)
-                                                                   :close-auction-period-second 86000
-                                                                   :starting-price 1000
-                                                                   :reserve-price 500000
-                                                                   :max-weight 1000000
-                                                                   :next-bid-weight 1000}])}
+                      :on-click #(dispatch [::events/toggle-open-auction-panel
+                                            toggle-popup-panel
+                                            content-popup-panel])}
              (:open-auction i18n)]])]))))
 
 (defn recommend-auction-panel
@@ -202,23 +200,18 @@
                      :font-kanit :font-medium]
              :on-click #(%)} "Metamask"]])
 
-(defn popup-open-auction
-  [i18n]
-  [:div {:class [:mt-4]}
-   [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]}
-    (:place-a-bid i18n) " "]
-   [:span {:class [:text-secondary]} (:you-are-about-to-place-a-bid-for i18n)]])
-
 (defn popup-bid-auction
   [i18n balance asset asset-title asset-auction]
   (when (some? @asset-auction)
-    (let [minimum-bid (-> (* (:value @asset-auction)
-                             (:next-bid-weight @asset-auction))
-                          (/ (:max-weight @asset-auction))
-                          (Math/ceil)
-                          (js/BigInt)
-                          (+ (js/BigInt (:value @asset-auction)))
-                          (str))
+    (let [minimum-bid (-> (format/num->big-number (:value @asset-auction))
+                          (.times (format/num->big-number
+                                   (:next-bid-weight @asset-auction)))
+                          (.dividedBy (format/num->big-number
+                                       (:max-weight @asset-auction)))
+                          (.plus (format/num->big-number
+                                  (:value @asset-auction)))
+                          (.dividedBy format/erc20-digit-scaling-factor)
+                          (.toFixed 4))
           bid-value (reagent/atom minimum-bid)
           max-bid-value (reagent/atom minimum-bid)]
       (fn []
@@ -248,22 +241,92 @@
          [:table {:class [:mt-4 :w-full]}
           [:tbody
            [:tr
-            [:td (:your-bidding-balance i18n)]
+            [:td (:wallet-address i18n)]
             [:td {:class [:text-right :font-kanit :font-medium]}
-             " " (format/format-currency (str (:value @balance))) " ARA"]]
+             (format/trim-username (:address @balance) 18)]]
            [:tr
-            [:td (:fee i18n)]
-            [:td {:class [:text-right :font-kanit :font-medium]} "343321 ARA"]]
+            [:td (:your-balance i18n)]
+            [:td {:class [:text-right :font-kanit :font-medium]}
+             " " (format/format-currency (:value @balance)) " ARA"]]
            [:tr
             [:td (:you-will-pay i18n)]
-            [:td {:class [:text-right :font-kanit :font-medium]} "343321 ARA"]]]]
+            [:td {:class [:text-right :font-kanit :font-medium]}
+             " " (if (< @max-bid-value @bid-value)
+                   @bid-value @max-bid-value)
+             " ARA"]]]]
          [:button {:class [:p-2 :mt-4 :text-lg :button :bg-primary :font-kanit
                            :font-medium :text-white :rounded-full :w-full]
-                   :on-click #(dispatch [::events/bid-auction
-                                         {:token-id (:token-id @asset)
-                                          :bid-value @bid-value
-                                          :max-bid @max-bid-value}])}
+                   :on-click
+                   #(dispatch
+                     [::events/bid-auction
+                      {:token-id (:token-id @asset)
+                       :bid-value (format/format-currency->number @bid-value)
+                       :max-bid (-> (if (< @max-bid-value @bid-value)
+                                      @bid-value @max-bid-value)
+                                    (format/format-currency->number))}])}
           (:bid-auction i18n)]]))))
+
+(defn popup-open-auction
+  [i18n balance asset asset-title]
+  (let [starting-price (reagent/atom 0)
+        reserve-price (reagent/atom 0)
+        close-auction-duration (reagent/atom 86400)]
+    (fn []
+      [:div {:class [:w-full]}
+       [:h2 {:class [:font-kanit :font-medium :text-xl :mb-2]}
+        (:open-auction i18n)]
+       [:span {:class [:text-secondary]}
+        (:you-are-about-to-place-a-bid-for i18n)
+        [:span {:class [:font-bold :ml-2]} @asset-title]]
+       [:div {:class [:flex :flex-auto :space-x-2]}
+        [:div {:class ["w-1/2" :font-kanit :font-medium :mt-4]}
+         [:p (:starting-price i18n)]
+         [:input {:class [:p-2 :mt-2 :w-full :border-2 :border-gray-300
+                          :hover:border-gray-500 :rounded-md]
+                  :type "number"
+                  :value @starting-price
+                  :on-change #(reset! starting-price (-> % .-target .-value))}]]
+        [:div {:class ["w-1/2" :font-kanit :font-medium :mt-4]}
+         [:p (:reserve-price i18n)]
+         [:input {:class [:p-2 :mt-2 :w-full :border-2 :border-gray-300
+                          :hover:border-gray-500 :rounded-md]
+                  :type "number"
+                  :value @reserve-price
+                  :on-change #(reset! reserve-price (-> % .-target .-value))}]]]
+       [:div {:class [:flex :flex-auto :space-x-2]}
+        [:div {:class ["w-1/2" :font-kanit :font-medium :mt-4]}
+         [:p (:auction-duration i18n)]
+         [:select {:field :list
+                   :class [:p-2 :mt-2 :w-full :border-2 :border-gray-300
+                           :bg-white :rounded-md]
+                   :on-change #(reset! close-auction-duration (-> % .-target .-value))}
+          [:option {:value 86400} (:day-1 i18n)]
+          [:option {:value (* 3 86400)} (:day-3 i18n)]
+          [:option {:value (* 5 86400)} (:day-5 i18n)]]]]
+       [:table {:class [:mt-4 :w-full]}
+        [:tbody
+         [:tr
+          [:td (:wallet-address i18n)]
+          [:td {:class [:text-right :font-kanit :font-medium]}
+           (format/trim-username (:address @balance) 18)]]
+         [:tr
+          [:td (:your-balance i18n)]
+          [:td {:class [:text-right :font-kanit :font-medium]}
+           " " (format/format-currency (str (:value @balance))) " ARA"]]
+         [:tr
+          [:td (:fee i18n)]
+          [:td {:class [:text-right :font-kanit :font-medium]} "343321 ARA"]]]]
+       [:button {:class [:p-2 :mt-4 :text-lg :button :bg-primary :font-kanit
+                         :font-medium :text-white :rounded-full :w-full]
+                 :on-click #(dispatch
+                             [::events/open-auction
+                              {:token-id (:token-id @asset)
+                               :close-auction-duration @close-auction-duration
+                               :starting-price @starting-price
+                               :reserve-price @reserve-price
+                               :max-weight env/AUCTION_MAX_WEIGHT
+                               :next-bid-weight env/AUCTION_NEXT_BID_WEIGHT}])}
+        (:open-auction-cta i18n)]])))
 
 (defclass image-panel-class []
   (at-media {:min-width "1024px"}
@@ -314,12 +377,9 @@
      [popup-panel toggle-popup-panel
       (cond
         (nil? @signer) [popup-login i18n]
-        (= @content-popup-panel :bid-auction) [popup-bid-auction i18n balance
-                                               asset asset-title asset-auction]
-        (= @content-popup-panel :open-auction) [popup-open-auction i18n]
+        (= @content-popup-panel :bid-auction)
+        [popup-bid-auction i18n balance asset asset-title asset-auction]
+        (= @content-popup-panel :open-auction)
+        [popup-open-auction i18n balance asset asset-title asset-auction]
         (= @content-popup-panel :login) [popup-login i18n])]]))
-
-
-
-
 
