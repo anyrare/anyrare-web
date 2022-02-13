@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@splidejs/splide": "^3.6.11",
+    "bignumber.js": "^9.0.2",
     "cssnano": "5.0.8",
     "ethers": "^5.5.3",
     "firebase": "^9.6.0",

@@ -263,7 +263,7 @@
                                          (:nft-factory contract-abi)
                                          signer)
                            (:token-id params)
-                           (:close-auction-period-second params)
+                           (:close-auction-duration params)
                            (:starting-price params)
                            (:reserve-price params)
                            (:max-weight params)
@@ -338,18 +338,4 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

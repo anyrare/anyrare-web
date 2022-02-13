@@ -13,3 +13,5 @@
 (env/def CHAIN_ID 1687)
 (env/def CHAIN_NAME "anyrare")
 (env/def ENABLED_ERROR_LOG true)
+(env/def AUCTION_MAX_WEIGHT 1000000)
+(env/def AUCTION_NEXT_BID_WEIGHT 50000)
