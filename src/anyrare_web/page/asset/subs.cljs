@@ -1,7 +1,6 @@
-(ns anyrare-web.asset.subs
-  (:require
-   [re-frame.core :refer [reg-sub]]
-   [anyrare-web.lib.format :refer [format-money]]))
+(ns anyrare-web.page.asset.subs
+  (:require [re-frame.core :refer [reg-sub]]
+            [anyrare-web.lib.format :refer [format-money]]))
 
 (reg-sub
  ::asset
@@ -70,4 +69,5 @@
 (reg-sub
  ::asset-auction-panel
  (fn [db _]))
+
 

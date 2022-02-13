@@ -17,7 +17,7 @@
     "build": "yarn run clean && npx shadow-cljs release app && NODE_ENV=production yarn run css",
     "clean": "rm -rf .shadow-cljs target out resources/public/js/* resources/public/styles.css",
     "build-report": "npx shadow-cljs run shadow.cljs.build-report app target/build-report.html",
-    "ci": "npx shadow-cljs compile karma-test && npx karma start --single-run --reporters junit,dots",
+    "test": "npx shadow-cljs compile karma-test && npx karma start --single-run --reporters junit,dots",
     "css": "yarn postcss styles.src.css -o resources/public/styles.css",
     "version:major": "yarn version --major",
     "version:minor": "yarn version --minor",

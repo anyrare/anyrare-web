@@ -1,7 +1,6 @@
 (ns anyrare-web.subs
-  (:require
-   [re-frame.core :refer [reg-sub]]
-   [anyrare-web.ethers :as ethers]))
+  (:require [re-frame.core :refer [reg-sub]]
+            [anyrare-web.ethers :as ethers]))
 
 (reg-sub
  ::active-page
@@ -32,3 +31,4 @@
  ::balance
  (fn [db _]
    (:balance db)))
+

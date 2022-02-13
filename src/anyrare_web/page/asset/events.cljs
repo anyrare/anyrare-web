@@ -1,10 +1,9 @@
-(ns anyrare-web.asset.events
-  (:require
-   [re-frame.core :refer [reg-event-db reg-event-fx]]
-   [anyrare-web.ethers :as ethers]
-   [anyrare-web.events :as app-events]
-   [kitchen-async.promise :as p]
-   ["@splidejs/splide" :default Splide]))
+(ns anyrare-web.page.asset.events
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx]]
+            [anyrare-web.ethers :as ethers]
+            [anyrare-web.events :as app-events]
+            [kitchen-async.promise :as p]
+            ["@splidejs/splide" :default Splide]))
 
 (reg-event-db
  ::initialize-image-slider
@@ -54,4 +53,5 @@
                   (reset! content-popup-panel
                           (if (contains? result :error) :login :open-auction))]
                  [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
+
 

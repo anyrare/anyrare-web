@@ -1,13 +1,12 @@
 (ns anyrare-web.events
-  (:require
-   [re-graph.core :as re-graph]
-   [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch subscribe]]
-   [kitchen-async.promise :as p]
-   [anyrare-web.db :refer [app-db]]
-   [anyrare-web.gql :refer [gql]]
-   [anyrare-web.ethers :as ethers]
-   [anyrare-web.i18n :refer [get-dicts-by-lang]]
-   [day8.re-frame.async-flow-fx :as async-flow-fx]))
+  (:require [re-graph.core :as re-graph]
+            [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch subscribe]]
+            [kitchen-async.promise :as p]
+            [anyrare-web.db :refer [app-db]]
+            [anyrare-web.gql :refer [gql]]
+            [anyrare-web.ethers :as ethers]
+            [anyrare-web.i18n :refer [get-dicts-by-lang]]
+            [day8.re-frame.async-flow-fx :as async-flow-fx]))
 
 
 ;; Core
@@ -43,6 +42,7 @@
                       (assoc :route-params route-params))]
      (case page
        :home {:db set-page}
+       :admin {:db set-page}
        :asset {:db set-page
                :dispatch-n [[::fetch-asset-data
                              {:token-id (:token-id route-params)}]]}
@@ -223,4 +223,5 @@
                    :total-bid (:total-bid (:auction result))
                    :current-bid-id (:bid-id result)}]
                  [::ethers ethers/signer-address :signer nil]])}]}}))
+
 

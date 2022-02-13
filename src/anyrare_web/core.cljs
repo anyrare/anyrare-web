@@ -1,11 +1,10 @@
 (ns anyrare-web.core
-  (:require
-   [reagent.dom :refer [render unmount-component-at-node]]
-   [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
-   [anyrare-web.routes :as routes]
-   [anyrare-web.events :as events]
-   [anyrare-web.views :refer [main-app]]
-   [anyrare-web.config :as config]))
+  (:require [reagent.dom :refer [render unmount-component-at-node]]
+            [re-frame.core :refer [dispatch-sync clear-subscription-cache!]]
+            [anyrare-web.routes :as routes]
+            [anyrare-web.events :as events]
+            [anyrare-web.views :refer [main-app]]
+            [anyrare-web.config :as config]))
 
 (defn dev-setup []
   (when config/debug?
@@ -24,3 +23,4 @@
   (dispatch-sync [::events/set-i18n :th])
   (dev-setup)
   (mount-root))
+

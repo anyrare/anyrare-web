@@ -1,7 +1,6 @@
 (ns anyrare-web.i18n
-  (:require
-   [re-frame.core :refer [reg-event-db]]
-   [anyrare-web.lib.localstorage :refer [get-lang]]))
+  (:require [re-frame.core :refer [reg-event-db]]
+            [anyrare-web.lib.localstorage :refer [get-lang]]))
 
 (defn dicts []
   {:founder
@@ -217,4 +216,5 @@
 
 (defn get-dicts-by-lang [lang]
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
+
 

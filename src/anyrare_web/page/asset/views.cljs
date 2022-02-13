@@ -1,17 +1,16 @@
-(ns anyrare-web.asset.views
-  (:require
-   [reagent.core :as reagent]
-   [re-frame.core :refer [subscribe dispatch]]
-   [anyrare-web.asset.events :as events]
-   [anyrare-web.asset.subs :as subs]
-   [anyrare-web.subs :as app-subs]
-   [anyrare-web.lib.format :as format]
-   [anyrare-web.component.avatar :refer [avatar avatar-with-username]]
-   [anyrare-web.component.svg :refer [angle-down angle-up]]
-   [anyrare-web.ethers :as ethers]
-   [anyrare-web.env :as env]
-   [spade.core :refer [defclass]]
-   [garden.stylesheet :refer (at-media)]))
+(ns anyrare-web.page.asset.views
+  (:require [reagent.core :as reagent]
+            [re-frame.core :refer [subscribe dispatch]]
+            [anyrare-web.page.asset.events :as events]
+            [anyrare-web.page.asset.subs :as subs]
+            [anyrare-web.subs :as app-subs]
+            [anyrare-web.lib.format :as format]
+            [anyrare-web.component.avatar :refer [avatar avatar-with-username]]
+            [anyrare-web.component.svg :refer [angle-down angle-up]]
+            [anyrare-web.ethers :as ethers]
+            [anyrare-web.env :as env]
+            [spade.core :refer [defclass]]
+            [garden.stylesheet :refer (at-media)]))
 
 (defn title-panel
   [text]
@@ -382,4 +381,5 @@
         (= @content-popup-panel :open-auction)
         [popup-open-auction i18n balance asset asset-title asset-auction]
         (= @content-popup-panel :login) [popup-login i18n])]]))
+
 
