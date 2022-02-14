@@ -32,7 +32,3 @@
  :navigate
  (fn [handler] (navigate! handler)))
 
-
-
-
-
