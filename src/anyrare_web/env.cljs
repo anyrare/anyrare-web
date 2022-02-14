@@ -18,3 +18,4 @@
 (env/def PINATA_API_KEY "98859962ad7397103324")
 (env/def PINATA_API_SECRET "2369ea05f93770cf30851270ae2da2a0b41ed0307cf3ea9e9c98e710d859b844")
 (env/def PINATA_SERVER_URL "https://api.pinata.cloud")
+(env/def IPFS_SERVER_URL "https://ipfs.anyrare.network")

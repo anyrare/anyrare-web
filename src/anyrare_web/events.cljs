@@ -42,7 +42,8 @@
                       (assoc :route-params route-params))]
      (case page
        :home {:db set-page}
-       :admin {:db set-page}
+       :admin {:db set-page
+               :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
        :asset {:db set-page
                :dispatch-n [[::fetch-asset-data
                              {:token-id (:token-id route-params)}]]}

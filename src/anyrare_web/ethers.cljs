@@ -165,11 +165,11 @@
     (callback (js->clj tx))))
 
 (defn nft-current-token-id
-  [callback]
+  [_ callback]
   (p/let [tx (.getCurrentTokenId (get-contract (:nft-factory contract-address)
                                                (:nft-factory contract-abi)
                                                provider))]
-    (callback {:result (js->clj tx)})))
+    (callback {:token-id (js->clj tx)})))
 
 (defn nft-by-id
   [params callback]

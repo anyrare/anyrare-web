@@ -213,6 +213,9 @@
    :wallet-address
    {:th "รหัสกระเป๋า"
     :en "Wallet address"}
+   :mint-asset-page-title
+   {:th "สร้างสินทรัพย์"
+    :en "Mint Asset"}
    :mint-asset-name
    {:th "ชื่อสินทรัพย์"
     :en "Name"}
@@ -240,6 +243,9 @@
    :custodian-general-fee
    {:th "ค่าธรรมเนียมผู้ดูแลสินทรัพย์ทั่วไป"
     :en "Custodian general fee"}
+   :audit-fee
+   {:th "ค่าธรรมเนียมผู้ตรวจสอบสินทรัพย์"
+    :en "Audit fee"}
    :attribute
    {:th "คุณลักษณะ"
     :en "Attribute"}

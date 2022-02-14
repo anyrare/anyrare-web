@@ -24,7 +24,8 @@
    [res (fetch/post
          (str env/PINATA_SERVER_URL "/pinning/pinJSONToIPFS")
          {:headers {:pinata_api_key env/PINATA_API_KEY
-                    :pinata_secret_api_key env/PINATA_API_SECRET}
+                    :pinata_secret_api_key env/PINATA_API_SECRET
+                    :content-type "multipart/form-data"}
           :content-type :json
           :body (utils/clj->json data)})]
     (callback (-> (:body res)

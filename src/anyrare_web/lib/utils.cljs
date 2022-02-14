@@ -1,6 +1,7 @@
 (ns anyrare-web.lib.utils
   (:require [goog :as goog]
-            [goog.object :as goog.object]))
+            [goog.object :as goog.object]
+            [anyrare-web.env :as env]))
 
 (defn json->clj
   [e]
@@ -26,4 +27,6 @@
   [x]
   (into {} (for [k (.keys js/Object x)] [k (aget x k)])))
 
-
+(defn ipfs-url
+  [hash]
+  (str env/IPFS_SERVER_URL "/ipfs/" hash))
