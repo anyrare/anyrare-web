@@ -1293,5 +1293,3 @@
    :nft-factory env/CONTRACT_ADDRESS_NFT_FACTORY
    :collection-factory env/CONTRACT_ADDRESS_COLLECTION_FACTORY})
 
-
-

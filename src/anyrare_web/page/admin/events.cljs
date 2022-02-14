@@ -3,7 +3,8 @@
             [superstructor.re-frame.fetch-fx]
             [anyrare-web.events :as app-events]
             [anyrare-web.env :as env]
-            [anyrare-web.lib.utils :as utils]))
+            [anyrare-web.lib.utils :as utils]
+            [anyrare-web.abi :as abi]))
 
 (reg-event-db
  ::success-upload-file
@@ -41,3 +42,48 @@
             :on-success [::success-upload-file :file-json]
             :on-failure [::app-events/save-data :upload-file]}}))
 
+(reg-event-fx
+ ::mint-nft
+ (fn [_ [_ {:keys [values]}]]
+   (prn (get-in values ["ingredient"]))
+   (let [data {:default-lang "th"
+               :name (get-in values ["name-th"])
+               :description (get-in values ["description-th"])
+               :external_url nil
+               :image nil
+               :token_address abi/nft-factory
+               :token_id nil
+               :founder (get-in values ["founder-address"])
+               :auditor (get-in values ["auditor"])
+               :custodian (get-in values ["custodian"])
+               :attributes
+               [{:trait_type "created_date"
+                 :value (get-in values ["created-date"])}
+                {:trait_type "created-by"
+                 :value (get-in values ["created-by"])}
+                {:trait_type "origin"
+                 :value (get-in values ["origin"])}
+                {:trait_type "edition"
+                 :value (get-in values ["edition"])}
+                {:trait_type "material"
+                 :value (get-in values ["material"])}
+                {:trait_type "ingredient"
+                 :value (get-in values ["ingredient"])}
+                {:trait_type "condition"
+                 :value (get-in values ["condition"])}
+                {:trait_type "width"
+                 :value (get-in values ["width"])}
+                {:trait_type "length"
+                 :value (get-in values ["length"])}
+                {:trait_type "height"
+                 :value (get-in values ["height"])}
+                {:trait_type "weight"
+                 :value (get-in values ["weight"])}]
+               :fee
+               {:founder_fee (get-in values ["founder-fee"])
+                :custodian_fee (get-in values ["custodian-fee"])
+                :founder_redeem_fee (get-in values ["founder-redeem-fee"])
+                :custodian_redeem_fee (get-in values ["custodian-redeem-fee"])
+                :founder_general_fee (get-in values ["founder_general_fee"])
+                :custodian_general_fee (get-in values ["custodian_general_fee"])}}]
+     (prn data))))

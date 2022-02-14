@@ -212,9 +212,83 @@
     :en "You are not connect to wallet. Please select your wallet provider."}
    :wallet-address
    {:th "รหัสกระเป๋า"
-    :en "Wallet address"}})
+    :en "Wallet address"}
+   :mint-asset-name
+   {:th "ชื่อสินทรัพย์"
+    :en "Name"}
+   :mint-asset-description
+   {:th "คำอธิบาย"
+    :en "Description"}
+   :mint-asset-address
+   {:th "รหัสกระเป๋า"
+    :en "Wallet address"}
+   :founder-fee
+   {:th "ค่าสิทธิผู้ค้นพบสินทรัพย์"
+    :en "Founder fee"}
+   :custodian-fee
+   {:th "ค่าธรรมเนียมผู้ดูแลสินทรัพย์"
+    :en "Custodian fee"}
+   :founder-redeem-fee
+   {:th "ค่าสิทธิผู้ค้นพบสินทรัพย์ถ้ามีการถอน"
+    :en "Founder redeem fee"}
+   :custodian-redeem-fee
+   {:th "ค่าธรรมเนียมผู้ดูแลสินทรัพย์ถ้ามีการถอน"
+    :en "Custodian redeem fee"}
+   :founder-general-fee
+   {:th "ค่าสิทธิผู้ค้นพบสินทรัพย์ทั่วไป"
+    :en "Founder general fee"}
+   :custodian-general-fee
+   {:th "ค่าธรรมเนียมผู้ดูแลสินทรัพย์ทั่วไป"
+    :en "Custodian general fee"}
+   :attribute
+   {:th "คุณลักษณะ"
+    :en "Attribute"}
+   :created-date
+   {:th "ปีที่สร้าง"
+    :en "Created date"}
+   :created-by
+   {:th "ผู้สร้าง"
+    :en "Created by"}
+   :origin
+   {:th "แหล่งกำเนิด"
+    :en "Origin"}
+   :model
+   {:th "แบบ"
+    :en "Model"}
+   :edition
+   {:th "รุ่น"
+    :en "Edition"}
+   :material
+   {:th "วัสดุ"
+    :en "Material"}
+   :ingredient
+   {:th "ส่วนผสม"
+    :en "Ingredient"}
+   :condition
+   {:th "สภาพ"
+    :en "Condition"}
+   :width
+   {:th "กว้าง"
+    :en "Width"}
+   :length
+   {:th "ยาว"
+    :en "Length"}
+   :height
+   {:th "สูง"
+    :en "Height"}
+   :weight
+   {:th "น้ำหนัก"
+    :en "Weight"}
+   :mint-asset-submit
+   {:th "ยืนยันการสร้าง NFT"
+    :en "Submit mint NFT"}
+   :image
+   {:th "รูปภาพ"
+    :en "Image"}})
 
 (defn get-dicts-by-lang [lang]
   (into {} (map (fn [[k v]] {k (v lang)}) (dicts))))
+
+
 
 
