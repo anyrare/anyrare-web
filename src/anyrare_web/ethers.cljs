@@ -1,13 +1,12 @@
 (ns anyrare-web.ethers
-  (:require
-   [re-frame.core :refer [dispatch subscribe reg-event-fx]]
-   [kitchen-async.promise :as p]
-   ["ethers" :refer [ethers]]
-   [lambdaisland.fetch :as fetch]
-   [anyrare-web.abi :refer [contract-abi contract-address]]
-   [anyrare-web.env :as env]
-   [anyrare-web.lib.utils :refer [json->clj]]
-   [anyrare-web.error :refer [log error-messages]]))
+  (:require [re-frame.core :refer [dispatch subscribe reg-event-fx]]
+            [kitchen-async.promise :as p]
+            ["ethers" :refer [ethers]]
+            [lambdaisland.fetch :as fetch]
+            [anyrare-web.abi :refer [contract-abi contract-address]]
+            [anyrare-web.env :as env]
+            [anyrare-web.lib.utils :refer [json->clj]]
+            [anyrare-web.error :refer [log error-messages]]))
 
 (def MAX_APPROVE_SPEND_LIMIT
   (.from (.-BigNumber ethers) "1000000000000000000000000000000"))
@@ -166,11 +165,11 @@
     (callback (js->clj tx))))
 
 (defn nft-current-token-id
-  [callback]
+  [_ callback]
   (p/let [tx (.getCurrentTokenId (get-contract (:nft-factory contract-address)
                                                (:nft-factory contract-abi)
                                                provider))]
-    (callback {:result (js->clj tx)})))
+    (callback {:token-id (js->clj tx)})))
 
 (defn nft-by-id
   [params callback]
@@ -338,4 +337,5 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
 

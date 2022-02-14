@@ -8,7 +8,8 @@
   ["/" {"" :home
         ["register/" :username] :register
         "asset/" {"mint" :asset-mint}
-        ["asset/" :token-id] :asset}])
+        ["asset/" :token-id] :asset
+        "admin" :admin}])
 
 (def routes-guard [:account])
 
@@ -30,5 +31,4 @@
 (reg-fx
  :navigate
  (fn [handler] (navigate! handler)))
-
 

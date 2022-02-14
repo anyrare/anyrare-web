@@ -1,6 +1,5 @@
 (ns anyrare-web.error
-  (:require
-   [anyrare-web.env :as env]))
+  (:require [anyrare-web.env :as env]))
 
 (def error-messages
   {:ethers
@@ -15,4 +14,5 @@
   (when env/ENABLED_ERROR_LOG
     (.error js/console message)
     (when (some? err) (.error js/console err))))
+
 
