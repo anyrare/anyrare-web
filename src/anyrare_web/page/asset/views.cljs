@@ -9,6 +9,7 @@
             [anyrare-web.component.svg :refer [angle-down angle-up]]
             [anyrare-web.ethers :as ethers]
             [anyrare-web.env :as env]
+            [anyrare-web.lib.utils :as utils]
             [spade.core :refer [defclass]]
             [garden.stylesheet :refer (at-media)]))
 
@@ -52,7 +53,7 @@
        (for [index (range (count attachments))]
          [:li {:class "splide__slide"
                :key index}
-          [:img {:src ((get attachments index) :url)}]])
+          [:img {:src (utils/ipfs->url ((get attachments index) :url))}]])
        [:div {:class [:bg-gray-100 :h-72 :w-full]}])]]])
 
 (defn title-section-toggle

@@ -624,14 +624,7 @@
     :stateMutability "nonpayable"
     :type "function"}
    {:inputs
-    [{:internalType "uint256", :name "tokenId", :type "uint256"}
-     {:internalType "uint256", :name "custodianWeight", :type "uint256"}
-     {:internalType "uint256"
-      :name "custodianGeneralFee"
-      :type "uint256"}
-     {:internalType "uint256"
-      :name "custodianRedeemWeight"
-      :type "uint256"}]
+    [{:internalType "uint256", :name "tokenId", :type "uint256"}]
     :name "custodianSign"
     :outputs []
     :stateMutability "nonpayable"
@@ -756,7 +749,14 @@
      {:internalType "uint256"
       :name "founderGeneralFee"
       :type "uint256"}
-     {:internalType "uint256", :name "auditFee", :type "uint256"}]
+     {:internalType "uint256", :name "auditFee", :type "uint256"}
+     {:internalType "uint256", :name "custodianWeight", :type "uint256"}
+     {:internalType "uint256"
+      :name "custodianGeneralFee"
+      :type "uint256"}
+     {:internalType "uint256"
+      :name "custodianRedeemWeight"
+      :type "uint256"}]
     :name "mint"
     :outputs []
     :stateMutability "nonpayable"
@@ -1292,4 +1292,5 @@
    :proposal env/CONTRACT_ADDRESS_PROPOSAL
    :nft-factory env/CONTRACT_ADDRESS_NFT_FACTORY
    :collection-factory env/CONTRACT_ADDRESS_COLLECTION_FACTORY})
+
 

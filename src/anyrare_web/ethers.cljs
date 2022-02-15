@@ -5,7 +5,7 @@
             [lambdaisland.fetch :as fetch]
             [anyrare-web.abi :refer [contract-abi contract-address]]
             [anyrare-web.env :as env]
-            [anyrare-web.lib.utils :refer [json->clj]]
+            [anyrare-web.lib.utils :refer [json->clj ipfs->url]]
             [anyrare-web.error :refer [log error-messages]]))
 
 (def MAX_APPROVE_SPEND_LIMIT
@@ -117,6 +117,9 @@
 
 (defn nft-mint
   [params callback]
+  (prn (get-contract (:nft-factory contract-address)
+                     (:nft-factory contract-abi)
+                     signer))
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
@@ -130,7 +133,10 @@
                     (:founder-weight params)
                     (:founder-redeem-weight params)
                     (:founder-general-fee params)
-                    (:audit-fee params))]
+                    (:audit-fee params)
+                    (:custodian-weight params)
+                    (:custodian-redeem-weight params)
+                    (:custodian-general-fee params))]
     (callback {:result (js->clj tx)})))
 
 (defn nft-custodian-sign
@@ -185,7 +191,11 @@
       (p/then
        (fn [[tx token-uri]]
          (->
-          [(fetch/get token-uri)
+          [(fetch/get (ipfs->url token-uri) {:content-type :text
+                                             :accept :text
+                                             :mode :cors
+                                             :credentials :omit})
+
            (member-by-address {:address (.. tx -addr -founder)} (fn [x] x))
            (member-by-address {:address (.. tx -addr -auditor)} (fn [x] x))
            (member-by-address {:address (.. tx -addr -custodian)} (fn [x] x))
@@ -337,5 +347,10 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
+
+
+
 
 

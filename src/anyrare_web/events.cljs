@@ -2,6 +2,7 @@
   (:require [re-graph.core :as re-graph]
             [re-frame.core :refer [reg-event-db reg-event-fx reg-fx dispatch subscribe]]
             [kitchen-async.promise :as p]
+            [superstructor.re-frame.fetch-fx]
             [anyrare-web.db :refer [app-db]]
             [anyrare-web.gql :refer [gql]]
             [anyrare-web.ethers :as ethers]
@@ -47,11 +48,11 @@
        :asset {:db set-page
                :dispatch-n [[::fetch-asset-data
                              {:token-id (:token-id route-params)}]]}
+
        :register {:db set-page
                   :dispatch-n [[::fetch-member-by-username
                                 {:username (:username route-params)}]]}
        :asset-mint {:db set-page}))))
-
 
 ;; GraphQL Flow
 
@@ -224,5 +225,8 @@
                    :total-bid (:total-bid (:auction result))
                    :current-bid-id (:bid-id result)}]
                  [::ethers ethers/signer-address :signer nil]])}]}}))
+
+
+
 
 

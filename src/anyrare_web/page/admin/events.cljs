@@ -60,15 +60,24 @@
                 (let [images (-> (for [i (range 5)]
                                    (get-in db [(keyword (str "image-id-" i))]))
                                  (as-> r (filter #(some? %) r))
-                                 (as-> r (map (fn [x] {:url (str "ipfs://" (:ipfs-hash x))
-                                                       :type "IMAGE"}) r))
-                                 (vector))
-                      token-id (str (:token-id result))
+                                 (as-> r (map (fn [x]
+                                                {:url (str "ipfs://" (:ipfs-hash x))
+                                                 :type "IMAGE"}) r))
+                                 (as-> r (into [] r)))
+                      token-id (str (+ 1 (:token-id result)))
                       data {:default-lang "th"
                             :name (get-in values ["name-th"])
                             :description (get-in values ["description-th"])
+                            :locales {:name
+                                      {:th (get-in values ["name-th"])
+                                       :en (get-in values ["name-en"])
+                                       :cn (get-in values ["name-cn"])}
+                                      :description
+                                      {:th (get-in values ["description-th"])
+                                       :en (get-in values ["description-en"])
+                                       :cn (get-in values ["description-cn"])}}
                             :external_url nil
-                            :image (images 0)
+                            :image ((images 0) :url)
                             :attachments images
                             :token_address (:nft-factory abi/contract-address)
                             :token_id token-id
@@ -102,17 +111,21 @@
                             {:founder_weight (get-in values ["founder-fee"])
                              :founder_redeem_weight (get-in values ["founder-redeem-fee"])
                              :founder_general_fee (get-in values ["founder-general-fee"])
+                             :custodian_weight (get-in values ["custodian-fee"])
+                             :custodian_redeem_weight (get-in values ["custodian-redeem-fee"])
+                             :custodian_general_fee (get-in values ["custodian-general-fee"])
                              :audit_fee (get-in values ["audit-fee"])
                              :max_weight 1000000}}]
                   [[::upload-json data]]))}
              {:when :seen? :events ::success-upload-file
               :dispatch-fn
               (fn [[_ _ result res]]
+                (.log js/console res)
                 (let [ipfs-hash
-                      (-> (:body result)
+                      (-> (:body res)
                           (js/JSON.parse)
                           (js->clj)
-                          (as-> r  (get-in r ["IpfsHash"])))
+                          (as-> r (get-in r ["IpfsHash"])))
                       token-uri (str "ipfs://" ipfs-hash)
                       data {:founder-address (get-in result [:founder_address])
                             :custodian-address (get-in result [:custodian_address])
@@ -122,7 +135,11 @@
                             :founder-weight (get-in result [:fee :founder_weight])
                             :founder-redeem-weight (get-in result [:fee :founder_redeem_weight])
                             :founder-general-fee (get-in result [:fee :founder_general_fee])
+                            :custodian-weight (get-in result [:fee :custodian_weight])
+                            :custodian-redeem-weight (get-in result [:fee :custodian_redeem_weight])
+                            :custodian-general-fee (get-in result [:fee :custodian_general_fee])
                             :audit-fee (get-in result [:fee :audit_fee])}]
+                  (prn data)
                   [[::app-events/ethers ethers/nft-mint :ethers-tx-callback data]]))}]}}))
 
 

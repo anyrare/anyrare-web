@@ -98,6 +98,21 @@
                :input-type :text
                :required true}
               {:type :col
+               :name (str (:custodian-fee i18n) " %")
+               :input-name "custodian-fee"
+               :input-type :text
+               :required true}
+              {:type :col
+               :name (str (:custodian-redeem-fee i18n) " %")
+               :input-name "custodian-redeem-fee"
+               :input-type :text
+               :required true}
+              {:type :col
+               :name (str (:custodian-general-fee i18n) " (ARA)")
+               :input-name "custodian-general-fee"
+               :input-type :text
+               :required true}
+              {:type :col
                :name (str (:audit-fee i18n) " (ARA)")
                :input-name "audit-fee"
                :input-type :text
@@ -201,6 +216,13 @@
   [:div {:class [:px-8]}
    [fork/form {:path [:mint-asset-form]
                :form-id "mint-asset"
+               :initial-values {"founder-fee" 10
+                                "founder-redeem-fee" 30
+                                "founder-general-fee" 1
+                                "custodian-fee" 10
+                                "custodian-redeem-fee" 30
+                                "custodian-general-fee" 1
+                                "audit-fee" 1}
                :prevent-default? true
                :clean-on-unmount? true
                :on-submit #(dispatch [::events/mint-nft-flow %])} mint-asset-form]])
@@ -217,4 +239,5 @@
        [:h1 {:class [:mt-4 :text-center :text-xl :font-kanit :font-medium]}
         (:mint-asset-page-title i18n)]
        [mint-asset]])))
+
 

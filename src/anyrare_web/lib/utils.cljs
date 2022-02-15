@@ -30,3 +30,9 @@
 (defn ipfs-url
   [hash]
   (str env/IPFS_SERVER_URL "/ipfs/" hash))
+
+(defn ipfs->url
+  [ipfs]
+  (clojure.string/replace
+   ipfs #"ipfs://" (str env/IPFS_SERVER_URL "/ipfs/")))
+
