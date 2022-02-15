@@ -55,8 +55,19 @@
                       (assoc :route-params route-params))]
      (case page
        :home {:db set-page}
-       :tool {:db set-page
-               :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+       :tool {:db set-page}
+       :tool-mint {:db set-page
+                   :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+       :tool-custodian-sign {:db set-page
+                             :dispatch-n [[::fetch-nfts-custodian-unsign]]}
+       :tool-founder-sign {:db set-page
+                           :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+       :tool-collection {:db set-page
+                         :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+       :tool-open-proposal {:db set-page
+                            :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+       :tool-vote-proposal {:db set-page
+                            :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
        :asset {:db set-page
                :dispatch-n [[::fetch-asset-data
                              {:token-id (:token-id route-params)}]]}
@@ -236,5 +247,27 @@
                    :total-bid (:total-bid (:auction result))
                    :current-bid-id (:bid-id result)}]
                  [::ethers ethers/signer-address :signer nil]])}]}}))
+
+
+;; Tool
+
+
+(reg-event-fx
+ ::fetch-nfts-custodian-unsign
+ (fn [_ [_ {:keys [code]}]]
+   {:async-flow
+    {:first-dispatch [::ethers ethers/signer-address :signer nil]
+     :rules [{:when :seen? :events ::save-data
+              :dispatch-fn
+              (fn [[_ _ result]]
+                (prn result)
+                [(fetch-gql
+                  (get-in gql [:get-nfts-custodian-unsign :query])
+                  (get-in gql [:get-nfts-custodian-unsign :type])
+                  {:custodianAddress (:address result)}
+                  ::save-gql-data
+                  :assets
+                  :getNFTsCustodianUnsign)])}]}}))
+
 
 
