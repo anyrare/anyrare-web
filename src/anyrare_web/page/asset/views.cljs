@@ -362,7 +362,8 @@
     [:div
      (dispatch [::events/initialize-image-slider])
      [layout
-      [image-slider-panel (:assets @asset-data)]
+      ;; (prn (:attachments @asset-data))
+      [image-slider-panel (:attachments @asset-data)]
       [:div {:class [:mx-2 :mb-4]}
        [title-panel asset-title]
        (when (some? @asset-auction)

@@ -217,7 +217,8 @@
               (js->clj
                {:token-id (.-tokenId tx)
                 :token-uri token-uri
-                :token-uri-data (json->clj (:body token-uri-data))
+                :token-uri-data (-> (:body token-uri-data)
+                                    (json->clj))
                 :auction (if (nil? auction) nil
                              {:bidder-address (.. auction -bidder)
                               :owner owner
@@ -347,6 +348,10 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
+
+
 
 
 
