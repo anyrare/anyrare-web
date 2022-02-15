@@ -15,18 +15,18 @@
 (reg-sub
  ::asset-title
  (fn [db _]
-   (get-in db [:asset-page :token-uri-data :title :th])))
+   (get-in db [:asset-page :token-uri-data :locales :name :th])))
 
 (reg-sub
  ::asset-detail
  (fn [db _]
-   {:description (get-in db [:asset-page :token-uri-data :description :th])
+   {:description (get-in db [:asset-page :token-uri-data :locales :description :th])
     :token-id (str (get-in db [:asset-page :token-id]))
     :owner (get-in db [:asset-page :owner])
     :founder (get-in db [:asset-page :founder])
     :auditor (get-in db [:asset-page :auditor])
     :custodian (get-in db [:asset-page :custodian])
-    :audit-date (get-in db [:asset-page :token-uri-data :auditor :timestamp])}))
+    :audit-date (get-in db [:asset-page :token-uri-data :timestamp])}))
 
 (reg-sub
  ::asset-royalty

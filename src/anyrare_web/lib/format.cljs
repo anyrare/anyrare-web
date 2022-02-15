@@ -37,17 +37,28 @@
 
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
-  (-> (moment. unix-timestamp "X")
-      (.locale "th") (.add 543 "year") (.format "ll")))
+  (if (nil? unix-timestamp) nil
+      (-> (moment. unix-timestamp)
+          (.locale "th")
+          (.add 543 "year")
+          (.format "ll"))))
 
 (defn unix-timestamp-to-local-datetime
   [unix-timestamp]
-  (-> (moment. unix-timestamp "X")
-      (.locale "th") (.add 543 "year") (.format "lll")))
+  (js/console.log (.format (moment. unix-timestamp) "lll"))
+  (if (nil? unix-timestamp) nil
+      (-> (moment. unix-timestamp)
+          (.locale "th")
+          (.add 543 "year")
+          (.format "lll"))))
 
 (defn trim-username [text & [len]]
   (let [text-len (if (nil? len) 12 len)]
     (if (<= (count text) text-len)
       text
       (str (.substring text 0 text-len) "..."))))
+
+
+
+
 

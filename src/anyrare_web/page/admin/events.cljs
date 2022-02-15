@@ -5,6 +5,7 @@
             [anyrare-web.events :as app-events]
             [anyrare-web.env :as env]
             [anyrare-web.lib.utils :as utils]
+            [anyrare-web.lib.format :as format]
             [anyrare-web.abi :as abi]
             [anyrare-web.ethers :as ethers]))
 
@@ -64,7 +65,7 @@
                                                 {:url (str "ipfs://" (:ipfs-hash x))
                                                  :type "IMAGE"}) r))
                                  (as-> r (into [] r)))
-                      token-id (str (+ 1 (:token-id result)))
+                      token-id (str (+ 1 (js/parseInt (:token-id result))))
                       data {:default-lang "th"
                             :name (get-in values ["name-th"])
                             :description (get-in values ["description-th"])
@@ -76,7 +77,7 @@
                                       {:th (get-in values ["description-th"])
                                        :en (get-in values ["description-en"])
                                        :cn (get-in values ["description-cn"])}}
-                            :external_url nil
+                            :external_url (str env/ANYRARE_WEB_URL "/asset/" token-id)
                             :image ((images 0) :url)
                             :attachments images
                             :token_address (:nft-factory abi/contract-address)
@@ -108,14 +109,18 @@
                              {:trait_type "weight"
                               :value (get-in values ["weight"])}]
                             :fee
-                            {:founder_weight (get-in values ["founder-fee"])
-                             :founder_redeem_weight (get-in values ["founder-redeem-fee"])
-                             :founder_general_fee (get-in values ["founder-general-fee"])
-                             :custodian_weight (get-in values ["custodian-fee"])
-                             :custodian_redeem_weight (get-in values ["custodian-redeem-fee"])
-                             :custodian_general_fee (get-in values ["custodian-general-fee"])
-                             :audit_fee (get-in values ["audit-fee"])
-                             :max_weight 1000000}}]
+                            {:founder_weight (* (get-in values ["founder-fee"]) 10000)
+                             :founder_redeem_weight (* (get-in values ["founder-redeem-fee"]) 10000)
+                             :founder_general_fee (format/format-currency->number
+                                                   (get-in values ["founder-general-fee"]))
+                             :custodian_weight (* (get-in values ["custodian-fee"]) 10000)
+                             :custodian_redeem_weight (* (get-in values ["custodian-redeem-fee"]) 10000)
+                             :custodian_general_fee (format/format-currency->number
+                                                     (get-in values ["custodian-general-fee"]))
+                             :audit_fee (format/format-currency->number (get-in values ["audit-fee"]))
+                             :max_weight 1000000}
+                            :timestamp (.getTime (js/Date.))}]
+                  (prn data)
                   [[::upload-json data]]))}
              {:when :seen? :events ::success-upload-file
               :dispatch-fn
