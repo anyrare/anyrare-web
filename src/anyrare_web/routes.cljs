@@ -9,7 +9,13 @@
         ["register/" :username] :register
         "asset/" {"mint" :asset-mint}
         ["asset/" :token-id] :asset
-        "admin" :admin}])
+        "tool" :tool
+        "tool/" {"mint" :tool-mint
+                 "custodian-sign" :tool-custodian-sign
+                 "founder-sign" :tool-founder-sign
+                 "collection" :tool-collecton
+                 "open-proposal" :tool-open-proposal
+                 "vote-proposal" :tool-vote-proposal}}])
 
 (def routes-guard [:account])
 
@@ -31,4 +37,5 @@
 (reg-fx
  :navigate
  (fn [handler] (navigate! handler)))
+
 

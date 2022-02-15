@@ -21,8 +21,7 @@
     $referral: String!
     $code: String!
     $username: String!
-    $thumbnail: String!
-    ) {
+    $thumbnail: String!) {
     create_member(
       address: $address
       referral: $referral
@@ -128,4 +127,47 @@
       pendingProcess
       function
       params
+    }}"}
+
+   :get-nfts-custodian-unsign
+   {:name "getNFTsCustodianUnsign"
+    :type :query
+    :query "query GetNFTsCustodianUnsign(
+    $custodianAddress: String!) {
+    getNFTsCustodianUnsign(
+       custodianAddress: $custodianAddress
+    ) {
+      id
+      tokenId
+    }}"}
+
+   :get-nfts-founder-unclaim
+   {:name "getNFTsFounderUnclaim"
+    :type :query
+    :query "query GetNFTsFounderUnclaim(
+    $founderAddress: String!) {
+    getNFTsFounderUnclaim(
+      founderAddress: $founderAddress
+    ) {
+      id
+      tokenId
+    }}"}
+
+   :get-nfts-by-party
+   {:name "getNFTsByParty"
+    :type :query
+    :query "query GetNFTsByParty(
+    $founderAddress: String
+    $ownerAddress: String
+    $custodianAddress: String
+    $auditorAddress: String) {
+    getNFTsByParty(
+      founderAddress: $founderAddress
+      ownerAddress: $ownerAddress
+      custodianAddress: $custodianAddress
+      auditorAddress: $auditorAddress
+    ) {
+      id
+      tokenId
     }}"}})
+

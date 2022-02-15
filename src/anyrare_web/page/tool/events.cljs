@@ -1,4 +1,4 @@
-(ns anyrare-web.page.admin.events
+(ns anyrare-web.page.tool.events
   (:require [re-frame.core :refer [reg-event-fx reg-event-db]]
             [superstructor.re-frame.fetch-fx]
             [kitchen-async.promise :as p]

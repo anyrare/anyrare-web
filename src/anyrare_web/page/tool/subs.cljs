@@ -1,4 +1,4 @@
-(ns anyrare-web.page.admin.subs
+(ns anyrare-web.page.tool.subs
   (:require [re-frame.core :refer [reg-sub]]))
 
 (reg-sub

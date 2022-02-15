@@ -2,7 +2,7 @@
   (:require [re-frame.core :refer [subscribe]]
             [anyrare-web.component.header :refer [header]]
             [anyrare-web.page.home :refer [home]]
-            [anyrare-web.page.admin.views :refer [admin]]
+            [anyrare-web.page.tool.views :refer [tool]]
             [anyrare-web.page.asset.views :refer [asset]]
             [anyrare-web.page.asset-mint :refer [asset-mint]]
             [anyrare-web.page.register.views :refer [register]]
@@ -12,7 +12,7 @@
 (defn pages [page-name]
   (case page-name
     :home [home]
-    :admin [admin]
+    :tool [tool]
     :asset [asset]
     :register [register]
     :asset-mint [asset-mint]

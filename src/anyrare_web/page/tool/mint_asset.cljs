@@ -1,9 +1,9 @@
-(ns anyrare-web.page.admin.views
+(ns anyrare-web.page.tool.mint-asset
   (:require [reagent.core :as reagent]
             [re-frame.core :refer [subscribe dispatch]]
             [fork.re-frame :as fork]
-            [anyrare-web.page.admin.events :as events]
-            [anyrare-web.page.admin.subs :as subs]
+            [anyrare-web.page.tool.events :as events]
+            [anyrare-web.page.tool.subs :as subs]
             [anyrare-web.subs :as app-subs]
             [anyrare-web.lib.utils :as utils]))
 
@@ -227,7 +227,7 @@
                :clean-on-unmount? true
                :on-submit #(dispatch [::events/mint-nft-flow %])} mint-asset-form]])
 
-(defn admin []
+(defn mint-asset []
   (let [image (reagent/atom nil)
         bg-image-style (fn [] (if-let [i @image]
                                 {:background-image (str "url(" i ")")}
@@ -236,8 +236,11 @@
         i18n @(subscribe [::app-subs/i18n])]
     (fn []
       [:div {:class [:w-full]}
+
+       [menu]
        [:h1 {:class [:mt-4 :text-center :text-xl :font-kanit :font-medium]}
         (:mint-asset-page-title i18n)]
        [mint-asset]])))
+
 
 
