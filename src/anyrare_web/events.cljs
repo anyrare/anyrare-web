@@ -31,6 +31,18 @@
  ::result
  (fn [x] x))
 
+(reg-event-fx
+ ::submit-job
+ (fn [_ [_ {:keys [function params]}]]
+   {:dispatch (fetch-gql
+               (get-in gql [:submit-job :query])
+               (get-in gql [:submit-job :type])
+               {:function function
+                :params params}
+               ::save-gql-data
+               :submit-job
+               :submitJob)}))
+
 
 ;; Router
 
@@ -126,7 +138,6 @@
  ::ethers
  (fn [_ [_ func key params]]
    {:result (func params #(dispatch [::save-data key %]))}))
-
 
 ;; Register
 
@@ -225,8 +236,5 @@
                    :total-bid (:total-bid (:auction result))
                    :current-bid-id (:bid-id result)}]
                  [::ethers ethers/signer-address :signer nil]])}]}}))
-
-
-
 
 

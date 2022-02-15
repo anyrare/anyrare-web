@@ -58,7 +58,3 @@
       text
       (str (.substring text 0 text-len) "..."))))
 
-
-
-
-

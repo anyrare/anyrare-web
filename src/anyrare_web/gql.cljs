@@ -112,5 +112,20 @@
       buyItNowPrice
       totalAuction
       totalOffer
-    }}"}})
+    }}"}
 
+   :submit-job
+   {:name "submitJob"
+    :type :mutation
+    :query "mutation SubmitJob(
+    $function: String!
+    $params: String!) {
+    submitJob(
+      function: $function
+      params: $params
+    ) {
+      jobId
+      pendingProcess
+      function
+      params
+    }}"}})

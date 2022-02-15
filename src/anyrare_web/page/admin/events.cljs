@@ -145,7 +145,8 @@
                             :custodian-general-fee (get-in result [:fee :custodian_general_fee])
                             :audit-fee (get-in result [:fee :audit_fee])}]
                   (prn data)
-                  [[::app-events/ethers ethers/nft-mint :ethers-tx-callback data]]))}]}}))
-
-
+                  [[::app-events/ethers ethers/nft-mint :ethers-tx-callback data]
+                   [::app-events/submit-job
+                    {:function "createOrUpdateNFT"
+                     :params (utils/clj->json {:tokenId (get-in result [:token_id])})}]]))}]}}))
 
