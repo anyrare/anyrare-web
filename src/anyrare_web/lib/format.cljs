@@ -23,7 +23,6 @@
 
 (defn format-currency
   [num]
-  (prn (BigNumber. (str num)))
   (->
    (num->big-number num)
    (.dividedBy erc20-digit-scaling-factor)
@@ -35,19 +34,31 @@
       (.times erc20-digit-scaling-factor)
       (.toFixed 0)))
 
+(defn format-percentage
+  [x y]
+  (-> (num->big-number x)
+      (.times 100)
+      (.dividedBy (num->big-number y))
+      (.toFixed 2)))
+
 (defn unix-timestamp-to-local-date
   [unix-timestamp]
   (if (nil? unix-timestamp) nil
-      (-> (moment. unix-timestamp)
+      (-> (if (>= (count (str unix-timestamp)) 13)
+            unix-timestamp
+            (* 1000 unix-timestamp))
+          (moment.)
           (.locale "th")
           (.add 543 "year")
           (.format "ll"))))
 
 (defn unix-timestamp-to-local-datetime
   [unix-timestamp]
-  (js/console.log (.format (moment. unix-timestamp) "lll"))
   (if (nil? unix-timestamp) nil
-      (-> (moment. unix-timestamp)
+      (-> (if (>= (count (str unix-timestamp)) 13)
+            unix-timestamp
+            (* 1000 unix-timestamp))
+          (moment.)
           (.locale "th")
           (.add 543 "year")
           (.format "lll"))))
@@ -57,4 +68,5 @@
     (if (<= (count text) text-len)
       text
       (str (.substring text 0 text-len) "..."))))
+
 

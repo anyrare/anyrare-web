@@ -3,6 +3,7 @@
             [anyrare-web.ethers :as ethers]
             [anyrare-web.events :as app-events]
             [kitchen-async.promise :as p]
+            [anyrare-web.lib.utils :as utils]
             ["@splidejs/splide" :default Splide]))
 
 (reg-event-db
@@ -17,14 +18,20 @@
  (fn [_ [_ params]]
    {:dispatch-fn [(ethers/nft-open-auction
                    params
-                   #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
+                   #(dispatch [::app-events/save-data :ethers-tx-callback %]))]
+    :dispatch [::app-events/submit-job
+               {:function "createOrUpdateNFT"
+                :params (utils/clj->json {:tokenId (str (:token-id params))})}]}))
 
 (reg-event-fx
  ::bid-auction
  (fn [_ [_ params]]
    {:dispatch-fn [(ethers/nft-bid-auction
                    params
-                   #(dispatch [::app-events/save-data :ethers-tx-callback %]))]}))
+                   #(dispatch [::app-events/save-data :ethers-tx-callback %]))]
+    :dispatch [::app-events/submit-job
+               {:function "createOrUpdateNFT"
+                :params (utils/clj->json {:tokenId (str (:token-id params))})}]}))
 
 (reg-event-fx
  ::toggle-bid-auction-panel
@@ -53,5 +60,8 @@
                   (reset! content-popup-panel
                           (if (contains? result :error) :login :open-auction))]
                  [::app-events/result (reset! toggle-popup-panel true)]])}]}}))
+
+
+
 
 

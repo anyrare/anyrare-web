@@ -61,7 +61,7 @@
        :tool-custodian-sign {:db set-page
                              :dispatch-n [[::fetch-nfts-custodian-unsign]]}
        :tool-founder-sign {:db set-page
-                           :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
+                           :dispatch-n [[::fetch-nfts-founder-unclaim]]}
        :tool-collection {:db set-page
                          :dispatch-n [[::ethers ethers/signer-address :signer nil]]}
        :tool-open-proposal {:db set-page
@@ -260,7 +260,7 @@
 
 (reg-event-fx
  ::fetch-nfts-custodian-unsign
- (fn [_ [_ {:keys [code]}]]
+ (fn [_]
    {:async-flow
     {:first-dispatch [::ethers ethers/signer-address :signer nil]
      :rules [{:when :seen? :events (fn [[e k]] (and (= ::save-data e) (= :signer k)))
@@ -273,6 +273,31 @@
                   ::save-gql-data
                   :assets-id
                   :getNFTsCustodianUnsign)])}
+             {:when :seen? :events (fn [[e k]] (and (= ::save-gql-data e) (= :assets-id k)))
+              :dispatch-fn
+              (fn [[_ _ nested-var params]]
+                (-> params
+                    (:data)
+                    (nested-var)
+                    (as-> r (map (fn [x] {:token-id (:tokenId x)}) r))
+                    (as-> r (into [] r))
+                    (as-> r [[::fetch-ntfs-by-id :assets r]])))}]}}))
+
+(reg-event-fx
+ ::fetch-nfts-founder-unclaim
+ (fn [_]
+   {:async-flow
+    {:first-dispatch [::ethers ethers/signer-address :signer nil]
+     :rules [{:when :seen? :events (fn [[e k]] (and (= ::save-data e) (= :signer k)))
+              :dispatch-fn
+              (fn [[_ _ result]]
+                [(fetch-gql
+                  (get-in gql [:get-nfts-founder-unclaim :query])
+                  (get-in gql [:get-nfts-founder-unclaim :type])
+                  {:founderAddress (:address result)}
+                  ::save-gql-data
+                  :assets-id
+                  :getNFTsFounderUnclaim)])}
              {:when :seen? :events (fn [[e k]] (and (= ::save-gql-data e) (= :assets-id k)))
               :dispatch-fn
               (fn [[_ _ nested-var params]]

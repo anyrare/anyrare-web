@@ -315,7 +315,7 @@
            " " (format/format-currency (str (:value @balance))) " ARA"]]
          [:tr
           [:td (:fee i18n)]
-          [:td {:class [:text-right :font-kanit :font-medium]} "343321 ARA"]]]]
+          [:td {:class [:text-right :font-kanit :font-medium]} "BBB ARA"]]]]
        [:button {:class [:p-2 :mt-4 :text-lg :button :bg-primary :font-kanit
                          :font-medium :text-white :rounded-full :w-full]
                  :on-click #(dispatch

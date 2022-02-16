@@ -47,7 +47,6 @@
             :on-failure [::app-events/save-data :upload-file]}}))
 
 (reg-event-fx
- ;; ::upload-meta-data
  ::mint-nft-flow
  (fn [{:keys [db]} [_ {:keys [values]}]]
    {:async-flow
@@ -149,4 +148,32 @@
                    [::app-events/submit-job
                     {:function "createOrUpdateNFT"
                      :params (utils/clj->json {:tokenId (get-in result [:token_id])})}]]))}]}}))
+
+(reg-event-fx
+ ::custodian-sign
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::app-events/ethers ethers/nft-custodian-sign
+                      :ethers-tx-callback params]
+     :rules [{:when :seen? :events (fn [[e key]]
+                                     (and (= ::app-events/save-data e)
+                                          (= :ethers-tx-callback key)))
+              :dispatch-fn (fn []
+              [[::app-events/submit-job
+                {:function "createOrUpdateNFT"
+                 :params (utils/clj->json {:tokenId (str (:token-id params))})}]])}]}}))
+
+(reg-event-fx
+ ::founder-sign
+ (fn [_ [_ params]]
+   {:async-flow
+    {:first-dispatch [::app-events/ethers ethers/nft-pay-fee-and-claim-token
+                      :ethers-tx-callback params]
+     :rules [{:when :seen? :events (fn [[e key]]
+                                     (and (= ::app-events/save-data e)
+                                          (= :ethers-tx-callback key)))
+              :dispatch-fn (fn []
+              [[::app-events/submit-job
+                {:function "createOrUpdateNFT"
+                 :params (utils/clj->json {:tokenId (str (:token-id params))})}]])}]}}))
 

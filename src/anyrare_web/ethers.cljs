@@ -147,18 +147,15 @@
           tx (.custodianSign (get-contract (:nft-factory contract-address)
                                            (:nft-factory contract-abi)
                                            signer)
-                             (:token-id params)
-                             (:custodian-weight params)
-                             (:custodian-general-fee params)
-                             (:custodian-redeem-weight params))]
+                             (:token-id params))]
     (callback {:result (js->clj tx)})))
 
 (defn nft-pay-fee-and-claim-token
   [params callback]
+  (prn params)
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
           signer (.getSigner provider-metamask)
           address (.getAddress signer)
-          ;; Check spend limit
           approve-spend (.approve (get-contract (:ara-token contract-address)
                                                 (:ara-token contract-abi)
                                                 signer)
