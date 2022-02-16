@@ -264,6 +264,17 @@
                         :value (.. tx -offer -value)}
                 :redeem-timestamp (.. tx -offer -redeemTimestamp)})))))))))
 
+(defn nfts-by-id
+  [params callback]
+  (->
+   (map #(nft-by-id % (fn [x] x)) params)
+   (as-> r (into [] r))
+   (p/all)
+   (p/then
+    (fn [x] (-> (map #(js->clj %) x)
+                (as-> r (into [] r))
+                (callback))))))
+
 (defn nft-open-auction
   [params callback]
   (p/let [_ (.send provider-metamask "eth_requestAccounts" [])
@@ -348,6 +359,11 @@
                           (:bid-value params)
                           (:max-bid params))]
     (callback {:result (js->clj tx)})))
+
+
+
+
+
 
 
 

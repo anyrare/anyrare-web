@@ -253,19 +253,33 @@
 
 
 (reg-event-fx
+ ::fetch-ntfs-by-id
+ (fn [_ [_ key params]]
+   (prn params)
+   {:result (ethers/nfts-by-id params #(dispatch [::save-data key %]))}))
+
+(reg-event-fx
  ::fetch-nfts-custodian-unsign
  (fn [_ [_ {:keys [code]}]]
    {:async-flow
     {:first-dispatch [::ethers ethers/signer-address :signer nil]
-     :rules [{:when :seen? :events ::save-data
+     :rules [{:when :seen? :events (fn [[e k]] (and (= ::save-data e) (= :signer k)))
               :dispatch-fn
               (fn [[_ _ result]]
-                (prn result)
                 [(fetch-gql
                   (get-in gql [:get-nfts-custodian-unsign :query])
                   (get-in gql [:get-nfts-custodian-unsign :type])
                   {:custodianAddress (:address result)}
                   ::save-gql-data
-                  :assets
-                  :getNFTsCustodianUnsign)])}]}}))
+                  :assets-id
+                  :getNFTsCustodianUnsign)])}
+             {:when :seen? :events (fn [[e k]] (and (= ::save-gql-data e) (= :assets-id k)))
+              :dispatch-fn
+              (fn [[_ _ nested-var params]]
+                (-> params
+                    (:data)
+                    (nested-var)
+                    (as-> r (map (fn [x] {:token-id (:tokenId x)}) r))
+                    (as-> r (into [] r))
+                    (as-> r [[::fetch-ntfs-by-id :assets r]])))}]}}))
 

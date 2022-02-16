@@ -139,6 +139,10 @@
     ) {
       id
       tokenId
+      image
+      nameTH
+      founderAddress
+      custodianAddress
     }}"}
 
    :get-nfts-founder-unclaim
@@ -169,5 +173,9 @@
     ) {
       id
       tokenId
+      image
+      nameTH
+      founderAddress
+      custodianAddress
     }}"}})
 

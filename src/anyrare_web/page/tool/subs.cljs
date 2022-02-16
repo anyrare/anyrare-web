@@ -5,3 +5,8 @@
  ::image-by-id
  (fn [db [_ id]]
    (get-in db [id])))
+
+(reg-sub
+ ::assets
+ (fn [db _]
+   (:assets db)))
